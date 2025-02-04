@@ -1,248 +1,229 @@
 {
-    "patients": [
+  "patients": [
+    {
+      "id": "1",
+      "name": "Joan",
+      "lastName": "Garcia",
+      "birthDate": "1950-06-15",
+      "addressStreet": "Carrer Major",
+      "addressNumber": "12",
+      "addressFloor": "3r",
+      "addressDoor": "2a",
+      "addressPostalCode": "08001",
+      "addressCity": "Barcelona",
+      "addressProvince": "Barcelona",
+      "addressCountry": "Espanya",
+      "dni": "12345678A",
+      "healthCardNumber": "CAT123456789",
+      "prefix": "34",
+      "phone": "666123456",
+      "email": "joan.garcia@example.com",
+      "zoneId": 1,
+      "situationPersonalFamily": "Viu sol, rep visites del seu fill cada cap de setmana.",
+      "healthSituation": "Hipertensió, medicació diària, risc de caigudes.",
+      "housingSituationType": "Pis",
+      "housingSituationStatus": "Bona conservació",
+      "housingSituationNumberOfRooms": 4,
+      "housingSituationLocation": "Centre ciutat",
+      "personalAutonomy": "Necessita ajuda per activitats domèstiques.",
+      "economicSituation": "Pensió mínima, sense copagament.",
+      "emergencyContacts": [
         {
-            "id": 1,
-            "name": "Joan",
-            "lastName": "Garcia",
-            "birthDate": "1950-06-15",
-            "address": {
-                "street": "Carrer Major",
-                "number": "12",
-                "floor": "3r",
-                "door": "2a",
-                "postalCode": "08001",
-                "city": "Barcelona",
-                "province": "Barcelona",
-                "country": "Espanya"
-            },
-            "dni": "12345678A",
-            "healthCardNumber": "CAT123456789",
-            "phone": {
-                "prefix": "34",
-                "number": "666123456"
-            },
-            "email": "joan.garcia@example.com",
-            "zoneId": 1,
-            "situationPersonalFamily": "Viu sol, rep visites del seu fill cada cap de setmana.",
-            "healthSituation": "Hipertensió, medicació diària, risc de caigudes.",
-            "housingSituation": {
-                "type": "Pis",
-                "status": "Bona conservació",
-                "numberOfRooms": 4,
-                "location": "Centre ciutat"
-            },
-            "personalAutonomy": "Necessita ajuda per activitats domèstiques.",
-            "economicSituation": "Pensió mínima, sense copagament.",
-            "emergencyContacts": [
-                {
-                    "name": "Pere",
-                    "lastName": "Garcia",
-                    "phone": {
-                        "prefix": "34",
-                        "number": "677889900"
-                    },
-                    "relationship": "Fill"
-                }
-            ]
-        },
-        {
-            "id": 2,
-            "name": "Maria",
-            "lastName": "Martínez",
-            "birthDate": "1945-03-12",
-            "address": {
-                "street": "Carrer Gran",
-                "number": "5",
-                "floor": "1r",
-                "door": "2a",
-                "postalCode": "08002",
-                "city": "Barcelona",
-                "province": "Barcelona",
-                "country": "Espanya"
-            },
-            "dni": "87654321B",
-            "healthCardNumber": "CAT987654321",
-            "phone": {
-                "prefix": "34",
-                "number": "666987654"
-            },
-            "email": "maria@gmail.com",
-            "zoneId": 1,
-            "situationPersonalFamily": "Viu amb la seva filla i el seu gat.",
-            "healthSituation": "Diabetis, medicació diària, risc de caigudes.",
-            "housingSituation": {
-                "type": "Pis",
-                "status": "Bona conservació",
-                "numberOfRooms": 3,
-                "location": "Centre ciutat"
-            },
-            "personalAutonomy": "Autònoma, necessita ajuda per la compra.",
-            "economicSituation": "Pensió mínima, sense copagament.",
-            "emergencyContacts": [
-                {
-                    "name": "Anna",
-                    "lastName": "Martínez",
-                    "phone": {
-                        "prefix": "34",
-                        "number": "677889900"
-                    },
-                    "relationship": "Filla"
-                }
-            ]
-        },
-        {
-            "id": 3,
-            "name": "Pere",
-            "lastName": "Garcia",
-            "birthDate": "1950-06-15",
-            "address": {
-                "street": "Carrer Major",
-                "number": "12",
-                "floor": "3r",
-                "door": "2a",
-                "postalCode": "08001",
-                "city": "Barcelona",
-                "province": "Barcelona",
-                "country": "Espanya"
-            },
-            "dni": "12345678A",
-            "healthCardNumber": "CAT123456789",
-            "phone": {
-                "prefix": "34",
-                "number": "666123456"
-            },
-            "email": "pere@gmail.com",
-            "zoneId": 1,
-            "situationPersonalFamily": "Viu sol, rep visites del seu fill cada cap de setmana.",
-            "healthSituation": "Hipertensió, medicació diària, risc de caigudes.",
-            "housingSituation": {
-                "type": "Pis",
-                "status": "Bona conservació",
-                "numberOfRooms": 4,
-                "location": "Centre ciutat"
-            },
-            "personalAutonomy": "Necessita ajuda per activitats domèstiques.",
-            "economicSituation": "Pensió mínima, sense copagament.",
-            "emergencyContacts": [
-                {
-                    "name": "Pere",
-                    "lastName": "Garcia",
-                    "phone": {
-                        "prefix": "34",
-                        "number": "677889900"
-                    },
-                    "relationship": "Fill"
-                }
-            ]
+          "name": "Pere",
+          "lastName": "Garcia",
+          "prefix": "34",
+          "phone": "677889900",
+          "relationship": "Fill"
         }
-    ],
-    "zones": [
+      ]
+    },
+    {
+      "id": "2",
+      "name": "Maria",
+      "lastName": "Martínez",
+      "birthDate": "1960-06-15",
+      "addressStreet": "Carrer Major",
+      "addressNumber": "12",
+      "addressFloor": "3r",
+      "addressDoor": "2a",
+      "addressPostalCode": "08001",
+      "addressCity": "Barcelona",
+      "addressProvince": "Barcelona",
+      "addressCountry": "Espanya",
+      "dni": "12345678B",
+      "healthCardNumber": "CAT123456780",
+      "prefix": "34",
+      "phone": "666123456",
+      "email": "maria@gmail.com",
+      "zoneId": 2,
+      "situationPersonalFamily": "Viu amb la seva filla i el seu gendre.",
+      "healthSituation": "Diabetis, medicació diària, risc de caigudes.",
+      "housingSituationType": "Pis",
+      "housingSituationStatus": "Bona conservació",
+      "housingSituationNumberOfRooms": 4,
+      "housingSituationLocation": "Residencial",
+      "personalAutonomy": "Necessita ajuda per activitats domèstiques.",
+      "economicSituation": "Pensió mínima, sense copagament.",
+      "emergencyContacts": [
         {
-            "id": 1,
-            "name": "Ciutat Vella",
-            "description": "Zona centre de la ciutat.",
-            "location": "Barcelona",
-            "responsible": "Anna Martínez"
-        },
-        {
-            "id": 2,
-            "name": "Eixample",
-            "description": "Zona residencial de la ciutat.",
-            "location": "Barcelona",
-            "responsible": "Pere Garcia"
-        },
-        {
-            "id": 3,
-            "name": "Sants",
-            "description": "Zona industrial de la ciutat.",
-            "location": "Barcelona",
-            "responsible": "Maria Martínez"
+          "name": "Anna",
+          "lastName": "Martínez",
+          "prefix": "34",
+          "phone": "677889900",
+          "relationship": "Filla"
         }
-    ],
-    "alerts": [
+      ]
+    },
+    {
+      "id": "3",
+      "name": "Pere",
+      "lastName": "Garcia",
+      "birthDate": "1950-06-15",
+      "addressStreet": "Carrer Major",
+      "addressNumber": "12",
+      "addressFloor": "3r",
+      "addressDoor": "2a",
+      "addressPostalCode": "08001",
+      "addressCity": "Barcelona",
+      "addressProvince": "Barcelona",
+      "addressCountry": "Espanya",
+      "dni": "12345678C",
+      "healthCardNumber": "CAT123456781",
+      "prefix": "34",
+      "phone": "666123456",
+      "email": "pere@gmail.com",
+      "zoneId": 3,
+      "situationPersonalFamily": "Viu amb la seva filla i el seu gendre.",
+      "healthSituation": "Diabetis, medicació diària, risc de caigudes.",
+      "housingSituationType": "Pis",
+      "housingSituationStatus": "Bona conservació",
+      "housingSituationNumberOfRooms": 4,
+      "housingSituationLocation": "Residencial",
+      "personalAutonomy": "Necessita ajuda per activitats domèstiques.",
+      "economicSituation": "Pensió mínima, sense copagament.",
+      "emergencyContacts": [
         {
-            "id": 1,
-            "patientId": 1,
-            "type": "aviso",
-            "subType": "medication",
-            "description": "Tomar paracetamol 500mg",
-            "startDate": "2025-02-01",
-            "isRecurring": true,
-            "recurrenceType": "weekly",
-            "recurrenceDay": 2,
-            "createdAt": "2025-01-30T12:00:00Z"
-        },
-        {
-            "id": 2,
-            "patientId": 2,
-            "type": "aviso",
-            "subType": "medication",
-            "description": "Tomar insulina 10mg",
-            "startDate": "2025-02-01",
-            "isRecurring": true,
-            "recurrenceType": "daily",
-            "recurrenceDay": null,
-            "createdAt": "2025-01-30T12:00:00Z"
+          "name": "Anna",
+          "lastName": "Martínez",
+          "prefix": "34",
+          "phone": "677889900",
+          "relationship": "Filla"
         }
-    ],
-    "users": [
-        {
-            "id": 1,
-            "role": "admin",
-            "name": "Anna",
-            "lastName": "Martínez",
-            "email": "anna.martinez@example.com",
-            "phone": {
-                "prefix": "34",
-                "number": "666777888"
-            },
-            "zoneIds": [1],
-            "language": ["Català"],
-            "contactIds": [1],
-            "dateHire": "2023-01-01",
-            "dateTermination": null,
-            "username": "admin_anna",
-            "passwordHash": "hashed_password"
-        },
-        {
-            "id": 2,
-            "role": "operador",
-            "name": "Pere",
-            "lastName": "Garcia",
-            "email": "peregar@gmail.com",
-            "phone": {
-                "prefix": "34",
-                "number": "666777888"
-            },
-            "zoneIds": [2],
-            "language": ["Català"],
-            "contactIds": [2],
-            "dateHire": "2023-01-01",
-            "dateTermination": "2025-01-01"
-        }
-    ],
-    "calls": [
-        {
-            "id": 1,
-            "date": "2025-02-01T12:00:00Z",
-            "patientId": 1,
-            "userId": 1,
-            "type": "callEmergencies",
-            "subType": "Emergències sanitàries",
-            "alertId": 1,
-            "duration": 10,
-            "description": "El pacient presentava marejos, es recomana atenció mèdica."
-        },
-        {
-            "id": 2,
-            "date": "2025-02-01T12:00:00Z",
-            "patientId": 2,
-            "userId": 2,
-            "type": "callNotEmergencies",
-            "subType": null,
-            "alertId": 2,
-            "duration": 10,
-            "description": "El pacient presentava símptomes de hipoglucèmia, es recomana atenció mèdica."
-        }
-    ]
+      ]
+    }
+  ],
+  "zones": [
+    {
+      "id": "1",
+      "name": "Ciutat Vella",
+      "description": "Zona centre de la ciutat.",
+      "location": "Barcelona"
+    },
+    {
+      "id": "2",
+      "name": "Eixample",
+      "description": "Zona residencial de la ciutat.",
+      "location": "Barcelona"
+    },
+    {
+      "id": "3",
+      "name": "Sants",
+      "description": "Zona industrial de la ciutat.",
+      "location": "Barcelona"
+    }
+  ],
+  "alerts": [
+    {
+      "id": "1",
+      "patientId": 1,
+      "type": "aviso",
+      "subType": "medication",
+      "description": "Tomar paracetamol 500mg",
+      "startDate": "2025-02-01",
+      "isRecurring": true,
+      "recurrenceType": "weekly",
+      "recurrenceDay": 2,
+      "createdAt": "2025-01-30T12:00:00Z"
+    },
+    {
+      "id": "2",
+      "patientId": 2,
+      "type": "aviso",
+      "subType": "medication",
+      "description": "Tomar insulina 10mg",
+      "startDate": "2025-02-01",
+      "isRecurring": true,
+      "recurrenceType": "daily",
+      "recurrenceDay": null,
+      "createdAt": "2025-01-30T12:00:00Z"
+    }
+  ],
+  "users": [
+    {
+      "id": "1",
+      "role": "admin",
+      "name": "Anna",
+      "lastName": "Martínez",
+      "email": "anna.martinez@example.com",
+      "prefix": "34",
+      "phone": "666777888",
+      "zoneIds": [
+        1
+      ],
+      "language": [
+        "Català"
+      ],
+      "contactIds": [
+        1
+      ],
+      "dateHire": "2023-01-01",
+      "dateTermination": null,
+      "username": "admin_anna",
+      "passwordHash": "hashed_password"
+    },
+    {
+      "id": "2",
+      "role": "operador",
+      "name": "Pere",
+      "lastName": "Garcia",
+      "email": "peregar@gmail.com",
+      "prefix": "34",
+      "phone": "666777888",
+      "zoneIds": [
+        2
+      ],
+      "language": [
+        "Català"
+      ],
+      "contactIds": [
+        2
+      ],
+      "dateHire": "2023-01-01",
+      "dateTermination": "2025-01-01"
+    }
+  ],
+  "calls": [
+    {
+      "id": "1",
+      "date": "2025-02-01T12:00:00Z",
+      "patientId": 1,
+      "userId": 1,
+      "type": "callEmergencies",
+      "subType": "Emergències sanitàries",
+      "alertId": 1,
+      "duration": 10,
+      "description": "El pacient presentava marejos, es recomana atenció mèdica."
+    },
+    {
+      "id": "2",
+      "date": "2025-02-01T12:00:00Z",
+      "patientId": 2,
+      "userId": 2,
+      "type": "callNotEmergencies",
+      "subType": null,
+      "alertId": 2,
+      "duration": 10,
+      "description": "El pacient presentava símptomes de hipoglucèmia, es recomana atenció mèdica."
+    }
+  ]
 }
