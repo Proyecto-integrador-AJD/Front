@@ -1,20 +1,31 @@
-<script setup>
-import HelloWorld from './components/HelloWorld.vue'
-import TheWelcome from './components/TheWelcome.vue'
+<script>
+import { useDataStore } from './stores/data';
+import { mapActions, mapState } from 'pinia';
+
+
+export default {
+ name:'App',
+computed:{
+    ...mapState(useDataStore, ['users'])
+  },
+}
 </script>
 
 <template>
-  <header>
-    <img alt="Vue logo" class="logo" src="./assets/logo.svg" width="125" height="125" />
+  <div class="container">
+    <header>
+      <nav>
+        <RouterLink to="/">Inicio</RouterLink> |
+        <RouterLink to="/patients">Usuarios</RouterLink>
+        <RouterLink to="/calendar">Calendario</RouterLink>
+      
+      </nav>
+    </header>
 
-    <div class="wrapper">
-      <HelloWorld msg="You did it!" />
-    </div>
-  </header>
+    <RouterView />
 
-  <main>
-    <TheWelcome />
-  </main>
+    <footer></footer>
+  </div>
 </template>
 
 <style scoped>
