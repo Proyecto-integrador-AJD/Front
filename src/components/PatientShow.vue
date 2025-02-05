@@ -5,18 +5,18 @@
         <div class="card-body">
           <p><strong>Nombre:</strong> {{ patient.name }} {{ patient.lastName }}</p>
           <p><strong>Fecha de nacimiento:</strong> {{ patient.birthDate }}</p>
-          <p><strong>Dirección:</strong> {{ patient.addressStreet }}, {{ patient.addressNumber }}, 
-            {{ patient.addressFloor }}, {{ patient.addressDoor }}, {{ patient.addressPostalCode }}, {{ patient.addressCity }},
-            {{ patient.addressProvince }}, {{ patient.addressCountry }}</p>
+          <p><strong>Dirección:</strong> {{ patient.addressStreet }}, numero {{ patient.addressNumber }}, 
+            piso {{ patient.addressFloor }}, puerta {{ patient.addressDoor }}, CP {{ patient.addressPostalCode }}, ciudad: {{ patient.addressCity }},
+            provincia: {{ patient.addressProvince }}, pais: {{ patient.addressCountry }}</p>
           <p><strong>DNI:</strong> {{ patient.dni }}</p>
           <p><strong>Numero sanitario:</strong> {{ patient.healthCardNumber }}</p>
-          <p><strong>Teléfono:</strong> {{ patient.prefix }}   {{ patient.phone }}</p>
+          <p><strong>Teléfono:</strong> {{ patient.prefix }} {{ patient.phone }}</p>
           <p><strong>Correo:</strong> {{ patient.email }}</p>
           <p><strong>Zona:</strong> {{ patient.zoneId }}</p>
           <p><strong>Situación Personal:</strong> {{ patient.situationPersonalFamily }}</p>
           <p><strong>Situación Sanitaria:</strong> {{ patient.healthSituation }}</p>
           <p><strong>Situación de Alojamiento:</strong> {{ patient.housingSituationType }}, {{ patient.housingSituationStatus }},
-            {{ patient.housingSituationNumberOfRooms }}, {{ patient.housingSituationLocation }}</p>
+            {{ patient.housingSituationNumberOfRooms }} habitaciones, {{ patient.housingSituationLocation }}</p>
           <p><strong>Autonomia:</strong> {{ patient.personalAutonomy }}</p>
           <p><strong>Situacion Economica:</strong> {{ patient.economicSituation }}</p>
   

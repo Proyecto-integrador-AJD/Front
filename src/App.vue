@@ -17,6 +17,7 @@ computed:{
       <nav>
         <RouterLink to="/">Inicio</RouterLink> |
         <RouterLink to="/patients">Usuarios</RouterLink>
+        <RouterLink to="/calls">Llamadas</RouterLink>
         <RouterLink to="/calendar">Calendario</RouterLink>
       
       </nav>

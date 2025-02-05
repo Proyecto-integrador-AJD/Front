@@ -11,10 +11,10 @@ export const useDataStore = defineStore('data', {
 
   getters: {
     getZoneNameById: (state) => (id) => {
-      const zone = state.zones.find((item) => item.id === id);  
-      if (zone) return zone.name;  
-      return 'Desconocido'; 
+      const zone = state.zones.find(z => String(z.id) === String(id));
+      return zone ? zone.name : 'Desconocido';
     }
+    
   },
 
   actions: {
@@ -22,6 +22,7 @@ export const useDataStore = defineStore('data', {
       try {
         const responseP = await axios.get(API + '/patients');
         this.patients = responseP.data;
+        //this.patients = responseP.data.data;
       } catch (error) {
         console.error("Error al cargar pacientes:", error);
       }
@@ -34,6 +35,15 @@ export const useDataStore = defineStore('data', {
       } catch (error) {
         console.error("Error al cargar zonas:", error);
       }
-    }
+    },
+
+    async loadCalls() {
+      try {
+        const responseP = await axios.get(API + '/calls');
+        this.calls = responseP.data;
+      } catch (error) {
+        console.error("Error al cargar llamadas:", error);
+      }
+    },
   }
 });

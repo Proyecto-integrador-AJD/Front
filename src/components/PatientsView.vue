@@ -21,7 +21,7 @@
           <td>{{ patient.name }} {{ patient.lastName }}</td>
           <td>{{ patient.dni }}</td>
           <td>{{ patient.phone }}</td>
-          <td>{{ patient.zoneId }}</td>
+          <td>{{ getZoneNameById(patient.zoneId)}}</td>
           <td>
             <button class="btn btn-info" @click="$router.push('/view-patient/' + patient.id)">
               Ver

@@ -61,7 +61,13 @@
         </div>
 
         <div class="form-group">
-          <label>Situación personal o familiar:</label>
+          <label>Zona:</label>
+          <Field v-model="patient.zoneId" name="zone" class="form-control" />
+          <ErrorMessage class="error" name="zone" />
+        </div>
+
+        <div class="form-group">
+          <label>Situación personal familiar:</label>
           <Field v-model="patient.situationPersonalFamily" name="situacionPersonal" class="form-control" />
           <ErrorMessage class="error" name="situacionPersonal" />
         </div>
@@ -70,6 +76,21 @@
           <label>Situación sanitaria:</label>
           <Field v-model="patient.healthSituation" name="situacionSanitaria" class="form-control" />
           <ErrorMessage class="error" name="situacionSanitaria" />
+        </div>
+
+        <div class="form-group">
+          <label>Situacion de Alojamiento:</label>
+          <Field v-model="patient.housingSituationType" name="tipo" type="text" class="form-control" placeholder="Tipo" />
+          <Field v-model="patient.housingSituationStatus" name="estado" type="text" class="form-control" placeholder="Estado" />
+          <Field v-model="patient.housingSituationNumberOfRooms" name="habitacion" type="text" class="form-control" placeholder="habitacion" />
+          <Field v-model="patient.housingSituationLocation" name="localizacion" type="text" class="form-control" placeholder="Localizacion" />
+          <ErrorMessage class="error" name="alojamiento" />
+        </div>
+
+        <div class="form-group">
+          <label>Autonomia:</label>
+          <Field v-model="patient.personalAutonomy" name="autonomia" class="form-control" />
+          <ErrorMessage class="error" name="autonomia" />
         </div>
 
         <div class="form-group">
@@ -145,6 +166,11 @@ export default {
         zoneId: '',
         situationPersonalFamily: '',
         healthSituation: '',
+        housingSituationType: '',
+        housingSituationStatus: '',
+        housingSituationNumberOfRooms: '',
+        housingSituationLocation: '',
+        personalAutonomy: '',
         economicSituation: '',
         emergencyContacts: [{ name: '', lastName: '', prefix: '', phone: '', relationship: '' }],
       },

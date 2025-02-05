@@ -4,6 +4,9 @@ import PatientsView from '../components/PatientsView.vue';
 import CalendarView from '../components/CalendarView.vue';
 import PatientForm from '../components/PatientForm.vue';
 import PatientShow from '../components/PatientShow.vue';
+import CallsView from '../components/CallsView.vue';
+import CallForm from '../components/CallForm.vue';
+import CallShow from '../components/CallShow.vue';
 
 
 
@@ -20,6 +23,11 @@ const router = createRouter({
         name: 'patients',
         component: PatientsView,
       },
+      {
+        path: '/calls',
+        name: 'calls',
+        component: CallsView,
+      },
     {
       path: '/calendar',
       name: 'calendar',
@@ -30,10 +38,23 @@ const router = createRouter({
       name: 'editPatient',
       component: PatientForm,
       props: true
-    },   {
+    },   
+    {
+      path: '/edit-call/:id?',
+      name: 'editCall',
+      component: CallForm,
+      props: true
+    }, 
+    {
       path: '/view-patient/:id',
       name: 'viewPatient',
       component: PatientShow,
+      props: true
+    },
+    {
+      path: '/view-call/:id',
+      name: 'viewCall',
+      component: CallShow,
       props: true
     },
     
