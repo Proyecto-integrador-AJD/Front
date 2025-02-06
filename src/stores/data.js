@@ -17,7 +17,7 @@ export const useDataStore = defineStore('data', {
     getPatientNameById: (state) => (id) => {
 
       const patient = state.patients.find(p => String(p.id) === String(id));
-      debugger
+      
       return patient ? `${patient.name} ${patient.lastName}` : 'Desconocido';
     },
 

@@ -68,7 +68,7 @@ export default {
             allEvents.push({
               start: recurringDate.toISOString().split("T")[0], // Fecha solo (sin hora)
               title: `${this.getPatientNameById(alert.patientId)} ${alert.subType}`,
-              color:"black"
+             
             });
 
             // Avanzamos 1 semana
@@ -80,10 +80,11 @@ export default {
         // Si no es recurrente, solo agregamos el evento en la fecha de inicio
         allEvents.push({
           start: startDate.toISOString().split("T")[0], // Fecha solo (sin hora)
-          title: `${alert.subType}: ${alert.description}`,
+          title: `${this.getPatientNameById(alert.patientId)} ${alert.subType}`,
+           color:"black"
         });
       }
-      
+
     });
 
     // Asignamos los eventos al calendario

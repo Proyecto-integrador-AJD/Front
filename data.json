@@ -146,6 +146,18 @@
       "createdAt": "2025-01-30T12:00:00Z"
     },
     {
+      "id": "3",
+      "patientId": 1,
+      "type": "aviso",
+      "subType": "medication",
+      "description": "Tomar paracetamol 500mg",
+      "startDate": "2025-02-01",
+      "isRecurring": false,
+      "recurrenceType": "weekly",
+      "recurrenceDay": 2,
+      "createdAt": "2025-01-30T12:00:00Z"
+    },
+    {
       "id": "2",
       "patientId": 2,
       "type": "aviso",
