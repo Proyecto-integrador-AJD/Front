@@ -13,7 +13,18 @@ export const useDataStore = defineStore('data', {
     getZoneNameById: (state) => (id) => {
       const zone = state.zones.find(z => String(z.id) === String(id));
       return zone ? zone.name : 'Desconocido';
+    },
+    getPatientNameById: (state) => (id) => {
+      const patient = state.patients.find(p => String(p.id) === String(id));
+      return patient ? `${patient.name} ${patient.lastName}` : 'Desconocido';
+    },
+
+    getUserNameById: (state) => (id) => {
+      const user = state.users.find(u => String(u.id) === String(id));
+      return user ? `${user.name} ${user.lastName}` : 'Desconocido';
     }
+
+    
     
   },
 
@@ -25,6 +36,14 @@ export const useDataStore = defineStore('data', {
         //this.patients = responseP.data.data;
       } catch (error) {
         console.error("Error al cargar pacientes:", error);
+      }
+    },
+    async loadUsers() {
+      try {
+        const responseP = await axios.get(API + '/users');
+        this.users = responseP.data;
+      } catch (error) {
+        console.error("Error al cargar usuarios:", error);
       }
     },
 

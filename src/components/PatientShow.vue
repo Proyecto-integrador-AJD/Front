@@ -12,7 +12,7 @@
           <p><strong>Numero sanitario:</strong> {{ patient.healthCardNumber }}</p>
           <p><strong>Teléfono:</strong> {{ patient.prefix }} {{ patient.phone }}</p>
           <p><strong>Correo:</strong> {{ patient.email }}</p>
-          <p><strong>Zona:</strong> {{ patient.zoneId }}</p>
+          <p><strong>Zona:</strong> {{ getZoneNameById(patient.zoneId) }}</p>
           <p><strong>Situación Personal:</strong> {{ patient.situationPersonalFamily }}</p>
           <p><strong>Situación Sanitaria:</strong> {{ patient.healthSituation }}</p>
           <p><strong>Situación de Alojamiento:</strong> {{ patient.housingSituationType }}, {{ patient.housingSituationStatus }},
@@ -35,10 +35,14 @@
   
   <script>
   import axios from 'axios';
-  
+  import { mapState, mapActions } from 'pinia';
+  import { useDataStore } from '../stores/data';
   const API = import.meta.env.VITE_URL_API;
   
   export default {
+    computed: {
+    ...mapState(useDataStore, ['getZoneNameById']),
+  },
     props: ['id'],
     data() {
       return {

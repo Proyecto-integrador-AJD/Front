@@ -2,7 +2,7 @@
   <div class="row">
     <div class="mb-3">
       <button class="btn btn-primary" @click="$router.push('/edit-patient')">
-        Alta
+        Dar de Alta
       </button>
     </div>
 
@@ -74,6 +74,41 @@ export default {
   }
 };
 </script>
+<style scoped>
+.full-screen {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  width: 100vw;
+}
+
+.table-container {
+  flex-grow: 1;
+  overflow: auto;
+  width: 100%;
+}
+
+.table {
+  width: 100%;
+  height: 8vh;
+  width: 900vh;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+.table th, .table td {
+  padding: 15px;
+
+}
+
+.table th {
+  background-color: #66c2ff;
+}
+
+</style>
+
 
 
 

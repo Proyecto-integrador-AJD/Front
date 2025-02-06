@@ -4,11 +4,11 @@
       <div class="card">
         <div class="card-body">
           <p><strong>Fecha:</strong> {{ call.date }}</p>
-          <p><strong>ID del Paciente:</strong> {{ call.patientId }}</p>
-          <p><strong>ID del Teleoperador:</strong> {{ call.userId }}</p>
+          <p><strong>Paciente:</strong> {{ getPatientNameById(call.patientId) }}</p>
+          <p><strong>Teleoperador:</strong> {{ getUserNameById(call.userId) }}</p>
           <p><strong>Tipo de Llamada:</strong> {{ call.type }}</p>
           <p><strong>Subtipo:</strong> {{ call.subType  }}</p>
-          <p><strong>ID de Alerta:</strong> {{ call.alertId }}</p>
+          <p><strong>Alerta:</strong> {{ call.alertId }}</p>
           <p><strong>Duración:</strong> {{ call.duration }} minutos</p>
           <p><strong>Descripción:</strong> {{ call.description }}</p>
         </div>
@@ -20,10 +20,14 @@
   
   <script>
   import axios from 'axios';
-  
+  import { mapState, mapActions } from 'pinia';
+  import { useDataStore } from '../stores/data';
   const API = import.meta.env.VITE_URL_API;
   
   export default {
+    computed: {
+    ...mapState(useDataStore, ['getPatientNameById', 'getUserNameById']),
+  },
     props: ['id'],
     data() {
       return {

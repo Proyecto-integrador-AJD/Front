@@ -17,8 +17,8 @@
         </thead>
         <tbody>
           <tr v-for="call in calls" :key="call.id">
-            <td>{{ call.patientId }}</td>
-            <td>{{ call.userId}}</td>
+            <td>{{ getPatientNameById(call.patientId) }}</td>
+            <td>{{ getUserNameById(call.userId)}}</td>
             <td>{{ call.date}}</td>
             <td>
               <button class="btn btn-info" @click="$router.push('/view-call/' + call.id)">
@@ -43,17 +43,70 @@
   
   export default {
     computed: {
-      ...mapState(useDataStore, ['calls']),
+      ...mapState(useDataStore, ['calls', 'getPatientNameById', 'getUserNameById']),
     },
   
     mounted() {
+      this.loadUsers();
+      this.loadPatients();
       this.loadCalls();
     },
   
     methods: {
-      ...mapActions(useDataStore, ['loadCalls']),
+      ...mapActions(useDataStore, ['loadCalls', 'loadPatients', 'loadUsers']),
   
 
     }
   };
   </script>
+
+<style scoped>
+.full-screen {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  width: 100vw;
+}
+
+.table-container {
+  flex-grow: 1;
+  overflow: auto;
+  width: 100%;
+}
+
+.table {
+  width: 100%;
+  height: 8vh;
+  width: 900vh;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+.table th, .table td {
+  padding: 15px;
+  white-space: nowrap;
+}
+
+.table th {
+  background-color: #66c2ff;
+}
+
+</style>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  

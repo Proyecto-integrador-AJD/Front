@@ -24,14 +24,16 @@
 
         <div class="form-group">
           <label>Dirección:</label>
-          <Field v-model="patient.addressStreet" name="calle" type="text" class="form-control" placeholder="Calle" />
-          <Field v-model="patient.addressNumber" name="numero" type="text" class="form-control" placeholder="Número" />
-          <Field v-model="patient.addressFloor" name="piso" type="text" class="form-control" placeholder="Piso" />
-          <Field v-model="patient.addressDoor" name="puerta" type="text" class="form-control" placeholder="Puerta" />
-          <Field v-model="patient.addressPostalCode" name="codigoPostal" type="text" class="form-control" placeholder="Código Postal" />
-          <Field v-model="patient.addressCity" name="ciudad" type="text" class="form-control" placeholder="Ciudad" />
-          <Field v-model="patient.addressProvince" name="provincia" type="text" class="form-control" placeholder="Provincia" />
-          <Field v-model="patient.addressCountry" name="pais" type="text" class="form-control" placeholder="País" />
+          <div class="form-group-multiple">
+            <Field v-model="patient.addressStreet" name="calle" type="text" class="form-control" placeholder="Calle" />
+            <Field v-model="patient.addressNumber" name="numero" type="text" class="form-control" placeholder="Número" />
+            <Field v-model="patient.addressFloor" name="piso" type="text" class="form-control" placeholder="Piso" />
+            <Field v-model="patient.addressDoor" name="puerta" type="text" class="form-control" placeholder="Puerta" />
+            <Field v-model="patient.addressPostalCode" name="codigoPostal" type="text" class="form-control" placeholder="Código Postal" />
+            <Field v-model="patient.addressCity" name="ciudad" type="text" class="form-control" placeholder="Ciudad" />
+            <Field v-model="patient.addressProvince" name="provincia" type="text" class="form-control" placeholder="Provincia" />
+            <Field v-model="patient.addressCountry" name="pais" type="text" class="form-control" placeholder="País" />
+          </div>
           <ErrorMessage class="error" name="direccion" />
         </div>
 
@@ -49,8 +51,10 @@
 
         <div class="form-group">
           <label>Teléfono:</label>
-          <Field v-model="patient.prefix" name="prefijo" type="text" class="form-control" placeholder="Prefijo" />
-          <Field v-model="patient.phone" name="telefono" type="text" class="form-control" placeholder="Teléfono" />
+          <div class="phone-group">
+            <Field v-model="patient.prefix" name="prefijo" type="text" class="form-control" placeholder="Prefijo" />
+            <Field v-model="patient.phone" name="telefono" type="text" class="form-control" placeholder="Teléfono" />
+          </div>
           <ErrorMessage class="error" name="telefono" />
         </div>
 
@@ -61,10 +65,13 @@
         </div>
 
         <div class="form-group">
-          <label>Zona:</label>
-          <Field v-model="patient.zoneId" name="zone" class="form-control" />
-          <ErrorMessage class="error" name="zone" />
-        </div>
+            <label>Zona:</label>
+            <Field as="select" v-model="patient.zoneId" name="zona" class="form-control">
+            <option 
+            v-for="zone in zones" :key="zone.id" :value="zone.id">{{ zone.name }}</option>
+            </Field>
+            <ErrorMessage class="error" name="zona" />
+          </div>
 
         <div class="form-group">
           <label>Situación personal familiar:</label>
@@ -80,15 +87,17 @@
 
         <div class="form-group">
           <label>Situacion de Alojamiento:</label>
-          <Field v-model="patient.housingSituationType" name="tipo" type="text" class="form-control" placeholder="Tipo" />
-          <Field v-model="patient.housingSituationStatus" name="estado" type="text" class="form-control" placeholder="Estado" />
-          <Field v-model="patient.housingSituationNumberOfRooms" name="habitacion" type="text" class="form-control" placeholder="habitacion" />
-          <Field v-model="patient.housingSituationLocation" name="localizacion" type="text" class="form-control" placeholder="Localizacion" />
+          <div class="form-group-multiple">
+            <Field v-model="patient.housingSituationType" name="tipo" type="text" class="form-control" placeholder="Tipo" />
+            <Field v-model="patient.housingSituationStatus" name="estado" type="text" class="form-control" placeholder="Estado" />
+            <Field v-model="patient.housingSituationNumberOfRooms" name="habitacion" type="text" class="form-control" placeholder="Habitación" />
+            <Field v-model="patient.housingSituationLocation" name="localizacion" type="text" class="form-control" placeholder="Localización" />
+          </div>
           <ErrorMessage class="error" name="alojamiento" />
         </div>
 
         <div class="form-group">
-          <label>Autonomia:</label>
+          <label>Autonomía:</label>
           <Field v-model="patient.personalAutonomy" name="autonomia" class="form-control" />
           <ErrorMessage class="error" name="autonomia" />
         </div>
@@ -139,7 +148,7 @@ export default {
     }
   },
   computed: {
-    ...mapState(useDataStore, []),
+    ...mapState(useDataStore, ['zones']),
     title() {
       return this.id ? 'Editar paciente' : 'Añadir paciente';
     },
@@ -197,9 +206,74 @@ export default {
 </script>
 
 <style scoped>
+.row {
+  width: 90vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+}
+
+Form {
+  width: 90%;
+  max-width: 1200px;
+  background: white;
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.form-group label {
+  font-weight: bold;
+  text-align: right; 
+  white-space: nowrap;
+  margin-bottom: 5px; 
+}
+
+.form-group-multiple {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.phone-group {
+  display: flex;
+  gap: 10px;
+}
+
+.form-control {
+  width: 100%;
+  max-width: 220px; 
+  padding: 6px;
+  font-size: 0.9rem;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+button {
+  padding: 10px 15px;
+  font-size: 1rem;
+  border-radius: 5px;
+  border: none;
+  cursor: pointer;
+}
+
+.btn-primary {
+  background-color: #007bff;
+  color: white;
+}
+
+.btn-danger {
+  background-color: #dc3545;
+  color: white;
+}
+
 .error {
   color: red;
+  font-size: 0.875rem;
 }
 </style>
+
 
   
