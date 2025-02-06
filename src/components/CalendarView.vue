@@ -4,6 +4,8 @@ import dayGridPlugin from '@fullcalendar/daygrid'
 import interactionPlugin from '@fullcalendar/interaction'
 import { useDataStore } from '@/stores/data' 
 import { mapState, mapActions } from 'pinia';
+import { watch } from 'vue';
+import { useRoute } from 'vue-router';
 
 export default {
   computed: {
@@ -21,11 +23,15 @@ export default {
       }
     }
   },
+  
+
   async mounted() {
     const dataStore = useDataStore(); 
     await dataStore.loadAlerts(); 
-    this.loadEvents(dataStore.alerts); 
     await dataStore.loadPatients();
+    this.loadEvents(dataStore.alerts); 
+   
+    
   },
   methods: {
   loadEvents(alerts) {
@@ -44,7 +50,7 @@ export default {
         // Si la recurrencia es diaria, añadimos el evento para cada día
         if (alert.recurrenceType === 'daily') {
           // Agregamos eventos por 30 días, puedes cambiar el número si lo necesitas
-          for (let i = 0; i < 50; i++) {debugger
+          for (let i = 0; i < 50; i++) {
             let title= `${this.getPatientNameById(alert.patientId)} ${alert.subType}`
             
             allEvents.push({
@@ -62,6 +68,7 @@ export default {
             allEvents.push({
               start: recurringDate.toISOString().split("T")[0], // Fecha solo (sin hora)
               title: `${this.getPatientNameById(alert.patientId)} ${alert.subType}`,
+              color:"black"
             });
 
             // Avanzamos 1 semana
@@ -76,12 +83,22 @@ export default {
           title: `${alert.subType}: ${alert.description}`,
         });
       }
+      
     });
 
     // Asignamos los eventos al calendario
     this.calendarOptions.events = allEvents;
   }
-}
+},
+watch: {
+    // Observar cambios en la ruta actual
+    async '$route.path'() {
+      const dataStore = useDataStore(); 
+    await dataStore.loadAlerts(); 
+    this.loadEvents(dataStore.alerts); 
+    await dataStore.loadPatients();
+    }
+  }
 }
 
 </script>
