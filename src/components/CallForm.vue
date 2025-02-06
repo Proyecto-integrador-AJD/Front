@@ -41,7 +41,7 @@
         </div>
 
         <div class="form-group">
-          <label>ID de alerta:</label>
+          <label>Alerta:</label>
           <Field v-model="call.alertId" name="alertId" type="number" class="form-control" />
           <ErrorMessage class="error" name="alertId" />
         </div>

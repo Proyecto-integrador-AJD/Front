@@ -15,7 +15,9 @@ export const useDataStore = defineStore('data', {
       return zone ? zone.name : 'Desconocido';
     },
     getPatientNameById: (state) => (id) => {
+
       const patient = state.patients.find(p => String(p.id) === String(id));
+      debugger
       return patient ? `${patient.name} ${patient.lastName}` : 'Desconocido';
     },
 
@@ -62,6 +64,15 @@ export const useDataStore = defineStore('data', {
         this.calls = responseP.data;
       } catch (error) {
         console.error("Error al cargar llamadas:", error);
+      }
+    },
+
+    async loadAlerts() {
+      try {
+        const responseP = await axios.get(API + '/alerts');
+        this.alerts = responseP.data;
+      } catch (error) {
+        console.error("Error al cargar alertas:", error);
       }
     },
   }
