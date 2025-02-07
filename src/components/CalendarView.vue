@@ -4,25 +4,20 @@
     <FullCalendar :options="calendarOptions" />
 
     <!-- Modal -->
-    <div v-if="isModalOpen" class="modal-overlay">
-      <div class="modal">
-        <h2>Detalles del Día</h2>
-        <p>Fecha seleccionada: {{ selectedDate }}</p>
-        <ul>
-          <li v-for="(event, index) in selectedEvents" :key="index" :style="{ color: event.color }">
-            {{ event.title }} - {{ event.description }}<br />
-            Teléfono: {{ event.phone }}
-          </li>
-        </ul>
-        <!-- Nuevo botón arriba del botón de cerrar -->
-        <button class="btn btn-primary" @click="$router.push('/edit-call')">
-          Hacer llamada
-        </button>
-
-        <!-- Botón para cerrar el modal -->
-        <button @click="closeModal">Cerrar</button>
-      </div>
-    </div>
+    <ModalComponent v-model="isModalOpen">
+      <h2>Detalles del Día</h2>
+      <p>Fecha seleccionada: {{ selectedDate }}</p>
+      <ul>
+        <li v-for="(event, index) in selectedEvents" :key="index" :style="{ color: event.color }">
+          {{ event.title }} - {{ event.description }}<br />
+          Teléfono: {{ event.phone }}
+        </li>
+      </ul>
+      <!-- Nuevo botón arriba del botón de cerrar -->
+      <button class="btn btn-primary" @click="$router.push('/edit-call')">
+        Hacer llamada
+      </button>
+    </ModalComponent>
   </div>
 </template>
 
@@ -32,6 +27,8 @@ import dayGridPlugin from '@fullcalendar/daygrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import { useDataStore } from '@/stores/data';
 import { mapState } from 'pinia';
+import { ref } from 'vue';
+import ModalComponent from './Modal.vue';
 
 export default {
   computed: {
@@ -39,6 +36,7 @@ export default {
   },
   components: {
     FullCalendar,
+    ModalComponent
   },
   data() {
     return {
@@ -77,12 +75,6 @@ export default {
         console.log("No hay eventos para esta fecha.");
       }
     },
-
-    closeModal() {
-      console.log("Cerrando modal");
-      this.isModalOpen = false;
-    },
-
     loadEvents(alerts) {
       if (!alerts.length) return;
 
@@ -144,7 +136,8 @@ export default {
 </script>
 
 <style scoped>
-html, body {
+html,
+body {
   margin: 0;
   padding: 0;
   height: 90%;
@@ -160,13 +153,13 @@ html, body {
 }
 
 .calendar-container {
-  flex: 1; 
-  width: 10%; 
+  flex: 1;
+  width: 10%;
 }
 
 .fc {
-  height: 90vh ;
-  width: 80vw ; 
+  height: 90vh;
+  width: 80vw;
 }
 
 h1 {
@@ -196,7 +189,8 @@ h3 {
   display: flex !important;
   justify-content: center;
   align-items: center;
-  z-index: 1000; /* Asegura que esté por encima de todo */
+  z-index: 1000;
+  /* Asegura que esté por encima de todo */
 }
 
 /* Diseño del modal más grande */
@@ -205,20 +199,21 @@ h3 {
   padding: 30px;
   border-radius: 8px;
   text-align: center;
-  width: 600px; 
-  height: 500px; 
+  width: 600px;
+  height: 500px;
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
   z-index: 1001;
   position: relative;
-  overflow: hidden; 
-  display: flex; 
+  overflow: hidden;
+  display: flex;
   flex-direction: column;
-  justify-content: space-between; 
+  justify-content: space-between;
 }
 
 
 /* Asegura que el modal no esté oculto */
-.modal-overlay, .modal {
+.modal-overlay,
+.modal {
   opacity: 1 !important;
   visibility: visible !important;
   display: flex !important;
