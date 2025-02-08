@@ -7,16 +7,27 @@ import PatientShow from '../components/PatientShow.vue';
 import CallsView from '../components/CallsView.vue';
 import CallForm from '../components/CallForm.vue';
 import CallShow from '../components/CallShow.vue';
+import LoginView from '../components/LoginView.vue';
+
+
 
 
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
+ 
     {
       path: '/',
+      name: 'login',
+      component: LoginView,
+    },
+
+    {
+      path: '/index',
       name: 'index',
       component: IndexView,
+      
     },
     {
         path: '/patients',

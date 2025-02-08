@@ -1,26 +1,42 @@
 <script>
 import { useDataStore } from './stores/data';
-import { mapActions, mapState } from 'pinia';
-
+import { mapState } from 'pinia';
+import { useRoute } from 'vue-router'; 
+import { ref, watch } from 'vue'; 
 
 export default {
- name:'App',
-computed:{
-    ...mapState(useDataStore, ['users'])
+  name: 'App',
+  computed: {
+    ...mapState(useDataStore, ['users']),
+    isAuthenticated() {
+      return localStorage.getItem('isAuthenticated') === 'true'; // Comprobar si el usuario está autenticado
+    }
   },
-  
+  setup() {
+    const route = useRoute();
+    const isLogin = ref(false); 
+
+    // Usamos un watch para observar los cambios en la ruta
+    watch(route, (newRoute) => {
+      isLogin.value = newRoute.name === 'login'; // Verificamos si la ruta actual es la de login
+    }, { immediate: true });
+
+    return {
+      isLogin,
+    };
+  }
 }
 </script>
 
 <template>
   <div class="container">
     <header>
-      <nav>
-        <RouterLink to="/">Inicio</RouterLink> 
+      <!-- Solo mostrar el nav si está autenticado y no estamos en la página de login -->
+      <nav v-if="isAuthenticated && !isLogin">
+        <RouterLink to="/index">Inicio</RouterLink>
         <RouterLink to="/patients">Usuarios</RouterLink>
         <RouterLink to="/calls">Llamadas</RouterLink>
         <RouterLink to="/calendar">Calendario</RouterLink>
-      
       </nav>
     </header>
 
@@ -29,6 +45,9 @@ computed:{
     <footer></footer>
   </div>
 </template>
+
+
+
 
 <style scoped>
 header {
@@ -70,4 +89,3 @@ nav a:hover {
   margin: 0 auto 2rem;
 }
 </style>
-
