@@ -12,6 +12,7 @@
         <p>Fecha seleccionada: {{ selectedEvent?.start }}</p>
         <ul>
           <li v-for="(event, index) in selectedEvent?.events" :key="index" :style="{ color: event.color }">
+            <!-- Checkbox con su estado independiente -->
             <input type="checkbox" v-model="event.checked" @change="saveCheckboxState(event)" />
             {{ event.title }} - {{ event.description }}<br />
             Teléfono: {{ event.phone }}
@@ -37,7 +38,6 @@ export default {
   components: { FullCalendar, ModalComponent },
   setup() {
     const dataStore = useDataStore();
-
     const calendarOptions = ref({
       plugins: [timeGridPlugin, interactionPlugin],
       initialView: "timeGridDay",
@@ -48,15 +48,13 @@ export default {
       eventClick: (info) => {
         selectedEvent.value = {
           start: info.event.startStr,
-          events: [
-            {
-              title: info.event.title,
-              description: info.event.extendedProps.description,
-              phone: info.event.extendedProps.phone,
-              color: info.event.backgroundColor,
-              checked: loadCheckboxState(info.event.title), // Recuperar estado
-            },
-          ],
+          events: (info.event.extendedProps.events || []).map((event) => ({
+            title: event.title,
+            description: event.description,
+            phone: event.phone,
+            color: event.color,
+            checked: loadCheckboxState(event.title, info.event.startStr), // Guardar estado independiente por evento y fecha
+          }))
         };
         isModalOpen.value = true;
       },
@@ -65,14 +63,19 @@ export default {
     const selectedEvent = ref(null);
     const isModalOpen = ref(false);
 
+    // Guardar el estado del checkbox en localStorage, usando una combinación de título y fecha
     const saveCheckboxState = (event) => {
-      localStorage.setItem(event.title, JSON.stringify(event.checked));
+      const key = `${event.title}-${event.date}`;
+      localStorage.setItem(key, JSON.stringify(event.checked));
     };
 
-    const loadCheckboxState = (title) => {
-      return JSON.parse(localStorage.getItem(title)) || false;
+    // Cargar el estado del checkbox desde localStorage
+    const loadCheckboxState = (title, date) => {
+      const key = `${title}-${date}`;
+      return JSON.parse(localStorage.getItem(key)) || false;
     };
 
+    // Cargar los eventos y asegurarse de que cada uno tenga su estado de checkbox independiente
     const loadEvents = () => {
       if (!dataStore.alerts || !Array.isArray(dataStore.alerts) || dataStore.alerts.length === 0) {
         console.warn("No hay alertas disponibles aún.");
@@ -94,7 +97,15 @@ export default {
           description: alert.description,
           phone: patientPhone,
           color: eventColor,
-          checked: loadCheckboxState(`${patient} - ${alert.subType}`), // Recuperar estado
+          extendedProps: {
+            events: [{
+              title: `${patient} - ${alert.subType}`,
+              description: alert.description,
+              phone: patientPhone,
+              color: eventColor,
+              checked: loadCheckboxState(`${patient} - ${alert.subType}`, startDate.toISOString()), // Estado de checkbox independiente por evento y fecha
+            }]
+          }
         };
 
         if (alert.isRecurring) {
@@ -210,6 +221,7 @@ button:hover {
   background-color: #0056b3;
 }
 </style>
+
 
 
 
