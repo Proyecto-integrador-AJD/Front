@@ -10,7 +10,9 @@
       </form>
       <p v-if="error" class="error">{{ error }}</p>
   
-    
+      <button @click="goToRegister" id="registerButton" class="btn btn-primary">
+        Registrarse
+      </button>
     </div>
   </template>
   
@@ -31,16 +33,18 @@
         error.value = null;
   
         setTimeout(() => {
-          localStorage.setItem("token", "token"); // Simulación de login
+          localStorage.setItem("token", "fake_token"); // Simulación de login
           localStorage.setItem("isAuthenticated", "true"); // Guardar autenticación
           router.push("/index"); // Redirigir al index
           loading.value = false;
         }, 1000);
       };
   
+      const goToRegister = () => {
+        router.push("/register");
+      };
   
-  
-      return { nom, password, handleLogin, loading, error };
+      return { nom, password, handleLogin, loading, error, goToRegister };
     },
   };
   </script>

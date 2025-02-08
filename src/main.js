@@ -1,14 +1,19 @@
 import './assets/main.css';
-import 'bootstrap/dist/css/bootstrap.min.css';  
-import { createApp } from 'vue'
-import { createPinia } from 'pinia'
+import 'bootstrap/dist/css/bootstrap.min.css';
+import { createApp } from 'vue';
+import { createPinia } from 'pinia';
+import App from './App.vue';
+import PrimeVue from 'primevue/config';
 
-import App from './App.vue'
-import router from './router'
 
-const app = createApp(App)
+import router from './router';
 
-app.use(createPinia())
-app.use(router)
+const app = createApp(App);
 
-app.mount('#app')
+app.use(PrimeVue);
+
+app.use(createPinia());
+
+app.use(router);
+
+app.mount('#app');

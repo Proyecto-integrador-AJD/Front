@@ -8,7 +8,7 @@ import CallsView from '../components/CallsView.vue';
 import CallForm from '../components/CallForm.vue';
 import CallShow from '../components/CallShow.vue';
 import LoginView from '../components/LoginView.vue';
-
+import RegisterView from '../components/RegisterView.vue';
 
 
 
@@ -22,7 +22,11 @@ const router = createRouter({
       name: 'login',
       component: LoginView,
     },
-
+    {
+      path: '/register',
+      name: 'register',
+      component: RegisterView,
+    },
     {
       path: '/index',
       name: 'index',
