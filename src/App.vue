@@ -1,7 +1,7 @@
 <script>
 import { useDataStore } from './stores/data';
 import { mapState } from 'pinia';
-import { useRoute } from 'vue-router'; 
+import { useRoute, useRouter } from 'vue-router'; 
 import { ref, watch } from 'vue'; 
 
 export default {
@@ -14,6 +14,7 @@ export default {
   },
   setup() {
     const route = useRoute();
+    const router = useRouter();
     const isLogin = ref(false); 
 
     // Usamos un watch para observar los cambios en la ruta
@@ -21,8 +22,15 @@ export default {
       isLogin.value = newRoute.name === 'login'; // Verificamos si la ruta actual es la de login
     }, { immediate: true });
 
+    const logout = () => {
+      localStorage.removeItem('isAuthenticated'); // Eliminar autenticación
+      localStorage.removeItem('username'); // Eliminar nombre de usuario
+      router.push('/'); // Redirigir a la página de login
+    }
+
     return {
       isLogin,
+      logout,
     };
   }
 }
@@ -37,6 +45,8 @@ export default {
         <RouterLink to="/patients">Usuarios</RouterLink>
         <RouterLink to="/calls">Llamadas</RouterLink>
         <RouterLink to="/calendar">Calendario</RouterLink>
+        <button @click="logout" class="btn btn-primary">Cerrar Sesión</button>
+
       </nav>
     </header>
 
