@@ -1,117 +1,143 @@
+<template>
+  <div>
+    <!-- Calendario -->
+    <FullCalendar :options="calendarOptions" />
+
+    <!-- Modal -->
+    <ModalComponent v-model="isModalOpen">
+      <h2>Detalles del Día</h2>
+      <p>Fecha seleccionada: {{ selectedDate }}</p>
+      <ul>
+        <li v-for="(event, index) in selectedEvents" :key="index" :style="{ color: event.color }">
+          {{ event.title }} - {{ event.description }}<br />
+          Teléfono: {{ event.phone }}
+        </li>
+      </ul>
+      <!-- Nuevo botón arriba del botón de cerrar -->
+      <button class="btn btn-primary" @click="$router.push('/edit-call')">
+        Hacer llamada
+      </button>
+    </ModalComponent>
+  </div>
+</template>
+
 <script>
-import FullCalendar from '@fullcalendar/vue3'
-import dayGridPlugin from '@fullcalendar/daygrid'
-import interactionPlugin from '@fullcalendar/interaction'
-import { useDataStore } from '@/stores/data' 
-import { mapState, mapActions } from 'pinia';
-import { watch } from 'vue';
-import { useRoute } from 'vue-router';
+import FullCalendar from '@fullcalendar/vue3';
+import dayGridPlugin from '@fullcalendar/daygrid';
+import interactionPlugin from '@fullcalendar/interaction';
+import { useDataStore } from '@/stores/data';
+import { mapState } from 'pinia';
+import { ref } from 'vue';
+import ModalComponent from './Modal.vue';
 
 export default {
   computed: {
-      ...mapState(useDataStore, ['getPatientNameById']),
-    },
+    ...mapState(useDataStore, ['getPatientNameById', 'getPatientPhoneById']),
+  },
   components: {
-    FullCalendar
+    FullCalendar,
+    ModalComponent
   },
   data() {
     return {
       calendarOptions: {
         plugins: [dayGridPlugin, interactionPlugin],
         initialView: 'dayGridMonth',
-        events: []
-      }
-    }
+        events: [],
+        dateClick: (info) => this.handleDateClick(info),
+      },
+      isModalOpen: false, // Controla si el modal está abierto o cerrado
+      selectedDate: null, // Guarda la fecha clickeada
+      selectedEvents: [], // Guarda los eventos de la fecha clickeada
+    };
   },
-  
 
   async mounted() {
-    const dataStore = useDataStore(); 
-    await dataStore.loadAlerts(); 
+    const dataStore = useDataStore();
+    await dataStore.loadAlerts();
     await dataStore.loadPatients();
-    this.loadEvents(dataStore.alerts); 
-   
-    
+    this.loadEvents(dataStore.alerts);
   },
+
   methods: {
-  loadEvents(alerts) {
-    if (!alerts.length) return;
+    handleDateClick(info) {
+      console.log("Clic en fecha:", info.dateStr);
+      this.selectedDate = info.dateStr;
 
-    let allEvents = [];
+      this.selectedEvents = this.calendarOptions.events.filter(
+        event => event.start === info.dateStr
+      );
 
-    // Iteramos sobre cada alerta
-    alerts.forEach(alert => {
-      let startDate = new Date(alert.startDate);
-      
-      if (alert.isRecurring) {
-        // Si la alerta es recurrente, calculamos las fechas
-        let recurringDate = new Date(startDate);
-
-        // Si la recurrencia es diaria, añadimos el evento para cada día
-        if (alert.recurrenceType === 'daily') {
-          // Agregamos eventos por 30 días, puedes cambiar el número si lo necesitas
-          for (let i = 0; i < 50; i++) {
-            let title= `${this.getPatientNameById(alert.patientId)} ${alert.subType}`
-            
-            allEvents.push({
-              start: recurringDate.toISOString().split("T")[0], // Fecha solo (sin hora)
-              title:title,
-             
-            });
-
-            // Avanzamos 1 día para el siguiente evento
-            recurringDate.setDate(recurringDate.getDate() + 1);
-          }
-        } else if (alert.recurrenceType === 'weekly') {
-          // Si la recurrencia es semanal, la lógica ya está funcionando como antes
-          for (let i = 0; i < 10; i++) {
-            allEvents.push({
-              start: recurringDate.toISOString().split("T")[0], // Fecha solo (sin hora)
-              title: `${this.getPatientNameById(alert.patientId)} ${alert.subType}`,
-             
-            });
-
-            // Avanzamos 1 semana
-            recurringDate.setDate(recurringDate.getDate() + 7);
-          }
-        }
-     
+      if (this.selectedEvents.length > 0) {
+        console.log("Abriendo modal con eventos:", this.selectedEvents);
+        this.isModalOpen = true;
       } else {
-        // Si no es recurrente, solo agregamos el evento en la fecha de inicio
-        allEvents.push({
-          start: startDate.toISOString().split("T")[0], // Fecha solo (sin hora)
-          title: `${this.getPatientNameById(alert.patientId)} ${alert.subType}`,
-           color:"black"
-        });
+        console.log("No hay eventos para esta fecha.");
       }
+    },
+    loadEvents(alerts) {
+      if (!alerts.length) return;
 
-    });
+      let allEvents = [];
 
-    // Asignamos los eventos al calendario
-    this.calendarOptions.events = allEvents;
-  }
-},
-watch: {
-    // Observar cambios en la ruta actual
-    async '$route.path'() {
-      const dataStore = useDataStore(); 
-    await dataStore.loadAlerts(); 
-    this.loadEvents(dataStore.alerts); 
-    await dataStore.loadPatients();
-    }
-  }
-}
+      alerts.forEach((alert) => {
+        let startDate = new Date(alert.startDate);
+        let eventColor = alert.isRecurring ? 'dodgerblue' : 'limegreen';
 
+        let patient = this.getPatientNameById(alert.patientId);  // Usa el getter para obtener el nombre
+        let patientPhone = this.getPatientPhoneById(alert.patientId); // Usa el getter para obtener el teléfono
+
+        if (alert.isRecurring) {
+          let recurringDate = new Date(startDate);
+          if (alert.recurrenceType === 'daily') {
+            for (let i = 0; i < 50; i++) {
+              allEvents.push({
+                start: recurringDate.toISOString().split('T')[0],
+                title: `${patient} ${alert.subType}`,
+                description: alert.description,
+                phone: patientPhone, // Añadimos el teléfono
+                color: eventColor,
+              });
+              recurringDate.setDate(recurringDate.getDate() + 1);
+            }
+          } else if (alert.recurrenceType === 'weekly') {
+            for (let i = 0; i < 10; i++) {
+              allEvents.push({
+                start: recurringDate.toISOString().split('T')[0],
+                title: `${patient} ${alert.subType}`,
+                description: alert.description,
+                phone: patientPhone, // Añadimos el teléfono
+                color: eventColor,
+              });
+              recurringDate.setDate(recurringDate.getDate() + 7);
+            }
+          }
+        } else {
+          allEvents.push({
+            start: startDate.toISOString().split('T')[0],
+            title: `${patient} ${alert.subType}`,
+            description: alert.description,
+            phone: patientPhone, // Añadimos el teléfono
+            color: eventColor,
+          });
+        }
+      });
+
+      this.calendarOptions.events = allEvents;
+    },
+
+    // Método para manejar la acción del nuevo botón
+    handleNewButtonClick() {
+      console.log("¡Nuevo botón clickeado!");
+      // Aquí puedes agregar la acción que quieras realizar cuando se haga clic en el nuevo botón.
+    },
+  },
+};
 </script>
 
-<template>
-  <FullCalendar :options="calendarOptions" />
-</template>
-
-
 <style scoped>
-
-html, body {
+html,
+body {
   margin: 0;
   padding: 0;
   height: 90%;
@@ -127,14 +153,13 @@ html, body {
 }
 
 .calendar-container {
-  flex: 1; 
-  width: 10%; 
+  flex: 1;
+  width: 10%;
 }
 
-
 .fc {
-  height: 90vh ;
-  width: 80vw ; 
+  height: 90vh;
+  width: 80vw;
 }
 
 h1 {
@@ -151,5 +176,62 @@ h3 {
 .greetings h1,
 .greetings h3 {
   text-align: center;
+}
+
+/* Asegura que el modal esté visible y bien centrado */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex !important;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  /* Asegura que esté por encima de todo */
+}
+
+/* Diseño del modal más grande */
+.modal {
+  background: #ffffff;
+  padding: 30px;
+  border-radius: 8px;
+  text-align: center;
+  width: 600px;
+  height: 500px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+  z-index: 1001;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+
+/* Asegura que el modal no esté oculto */
+.modal-overlay,
+.modal {
+  opacity: 1 !important;
+  visibility: visible !important;
+  display: flex !important;
+  flex-direction: column;
+}
+
+/* Estilo para el nuevo botón */
+button {
+  background-color: #007bff;
+  color: white;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+button:hover {
+  background-color: #0056b3;
 }
 </style>

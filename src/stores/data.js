@@ -15,16 +15,19 @@ export const useDataStore = defineStore('data', {
       return zone ? zone.name : 'Desconocido';
     },
     getPatientNameById: (state) => (id) => {
-
       const patient = state.patients.find(p => String(p.id) === String(id));
-      
       return patient ? `${patient.name} ${patient.lastName}` : 'Desconocido';
     },
 
     getUserNameById: (state) => (id) => {
       const user = state.users.find(u => String(u.id) === String(id));
       return user ? `${user.name} ${user.lastName}` : 'Desconocido';
-    }
+    },
+    
+    getPatientPhoneById: (state) => (id) => {
+      const patient = state.patients.find(p => String(p.id) === String(id));
+      return patient ? patient.phone : 'No disponible';
+    },
 
     
     
