@@ -51,7 +51,7 @@ export default {
     ...mapState(useDataStore, ['patients', 'getZoneNameById']),
   },
 
-  mounted() {
+  zmounted() {
     this.loadZones();
     this.loadPatients();
   },
