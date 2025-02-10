@@ -34,6 +34,22 @@ export const useDataStore = defineStore('data', {
   },
 
   actions: {
+    async loadInitialData() {
+      try {
+        const responseP = await axios.get(API + '/patients');
+        this.patients = responseP.data;
+        const responseD = await axios.get(API + '/users');
+        this.users = responseD.data;
+        const responseZ = await axios.get(API + '/zones');
+        this.zones = responseZ.data;
+        const responseC = await axios.get(API + '/calls');
+        this.calls = responseC.data;
+        const responseA = await axios.get(API + '/alerts');
+        this.alerts = responseA.data;
+      } catch (error) {
+        console.error("Error al cargar pacientes:", error);
+      }
+    },
     async loadPatients() {
       try {
         const responseP = await axios.get(API + '/patients');

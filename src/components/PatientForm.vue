@@ -25,14 +25,38 @@
         <div class="form-group">
           <label>Dirección:</label>
           <div class="form-group-multiple">
-            <Field v-model="patient.addressStreet" name="calle" type="text" class="form-control" placeholder="Calle" />
-            <Field v-model="patient.addressNumber" name="numero" type="text" class="form-control" placeholder="Número" />
-            <Field v-model="patient.addressFloor" name="piso" type="text" class="form-control" placeholder="Piso" />
-            <Field v-model="patient.addressDoor" name="puerta" type="text" class="form-control" placeholder="Puerta" />
-            <Field v-model="patient.addressPostalCode" name="codigoPostal" type="text" class="form-control" placeholder="Código Postal" />
-            <Field v-model="patient.addressCity" name="ciudad" type="text" class="form-control" placeholder="Ciudad" />
-            <Field v-model="patient.addressProvince" name="provincia" type="text" class="form-control" placeholder="Provincia" />
-            <Field v-model="patient.addressCountry" name="pais" type="text" class="form-control" placeholder="País" />
+            <div>
+              <Field v-model="patient.addressStreet" name="calle" type="text" class="form-control" placeholder="Calle" />
+              <ErrorMessage class="error" name="calle" />
+            </div>
+            <div>
+              <Field v-model="patient.addressNumber" name="numero" type="text" class="form-control" placeholder="Número" />
+              <ErrorMessage class="error" name="numero" />
+            </div>
+            <div>
+              <Field v-model="patient.addressFloor" name="piso" type="text" class="form-control" placeholder="Piso" />
+              <ErrorMessage class="error" name="piso" />
+            </div>
+            <div>
+              <Field v-model="patient.addressDoor" name="puerta" type="text" class="form-control" placeholder="Puerta" />
+              <ErrorMessage class="error" name="puerta" />
+            </div>
+            <div>
+              <Field v-model="patient.addressPostalCode" name="codigoPostal" type="text" class="form-control" placeholder="Código Postal" />
+              <ErrorMessage class="error" name="codigoPostal" />
+            </div>
+            <div>
+              <Field v-model="patient.addressCity" name="ciudad" type="text" class="form-control" placeholder="Ciudad" />
+              <ErrorMessage class="error" name="ciudad" />
+            </div>
+            <div>
+              <Field v-model="patient.addressProvince" name="provincia" type="text" class="form-control" placeholder="Provincia" />
+              <ErrorMessage class="error" name="provincia" />
+            </div>
+            <div>
+              <Field v-model="patient.addressCountry" name="pais" type="text" class="form-control" placeholder="País" />
+              <ErrorMessage class="error" name="pais" />
+            </div>
           </div>
           <ErrorMessage class="error" name="direccion" />
         </div>
@@ -87,13 +111,24 @@
 
         <div class="form-group">
           <label>Situacion de Alojamiento:</label>
-          <div class="form-group-multiple">
-            <Field v-model="patient.housingSituationType" name="tipo" type="text" class="form-control" placeholder="Tipo" />
-            <Field v-model="patient.housingSituationStatus" name="estado" type="text" class="form-control" placeholder="Estado" />
-            <Field v-model="patient.housingSituationNumberOfRooms" name="habitacion" type="text" class="form-control" placeholder="Habitación" />
-            <Field v-model="patient.housingSituationLocation" name="localizacion" type="text" class="form-control" placeholder="Localización" />
-          </div>
-          <ErrorMessage class="error" name="alojamiento" />
+          <div class="form-group-multiple"> 
+            <div>
+              <Field v-model="patient.housingSituationType" name="tipo" type="text" class="form-control" placeholder="Tipo" />
+              <ErrorMessage class="error" name="tipo" />
+            </div>
+            <div>
+              <Field v-model="patient.housingSituationStatus" name="estado" type="text" class="form-control" placeholder="Estado" />
+              <ErrorMessage class="error" name="estado" />
+            </div>
+            <div>
+              <Field v-model="patient.housingSituationNumberOfRooms" name="habitacion" type="text" class="form-control" placeholder="Habitación" />
+              <ErrorMessage class="error" name="habitacion" />
+            </div>
+            <div>
+              <Field v-model="patient.housingSituationLocation" name="localizacion" type="text" class="form-control" placeholder="Localización" />
+              <ErrorMessage class="error" name="localizacion" />
+            </div>
+          </div> 
         </div>
 
         <div class="form-group">
@@ -108,13 +143,40 @@
           <ErrorMessage class="error" name="situacionEconomica" />
         </div>
 
-        <div class="form-group" v-for="(contact, index) in patient.emergencyContacts" :key="index">
+        <div class="form-group" >
           <label>Contacto de emergencia:</label>
-          <Field v-model="contact.name" :name="'nombre' + index" placeholder="Nombre" class="form-control" />
-          <Field v-model="contact.lastName" :name="'apellido' + index" placeholder="Apellido" class="form-control" />
-          <Field v-model="contact.prefix" :name="'prefix' + index" type="text" placeholder="Prefijo" class="form-control" />
-          <Field v-model="contact.phone" :name="'telefono' + index" type="text" placeholder="Teléfono" class="form-control" />
-          <Field v-model="contact.relationship" :name="'relacion' + index" placeholder="Relación" class="form-control" />
+          <div class="form-group-multiple">
+            <div v-for="(contact, index) in patient.emergencyContacts" :key="index">
+              <div>
+                <Field v-model="contact.name" :name="`emergencyContacts[${index}].nombre`" placeholder="Nombre" class="form-control" />
+                <ErrorMessage class="error" :name="`emergencyContacts[${index}].nombre`" />
+              </div>
+              <div>
+                <Field v-model="contact.lastName" :name="`emergencyContacts[${index}].apellido`" placeholder="Apellido" class="form-control" />
+                <ErrorMessage class="error" :name="`emergencyContacts[${index}].apellido`" />
+              </div>
+              <div>
+                <Field v-model="contact.prefix" :name="`emergencyContacts[${index}].prefix`" placeholder="Prefijo" class="form-control" />
+                <ErrorMessage class="error" :name="`emergencyContacts[${index}].prefix`" />
+              </div>
+              <div>
+                <Field v-model="contact.phone" :name="`emergencyContacts[${index}].telefono`" placeholder="Teléfono" class="form-control" />
+                <ErrorMessage class="error" :name="`emergencyContacts[${index}].telefono`" />
+              </div>
+              <div>
+                <Field v-model="contact.relationship" :name="`emergencyContacts[${index}].relacion`" placeholder="Relación" class="form-control" />
+                <ErrorMessage class="error" :name="`emergencyContacts[${index}].relacion`" />
+              </div>
+            </div>
+            <div>
+              <button type="button" class="btn btn-primary" @click="addContact">
+                <i class="bi bi-plus-circle"></i>
+              </button>
+              <button v-if="patient.emergencyContacts.length > 1" type="button" class="btn btn-primary" @click="delContact(index)">
+                <i class="bi bi-dash-circle"></i>
+              </button>
+            </div>
+          </div>
           <ErrorMessage class="error" :name="'contacto' + index" />
         </div>
 
@@ -155,7 +217,42 @@ export default {
   },
   data() {
     return {
-      mySchema: yup.object({}),
+      mySchema: yup.object().shape({
+        nombrePacient: yup.string().required('El nombre es obligatorio'),
+        apellido: yup.string().required('El apellido es obligatorio'),
+        fecha: yup.date().required('La fecha de nacimiento es obligatoria'),
+        calle: yup.string().required('La calle es obligatoria'),
+        numero: yup.string().required('El número es obligatorio'),
+        piso: yup.string().nullable(),
+        puerta: yup.string().nullable(),
+        codigoPostal: yup.string().required('El código postal es obligatorio'),
+        ciudad: yup.string().required('La ciudad es obligatoria'),
+        provincia: yup.string().required('La provincia es obligatoria'),
+        pais: yup.string().required('El país es obligatorio'),
+        dni: yup.string().required('El DNI es obligatorio'),
+        sanitario: yup.string().required('El número sanitario es obligatorio'),
+        prefijo: yup.string().required('El prefijo es obligatorio'),
+        telefono: yup.string().required('El teléfono es obligatorio'),
+        correo: yup.string().email('Correo inválido').required('El correo es obligatorio'),
+        zona: yup.string().required('La zona es obligatoria'),
+        situacionPersonal: yup.string().required('La situación personal familiar es obligatoria'),
+        situacionSanitaria: yup.string().required('La situación sanitaria es obligatoria'),
+        tipo: yup.string().required('El tipo de alojamiento es obligatorio'),
+        estado: yup.string().required('El estado del alojamiento es obligatorio'),
+        habitacion: yup.string().required('El número de habitaciones es obligatorio'),
+        localizacion: yup.string().required('La localización es obligatoria'),
+        autonomia: yup.string().required('La autonomía es obligatoria'),
+        situacionEconomica: yup.string().required('La situación económica es obligatoria'),
+        emergencyContacts: yup.array().of(
+          yup.object({
+            nombre: yup.string().required('El nombre es obligatorio'),
+            apellido: yup.string().required('El apellido es obligatorio'),
+            prefix: yup.string().required('El prefijo es obligatorio'),
+            telefono: yup.string().required('El teléfono es obligatorio'),
+            relacion: yup.string().required('La relación es obligatoria')
+          })
+        ).min(1, 'Debe haber al menos un contacto de emergencia')
+      }),
       patient: {
         name: '',
         birthDate: '',
@@ -201,13 +298,21 @@ export default {
     handleCancel() {
       this.$router.push('/patients');
     },
+    addContact() {
+      this.patient.emergencyContacts.push({ name: '', lastName: '', prefix: '', phone: '', relationship: '' });
+    },
+    delContact() {
+      if (this.patient.emergencyContacts.length > 1) {
+        this.patient.emergencyContacts.pop();
+      }
+    }
   },
 };
 </script>
 
 <style scoped>
 .row {
-  width: 90vw;
+  /* width: 100vw; */
   height: 100vh;
   display: flex;
   justify-content: center;
@@ -222,6 +327,10 @@ Form {
   padding: 30px;
   border-radius: 10px;
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.form-group {
+  margin-top: 20px;
 }
 
 .form-group label {
@@ -270,8 +379,15 @@ button {
 }
 
 .error {
-  color: red;
+  color: #d32f2f;
+  background-color: #ffebee;
+  border-left: 4px solid #d32f2f;
+  padding: 8px 12px;
   font-size: 0.875rem;
+  font-weight: 500;
+  border-radius: 4px;
+  margin-top: 4px;
+  display: inline-block;
 }
 </style>
 

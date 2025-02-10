@@ -1,11 +1,17 @@
 <script>
 import { useDataStore } from './stores/data';
-import { mapState } from 'pinia';
+import { mapState, mapActions } from 'pinia';
 import { useRoute } from 'vue-router'; 
 import { ref, watch } from 'vue'; 
 
 export default {
   name: 'App',
+  mounted(){
+    this.loadInitialData()
+  },
+  methods:{
+    ...mapActions(useDataStore, ['loadInitialData'])
+  },
   computed: {
     ...mapState(useDataStore, ['users']),
     isAuthenticated() {
@@ -88,4 +94,5 @@ nav a:hover {
   display: block;
   margin: 0 auto 2rem;
 }
+
 </style>
