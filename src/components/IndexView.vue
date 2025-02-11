@@ -1,5 +1,6 @@
 <template>
   <div class="container">
+    <h2>Bienvenido, {{ username }}</h2>
     <!-- Calendario -->
     <div class="calendar-wrapper">
       <FullCalendar :options="calendarOptions" />
@@ -13,7 +14,7 @@
         <ul>
           <li v-for="(event, index) in selectedEvent?.events" :key="index" :style="{ color: event.color }">
             <!-- Checkbox con su estado independiente -->
-            <input type="checkbox" v-model="event.checked" @change="saveCheckboxState(event)" />
+            <input type="checkbox" v-model="event.checked" @change="saveCheckboxState(event, selectedEvent.start)" />
             {{ event.title }} - {{ event.description }}<br />
             Teléfono: {{ event.phone }}
           </li>
@@ -37,6 +38,7 @@ import ModalComponent from "@/components/Modal.vue";
 export default {
   components: { FullCalendar, ModalComponent },
   setup() {
+    const username = ref("");
     const dataStore = useDataStore();
     const calendarOptions = ref({
       plugins: [timeGridPlugin, interactionPlugin],
@@ -53,8 +55,8 @@ export default {
             description: event.description,
             phone: event.phone,
             color: event.color,
-            checked: loadCheckboxState(event.title, info.event.startStr), // Guardar estado independiente por evento y fecha
-          }))
+            checked: ref(loadCheckboxState(event.title, info.event.startStr)),
+          })),
         };
         isModalOpen.value = true;
       },
@@ -63,19 +65,16 @@ export default {
     const selectedEvent = ref(null);
     const isModalOpen = ref(false);
 
-    // Guardar el estado del checkbox en localStorage, usando una combinación de título y fecha
-    const saveCheckboxState = (event) => {
-      const key = `${event.title}-${event.date}`;
+    const saveCheckboxState = (event, date) => {
+      const key = `${event.title}-${date}`;
       localStorage.setItem(key, JSON.stringify(event.checked));
     };
 
-    // Cargar el estado del checkbox desde localStorage
     const loadCheckboxState = (title, date) => {
       const key = `${title}-${date}`;
       return JSON.parse(localStorage.getItem(key)) || false;
     };
 
-    // Cargar los eventos y asegurarse de que cada uno tenga su estado de checkbox independiente
     const loadEvents = () => {
       if (!dataStore.alerts || !Array.isArray(dataStore.alerts) || dataStore.alerts.length === 0) {
         console.warn("No hay alertas disponibles aún.");
@@ -103,9 +102,9 @@ export default {
               description: alert.description,
               phone: patientPhone,
               color: eventColor,
-              checked: loadCheckboxState(`${patient} - ${alert.subType}`, startDate.toISOString()), // Estado de checkbox independiente por evento y fecha
-            }]
-          }
+              checked: ref(loadCheckboxState(`${patient} - ${alert.subType}`, startDate.toISOString())),
+            }],
+          },
         };
 
         if (alert.isRecurring) {
@@ -125,11 +124,8 @@ export default {
       calendarOptions.value.events = allEvents;
     };
 
-    const closeModal = () => {
-      isModalOpen.value = false;
-    };
-
     onMounted(async () => {
+      username.value = localStorage.getItem("username") || "Usuario";
       await dataStore.loadAlerts();
       await dataStore.loadPatients();
       loadEvents();
@@ -139,7 +135,7 @@ export default {
       loadEvents();
     });
 
-    return { calendarOptions, isModalOpen, selectedEvent, closeModal, saveCheckboxState };
+    return { username, calendarOptions, isModalOpen, selectedEvent, saveCheckboxState };
   },
 };
 </script>

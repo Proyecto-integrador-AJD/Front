@@ -69,7 +69,7 @@
 
 <script>
 import { useDataStore } from '../stores/data';
-import { mapState } from 'pinia';
+import { mapState, mapActions } from 'pinia';
 import { Form, Field, ErrorMessage } from 'vee-validate';
 import * as yup from 'yup';
 import axios from 'axios';
@@ -84,6 +84,8 @@ export default {
   },
   props: ['id'],
   async mounted() {
+    await this.loadPatients();
+    await this.loadUsers();
     if (this.id) {
       const response = await axios.get(`${API}/calls/${this.id}`);
       this.call = response.data;
@@ -111,6 +113,7 @@ export default {
     };
   },
   methods: {
+    ...mapActions(useDataStore, ['loadPatients','loadUsers']),
     async handleSubmit() {
       try {
         if (this.id) {
