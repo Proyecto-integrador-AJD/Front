@@ -6,13 +6,8 @@
     </div>
   </div>
 
-
-
-
   <div v-if="isModalOpen" class="modal-overlay">
       <div class="modal">
-        
-
         <!-- Botón para cerrar el modal -->
         <button @click="closeModal">Cerrar</button>
       </div>
@@ -63,8 +58,8 @@ export default {
   padding: 30px;
   border-radius: 8px;
   text-align: center;
-  width: 600px; 
-  height: 500px; 
+  width: 80%; 
+  height: 60%; 
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
   z-index: 1001;
   position: relative;

@@ -51,10 +51,10 @@ export default {
     ...mapState(useDataStore, ['patients', 'getZoneNameById']),
   },
 
-  mounted() {
-    this.loadZones();
-    this.loadPatients();
-  },
+  // mounted() {
+  //   this.loadZones();
+  //   this.loadPatients();
+  // },
 
   methods: {
     ...mapActions(useDataStore, ['loadZones', 'loadPatients']),

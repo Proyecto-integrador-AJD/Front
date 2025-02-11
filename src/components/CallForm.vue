@@ -5,22 +5,22 @@
         <legend>{{ title }}</legend>
 
         <div class="form-group">
-            <label>Paciente:</label>
-            <Field as="select" v-model="call.patientId" name="paciente" class="form-control">
-            <option 
-            v-for="patient in patients" :key="patient.id" :value="patient.id">{{ patient.name }} {{ patient.lastName }}</option>
-            </Field>
-            <ErrorMessage class="error" name="paciente" />
-          </div>
+          <label>Paciente:</label>
+          <Field as="select" v-model="call.patientId" name="paciente" class="form-control">
+          <option 
+          v-for="patient in patients" :key="patient.id" :value="patient.id">{{ patient.name }} {{ patient.lastName }}</option>
+          </Field>
+          <ErrorMessage class="error" name="paciente" />
+        </div>
 
-          <div class="form-group">
-            <label>Teleoperador:</label>
-            <Field as="select" v-model="call.userId" name="user" class="form-control">
-            <option 
-            v-for="user in users" :key="user.id" :value="user.id">{{ user.name }} {{ user.lastName }}</option>
-            </Field>
-            <ErrorMessage class="error" name="user" />
-          </div>
+        <div class="form-group">
+          <label>Teleoperador:</label>
+          <Field as="select" v-model="call.userId" name="user" class="form-control">
+          <option 
+          v-for="user in users" :key="user.id" :value="user.id">{{ user.name }} {{ user.lastName }}</option>
+          </Field>
+          <ErrorMessage class="error" name="user" />
+        </div>
 
         <div class="form-group">
           <label>Fecha:</label>
@@ -136,7 +136,7 @@ export default {
 <style scoped>
 
 .row {
-  width: 100vw;
+  /* width: 100vw;  */
   height: 100vh;
   display: flex;
   justify-content: center;
