@@ -110,43 +110,6 @@
           "relationship": "Filla"
         }
       ]
-    },
-    {
-      "id": "2c63",
-      "name": "trew",
-      "birthDate": "2025-02-14",
-      "addressStreet": "trew",
-      "addressNumber": "trew",
-      "addressFloor": "trew",
-      "addressDoor": "trew",
-      "addressPostalCode": "trew",
-      "addressCity": "trew",
-      "addressProvince": "trew",
-      "addressCountry": "trew",
-      "dni": "trew",
-      "healthCardNumber": "trew",
-      "prefix": "trew",
-      "phone": "trew",
-      "email": "trew@rtfe.trew",
-      "zoneId": "1",
-      "situationPersonalFamily": "trew",
-      "healthSituation": "trew",
-      "housingSituationType": "trew",
-      "housingSituationStatus": "trew",
-      "housingSituationNumberOfRooms": "trew",
-      "housingSituationLocation": "trew",
-      "personalAutonomy": "trew",
-      "economicSituation": "trew",
-      "emergencyContacts": [
-        {
-          "name": "trew",
-          "lastName": "trew",
-          "prefix": "trew",
-          "phone": "trew",
-          "relationship": "trew"
-        }
-      ],
-      "lastName": "trew"
     }
   ],
   "zones": [

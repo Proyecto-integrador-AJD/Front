@@ -37,7 +37,7 @@
     async mounted() {
       try {
         const response = await axios.get(`${API}/calls/${this.id}`);
-        this.call = response.data;
+        this.call = response.data.data;
       } catch (error) {
         alert('Error al cargar los datos de la llamada.');
       }

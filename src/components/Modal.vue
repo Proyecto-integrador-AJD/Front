@@ -59,7 +59,7 @@ export default {
   border-radius: 8px;
   text-align: center;
   width: 80%; 
-  height: 60%; 
+  height: 80%; 
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
   z-index: 1001;
   position: relative;

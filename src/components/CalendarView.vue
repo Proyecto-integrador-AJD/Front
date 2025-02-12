@@ -32,7 +32,7 @@ import ModalComponent from './Modal.vue';
 
 export default {
   computed: {
-    ...mapState(useDataStore, ['getPatientNameById', 'getPatientPhoneById']),
+    ...mapState(useDataStore, ['getPatientNameById', 'getPatientPhoneById', 'alerts', 'patients']),
   },
   components: {
     FullCalendar,
@@ -45,6 +45,8 @@ export default {
         initialView: 'dayGridMonth',
         events: [],
         dateClick: (info) => this.handleDateClick(info),
+        dayMaxEvents: 3, // Limitar a 3 eventos por día
+        eventLimitText: "Ver más eventos", // Texto personalizado para el enlace de más eventos
       },
       isModalOpen: false, // Controla si el modal está abierto o cerrado
       selectedDate: null, // Guarda la fecha clickeada
@@ -53,10 +55,11 @@ export default {
   },
 
   async mounted() {
-    const dataStore = useDataStore();
-    await dataStore.loadAlerts();
-    await dataStore.loadPatients();
-    this.loadEvents(dataStore.alerts);
+    const dataStore = useDataStore(); // Asegúrate de cargar el store
+    await dataStore.loadAlerts(); // Cargar alertas desde el store
+
+    this.loadEvents(this.alerts);
+    console.log("Alertas cargadas:", this.alerts); // Verifica si las alertas se cargan correctamente
   },
 
   methods: {
@@ -84,7 +87,7 @@ export default {
         let startDate = new Date(alert.startDate);
         let eventColor = alert.isRecurring ? 'dodgerblue' : 'limegreen';
 
-        let patient = this.getPatientNameById(alert.patientId);  // Usa el getter para obtener el nombre
+        let patient = this.getPatientNameById(alert.patientId); // Usa el getter para obtener el nombre
         let patientPhone = this.getPatientPhoneById(alert.patientId); // Usa el getter para obtener el teléfono
 
         if (alert.isRecurring) {
@@ -95,18 +98,19 @@ export default {
                 start: recurringDate.toISOString().split('T')[0],
                 title: `${patient} ${alert.subType}`,
                 description: alert.description,
-                phone: patientPhone, // Añadimos el teléfono
+                phone: patientPhone,
                 color: eventColor,
               });
               recurringDate.setDate(recurringDate.getDate() + 1);
             }
-          } else if (alert.recurrenceType === 'weekly') {
+          //} else if (alert.recurrenceType === 'weekly') {
+          } else if (alert.recurrenceType === 'Setmanal') {
             for (let i = 0; i < 10; i++) {
               allEvents.push({
                 start: recurringDate.toISOString().split('T')[0],
                 title: `${patient} ${alert.subType}`,
                 description: alert.description,
-                phone: patientPhone, // Añadimos el teléfono
+                phone: patientPhone,
                 color: eventColor,
               });
               recurringDate.setDate(recurringDate.getDate() + 7);
@@ -117,7 +121,7 @@ export default {
             start: startDate.toISOString().split('T')[0],
             title: `${patient} ${alert.subType}`,
             description: alert.description,
-            phone: patientPhone, // Añadimos el teléfono
+            phone: patientPhone,
             color: eventColor,
           });
         }
@@ -129,11 +133,11 @@ export default {
     // Método para manejar la acción del nuevo botón
     handleNewButtonClick() {
       console.log("¡Nuevo botón clickeado!");
-      // Aquí puedes agregar la acción que quieras realizar cuando se haga clic en el nuevo botón.
     },
   },
 };
 </script>
+
 
 <style scoped>
 html,

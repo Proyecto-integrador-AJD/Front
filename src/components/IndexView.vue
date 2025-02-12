@@ -1,6 +1,9 @@
 <template>
   <div class="container">
-    <h2>Bienvenido, {{ username }}</h2>
+    <h2 class="welcome-text">{{ username }}</h2>
+    <h2 class="welcome-text">Bienvenido,</h2>
+    
+
     <!-- Calendario -->
     <div class="calendar-wrapper">
       <FullCalendar :options="calendarOptions" />
@@ -148,14 +151,17 @@ body, html {
   overflow: hidden;
 }
 
+
 .container {
+  .container {
   display: flex;
-  justify-content: flex-end;
-  align-items: flex-start;
+  flex-direction: column;
+  overflow: visible; /* Permite que el contenido que se mueve hacia arriba sea visible */
   height: 100%;
-  padding: 0;
-  overflow: hidden;
 }
+
+}
+
 
 .calendar-wrapper {
   width: 50%;
@@ -168,6 +174,17 @@ body, html {
   top: 100px;
   right: 0;
 }
+.welcome-text {
+  font-size: 80px;
+  font-weight: bold;
+  color: #333;
+  padding: 0;
+  margin-top:-200px;
+  margin-left: -600px;
+  display: block; /* Asegura que estén en líneas separadas */
+}
+
+
 
 .fc {
   height: 80vh;

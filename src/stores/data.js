@@ -2,11 +2,16 @@ import { defineStore } from 'pinia'
 import axios from 'axios'
 
 const API = import.meta.env.VITE_URL_API
+const token='13|JL9fQNAK6Tz9PFYLcGYBAkL5W6978ri8KzCtWu5z43b80763';
+
+axios.defaults.headers.common['Authorization']=`Bearer ${token}`;
 
 export const useDataStore = defineStore('data', {
   state: () => ({
     patients: [],
     zones: [],
+    calls:[],
+    alerts:[],
   }),
 
   getters: {
@@ -37,24 +42,26 @@ export const useDataStore = defineStore('data', {
     async loadInitialData() {
       try {
         const responseP = await axios.get(API + '/patients');
-        this.patients = responseP.data;
+        this.patients = responseP.data.data;
         const responseD = await axios.get(API + '/users');
-        this.users = responseD.data;
+        this.users = responseD.data.data;
         const responseZ = await axios.get(API + '/zones');
-        this.zones = responseZ.data;
+        this.zones = responseZ.data.data;
         const responseC = await axios.get(API + '/calls');
-        this.calls = responseC.data;
+        this.calls = responseC.data.data;
         const responseA = await axios.get(API + '/alerts');
-        this.alerts = responseA.data;
+        this.alerts = responseA.data.data;
       } catch (error) {
         console.error("Error al cargar pacientes:", error);
       }
     },
-    async loadPatients() {
+    async loadPatients() {calls
       try {
         const responseP = await axios.get(API + '/patients');
-        this.patients = responseP.data;
-        //this.patients = responseP.data.data;
+        //this.patients = responseP.data;
+        
+        this.patients = responseP.data.data;
+        
       } catch (error) {
         console.error("Error al cargar pacientes:", error);
       }
@@ -62,7 +69,7 @@ export const useDataStore = defineStore('data', {
     async loadUsers() {
       try {
         const responseP = await axios.get(API + '/users');
-        this.users = responseP.data;
+        this.users = responseP.data.data;
       } catch (error) {
         console.error("Error al cargar usuarios:", error);
       }
@@ -71,7 +78,7 @@ export const useDataStore = defineStore('data', {
     async loadZones() {
       try {
         const responseZ = await axios.get(API + '/zones');
-        this.zones = responseZ.data;
+        this.zones = responseZ.data.data;
       } catch (error) {
         console.error("Error al cargar zonas:", error);
       }
@@ -80,7 +87,7 @@ export const useDataStore = defineStore('data', {
     async loadCalls() {
       try {
         const responseP = await axios.get(API + '/calls');
-        this.calls = responseP.data;
+        this.calls = responseP.data.data;
       } catch (error) {
         console.error("Error al cargar llamadas:", error);
       }
@@ -89,7 +96,7 @@ export const useDataStore = defineStore('data', {
     async loadAlerts() {
       try {
         const responseP = await axios.get(API + '/alerts');
-        this.alerts = responseP.data;
+        this.alerts = responseP.data.data;
       } catch (error) {
         console.error("Error al cargar alertas:", error);
       }

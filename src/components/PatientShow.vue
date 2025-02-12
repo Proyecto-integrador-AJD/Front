@@ -52,7 +52,7 @@
     async mounted() {
       try {
         const response = await axios.get(`${API}/patients/${this.id}`);
-        this.patient = response.data;
+        this.patient = response.data.data;
       } catch (error) {
         alert('Error al cargar los datos del paciente.');
       }

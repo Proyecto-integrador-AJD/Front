@@ -207,7 +207,7 @@ export default {
     await this.loadZones();
     if (this.id) {
       const response = await axios.get(API + '/patients/' + this.id);
-      this.patient = response.data;
+      this.patient = response.data.data;
     }
   },
   computed: {
