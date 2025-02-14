@@ -1,79 +1,56 @@
+<template>
+  <form @submit.prevent="handleLogin">
+    <input type="text" v-model="username" placeholder="Username" />
+    <input type="password" v-model="password" placeholder="Password" />
+    <button type="submit">Iniciar sesión</button>
+  </form>
+</template>
+
 <script>
-import { useDataStore } from '../stores/data';
-import { useRouter } from 'vue-router';
-import { ref } from 'vue';
+import { useAuthStore } from "../stores/auth";
+import axios from "axios";
 
 export default {
-  name: 'LoginView',
-  setup() {
-    const store = useDataStore(); // Usamos el store de datos
-    const router = useRouter();
-
-    // Campos para el login
-    const username = ref('');
-    const password = ref('');
-
-    // Acción para el login
-    const login = () => {
-      // Aquí podrías hacer una llamada a una API para verificar el login, 
-      // por ahora simula una autenticación exitosa
-      if (username.value && password.value) {
-        store.login(); // Iniciar sesión
-        localStorage.setItem('username', username.value); // Guardar el nombre de usuario
-        router.push('/index'); // Redirigir a la página principal
-      } else {
-        alert('Por favor, ingrese usuario y contraseña');
-      }
-    };
-
-    // Acción para redirigir a la ruta de registro
-    const goToRegister = () => {
-      router.push('/register'); // Redirigir a la página de registro
-    };
-
+  name: "LoginView",
+  data() {
     return {
-      username,
-      password,
-      login,
-      goToRegister,
+      username: "",
+      password: "",
     };
+  },
+  methods: {
+    async handleLogin() {
+      const authStore = useAuthStore();
+      try {
+        const API = import.meta.env.VITE_URL_API;
+        const response = await axios.post(`${API}/login`, {
+          email: this.username,
+          password: this.password,
+        });
+
+        if (response.status === 200) {
+          const token = response.data.data.token;
+          console.log(token);
+          
+          authStore.setToken(token); // Llama a la función para guardar el token
+          console.log(authStore.token);
+          this.$router.push("/index"); // Redirige al usuario después de iniciar sesión
+        }
+
+        
+      } catch (error) {
+        console.error("Error al iniciar sesión:", error);
+        alert("Credenciales incorrectas o error al iniciar sesión");
+      }
+    },
+  },
+  created() {
+    // Carga el token almacenado si es necesario
+    const authStore = useAuthStore();
+    authStore.loadTokenFromStorage();
   },
 };
 </script>
-
-<template>
-  <div class="login">
-    <h1>Iniciar sesión</h1>
-
-    <div>
-      <input
-        type="text"
-        id="username"
-        v-model="username"
-        placeholder="Nombre"
-      />
-    </div>
-
-    <div>
-      <input
-        type="password"
-        id="password"
-        v-model="password"
-        placeholder="Contraseña"
-      />
-    </div>
-
-    <button @click="login">Iniciar sesión</button>
-    
-    <p>
-      ¿No tienes una cuenta? <button @click="goToRegister">Regístrate</button>
-    </p>
-  </div>
-</template>
-
-
-
-
 
   
   <style>

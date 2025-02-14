@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import { useDataStore } from '../stores/data';
+import { useAuthStore } from '../stores/auth';
 import IndexView from '../components/IndexView.vue';
 import PatientsView from '../components/PatientsView.vue';
 import CalendarView from '../components/CalendarView.vue';
@@ -102,9 +103,12 @@ const router = createRouter({
 })
 router.beforeEach((to, from, next) => {
   const store = useDataStore(); // Accedemos al store para verificar la autenticación
+  const auth = useAuthStore(); // Accedemos al store para verificar la autenticación
 
   // Si la ruta requiere autenticación y el usuario no está autenticado
-  if (to.meta.requiresAuth && !store.isAuthenticated) {
+  console.log(store);
+  
+  if (to.meta.requiresAuth && auth.token == "") {
     // Si no está autenticado, redirigir al login
     next({ name: 'login' }); 
   } else {
