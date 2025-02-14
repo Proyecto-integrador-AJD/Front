@@ -36,8 +36,6 @@ export default {
           console.log(authStore.token);
           this.$router.push("/index"); // Redirige al usuario después de iniciar sesión
         }
-
-        
       } catch (error) {
         console.error("Error al iniciar sesión:", error);
         alert("Credenciales incorrectas o error al iniciar sesión");
@@ -48,12 +46,20 @@ export default {
     // Carga el token almacenado si es necesario
     const authStore = useAuthStore();
     authStore.loadTokenFromStorage();
+    
+    onMounted(() => {
+      document.body.classList.add("login-page");
+    });
+
+    onBeforeUnmount(() => {
+      document.body.classList.remove("login-page");
+    });
   },
 };
 </script>
 
   
-  <style>
+<style>
   .login-container {
     max-width: 300px;
     margin: auto;
@@ -69,7 +75,7 @@ export default {
     color: red;
     margin-top: 10px;
   }
-  </style>
+</style>
   
   
     
