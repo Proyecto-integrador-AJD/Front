@@ -217,9 +217,18 @@
                 <Field v-model="contact.phone" :name="`emergencyContacts[${index}].telefono`" placeholder="Teléfono" class="form-control" />
                 <ErrorMessage class="error" :name="`emergencyContacts[${index}].telefono`" />
               </div>
-              <div>
+              <!-- <div>
                 <Field v-model="contact.relationship" :name="`emergencyContacts[${index}].relacion`" placeholder="Relación" class="form-control" />
                 <ErrorMessage class="error" :name="`emergencyContacts[${index}].relacion`" />
+              </div> -->
+
+              <div class="form-group">
+                <label>Relacion:</label>
+                <Field as="select" v-model="contact.relationship" :name="`emergencyContacts[${index}].relacion`" class="form-control">
+                <option 
+                v-for="relationship in relationships" :key="relationship.name" :value="relationship.name">{{ relationship.spanishName }}</option>
+                </Field>
+                <ErrorMessage class="error" name="relacion" />
               </div>
             </div>
             <div>
@@ -265,9 +274,11 @@ export default {
   },
   props: ['id'],
   async mounted() {
+    await this.loadRelationships();
     await this.loadZones();
     await this.loadPrefixes();
     await this.loadLanguages();
+  
     console.log('Idiomas cargados:', this.languages);
 
     if (this.id) {
@@ -276,7 +287,7 @@ export default {
     }
   },
   computed: {
-    ...mapState(useDataStore, ['zones', 'prefixes', 'languages']),
+    ...mapState(useDataStore, ['zones', 'prefixes', 'languages', 'relationships']),
     title() {
       return this.id ? 'Editar paciente' : 'Añadir paciente';
     },
@@ -351,7 +362,7 @@ export default {
     };
   },
   methods: {
-    ...mapActions(useDataStore, ['loadZones', 'loadPrefixes', 'loadLanguages']),
+    ...mapActions(useDataStore, ['loadZones', 'loadPrefixes', 'loadLanguages', 'loadRelationships']),
     async handleSubmit() {
       try {
         if (this.id) {
@@ -364,13 +375,6 @@ export default {
               element.patientId = idPatient;
               axios.put(`${API}/contacts/`, element)
             });
-
-
-
-
-
-
-
 
             this.$router.push('/patients');
             console.log(response);

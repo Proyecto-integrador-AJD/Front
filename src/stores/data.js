@@ -14,6 +14,7 @@ export const useDataStore = defineStore('data', {
     prefixes: [],
     languages: [],
     users: [],
+    relationships: [],
     isAuthenticated: localStorage.getItem('isAuthenticated') === 'true',
   }),
 
@@ -66,6 +67,8 @@ export const useDataStore = defineStore('data', {
         this.prefixes = responsePr.data.data;
         const response = await axios.get(API + '/language');
         this.languages = response.data.data;
+        const responseR = await axios.get(API + '/relationship');
+        this.relationships = response.data.data;
       } catch (error) {
         console.error("Error al cargar los datos:", error);
       }
@@ -136,6 +139,15 @@ export const useDataStore = defineStore('data', {
         this.languages = response.data.data;  
       } catch (error) {
         console.error('Error al cargar los idioma:', error);
+      }
+    },
+
+    async loadRelationships() {
+      try {
+        const responseR = await axios.get(API + '/relationship');
+        this.relationships = responseR.data.data;  
+      } catch (error) {
+        console.error('Error al cargar las relaciones:', error);
       }
     },
   }
