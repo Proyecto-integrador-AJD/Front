@@ -51,6 +51,7 @@ export default {
         <RouterLink to="/index">Inicio</RouterLink>
         <RouterLink to="/patients">Usuarios</RouterLink>
         <RouterLink to="/calls">Llamadas</RouterLink>
+        <RouterLink to="/alerts">Alertas</RouterLink>
         <RouterLink to="/calendar">Calendario</RouterLink>
         <button @click="logout" class="btn btn-primary">Cerrar Sesión</button>
       </nav>

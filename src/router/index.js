@@ -10,6 +10,8 @@ import CallForm from '../components/CallForm.vue';
 import CallShow from '../components/CallShow.vue';
 import LoginView from '../components/LoginView.vue';
 import RegisterView from '../components/RegisterView.vue';
+import AlertsView from '../components/AlertsView.vue';
+import AlertShow from '../components/AlertShow.vue';
 
 
 
@@ -47,6 +49,12 @@ const router = createRouter({
         component: CallsView,
         meta: { requiresAuth: true } 
       },
+      {
+        path: '/alerts',
+        name: 'alerts',
+        component: AlertsView,
+        meta: { requiresAuth: true } 
+      },
     {
       path: '/calendar',
       name: 'calendar',
@@ -78,6 +86,14 @@ const router = createRouter({
       path: '/view-call/:id',
       name: 'viewCall',
       component: CallShow,
+      props: true,
+      meta: { requiresAuth: true } 
+    },
+
+    {
+      path: '/view-alert/:id',
+      name: 'viewAlert',
+      component: AlertShow,
       props: true,
       meta: { requiresAuth: true } 
     },
