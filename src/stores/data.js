@@ -132,7 +132,7 @@ export const useDataStore = defineStore('data', {
     async loadLanguages() {
       try {
         const response = await axios.get(API + '/language');
-        debugger
+        
         this.languages = response.data.data;  
       } catch (error) {
         console.error('Error al cargar los idioma:', error);

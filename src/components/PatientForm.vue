@@ -198,8 +198,20 @@
                 <ErrorMessage class="error" :name="`emergencyContacts[${index}].apellido`" />
               </div>
               <div>
+                <Field v-model="contact.email" :name="`emergencyContacts[${index}].email`" placeholder="Email" class="form-control" />
+                <ErrorMessage class="error" :name="`emergencyContacts[${index}].email`" />
+              </div>
+              <!-- <div>
                 <Field v-model="contact.prefix" :name="`emergencyContacts[${index}].prefix`" placeholder="Prefijo" class="form-control" />
                 <ErrorMessage class="error" :name="`emergencyContacts[${index}].prefix`" />
+              </div> -->
+              <div class="form-group">
+                <label>Prefijo:</label>
+                <Field as="select" v-model="contact.prefix" :name="`emergencyContacts[${index}].prefix`" class="form-control">
+                <option 
+                v-for="prefix in prefixes" :key="prefix.prefix" :value="prefix.prefix">{{ prefix.country }}</option>
+                </Field>
+                <ErrorMessage class="error" name="prefijo" />
               </div>
               <div>
                 <Field v-model="contact.phone" :name="`emergencyContacts[${index}].telefono`" placeholder="Teléfono" class="form-control" />
@@ -222,7 +234,6 @@
               </button>
             </div>
           </div>
-          <ErrorMessage class="error" :name="'contacto' + index" />
         </div>
 
         <button type="submit" class="btn btn-primary">Guardar</button>
@@ -317,7 +328,7 @@ export default {
         addressFloor: '',
         addressDoor: '',
         language:[],
-      addressPostalCode: '',
+        addressPostalCode: '',
         addressCity: '',
         addressProvince: '',
         addressCountry: '',
@@ -335,7 +346,7 @@ export default {
         housingSituationLocation: '',
         personalAutonomy: '',
         economicSituation: '',
-        emergencyContacts: [{ name: '', lastName: '', prefix: '', phone: '', relationship: '' }],
+        emergencyContacts: [{ name: '', lastName: '', email:'', prefix: '', phone: '', relationship: '' }], 
       },
     };
   },
@@ -346,15 +357,46 @@ export default {
         if (this.id) {
           await axios.put(`${API}/patients/${this.id}`, this.patient).then(response=>{
             console.log(response);
-            this.$router.push('/patients');
-             this.loadPatients();
+            const idPatient=response.data.data.id;
+            const contacts= this.patient.emergencyContacts;
+            contacts.forEach(element => {
 
+              element.patientId = idPatient;
+              axios.put(`${API}/contacts/`, element)
+            });
+
+
+
+
+
+
+
+
+            this.$router.push('/patients');
+            console.log(response);
+             this.loadPatients();
           }).catch(error=>{
             console.error('error' + error);
           })
+
         } else {console.log(this.patient);
           await axios.post(`${API}/patients/`, this.patient).then(response=>{
             console.log(response);
+            const idPatient=response.data.data.id;
+            const contacts= this.patient.emergencyContacts;
+            contacts.forEach(element => {
+
+              element.patientId = idPatient;
+              axios.post(`${API}/contacts/`, element)
+            });
+
+
+
+
+
+
+
+
             this.$router.push('/patients');
             console.log(response);
              this.loadPatients();
