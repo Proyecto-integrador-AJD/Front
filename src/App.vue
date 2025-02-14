@@ -1,5 +1,6 @@
 <script>
 import { useDataStore } from './stores/data'; 
+import { useAuthStore } from './stores/auth';
 import { useRoute, useRouter } from 'vue-router'; 
 import { ref, computed, watch, onMounted } from 'vue';
 
@@ -7,6 +8,7 @@ export default {
   name: 'App',
   setup() {
     const store = useDataStore();
+    const auth = useAuthStore();
     const router = useRouter();
     const route = useRoute();
     const isLogin = ref(false);
@@ -22,6 +24,7 @@ export default {
       localStorage.removeItem('isAuthenticated');
       localStorage.removeItem('username');
       router.push('/'); // Redirigimos al login
+      auth.logout();
     };
 
     // Cargar datos iniciales cuando se monta el componente
@@ -31,7 +34,7 @@ export default {
 
     // Computed para verificar si el usuario está autenticado
     const isAuthenticated = computed(() => {
-      return store.isAuthenticated || localStorage.getItem('isAuthenticated') === 'true';
+      return auth.isAuthenticated || localStorage.getItem('isAuthenticated') === 'true';
     });
 
     return {
@@ -45,9 +48,9 @@ export default {
 
 <template>
   <div class="container">
-    <header>
+    <header v-if="isAuthenticated && !isLogin">
       <!-- Solo mostrar el nav si está autenticado y no estamos en la página de login -->
-      <nav v-if="isAuthenticated && !isLogin">
+      <nav>
         <RouterLink to="/index">Inicio</RouterLink>
         <RouterLink to="/patients">Usuarios</RouterLink>
         <RouterLink to="/calls">Llamadas</RouterLink>
