@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import axios from 'axios';
 import { useDataStore } from '../stores/data';
 import { useAuthStore } from '../stores/auth';
 import IndexView from '../components/IndexView.vue';
@@ -104,9 +105,11 @@ const router = createRouter({
 router.beforeEach((to, from, next) => {
   const store = useDataStore(); // Accedemos al store para verificar la autenticación
   const auth = useAuthStore(); // Accedemos al store para verificar la autenticación
-
+  auth.loadTokenFromStorage();
   // Si la ruta requiere autenticación y el usuario no está autenticado
   console.log(store);
+  axios.defaults.headers.common['Authorization'] = `Bearer ${auth.token}`;
+
   
   if (to.meta.requiresAuth && auth.token == "") {
     // Si no está autenticado, redirigir al login
