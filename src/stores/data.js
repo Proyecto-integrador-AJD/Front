@@ -1,17 +1,20 @@
-import { defineStore } from 'pinia'
-import axios from 'axios'
+import { defineStore } from 'pinia';
+import axios from 'axios';
 
-const API = import.meta.env.VITE_URL_API
-const token='13|JL9fQNAK6Tz9PFYLcGYBAkL5W6978ri8KzCtWu5z43b80763';
-
-axios.defaults.headers.common['Authorization']=`Bearer ${token}`;
+const API = import.meta.env.VITE_URL_API;
+const token = '5|OVTBcyyQBGs79Jbo9kgAVwooRFDimUkJg6niMiJ02b63d157';
+axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
 
 export const useDataStore = defineStore('data', {
   state: () => ({
     patients: [],
     zones: [],
-    calls:[],
-    alerts:[],
+    calls: [],
+    alerts: [],
+    prefixes: [],
+    languages: [],
+    users: [],
+    isAuthenticated: localStorage.getItem('isAuthenticated') === 'true',
   }),
 
   getters: {
@@ -23,22 +26,30 @@ export const useDataStore = defineStore('data', {
       const patient = state.patients.find(p => String(p.id) === String(id));
       return patient ? `${patient.name} ${patient.lastName}` : 'Desconocido';
     },
-
     getUserNameById: (state) => (id) => {
       const user = state.users.find(u => String(u.id) === String(id));
       return user ? `${user.name} ${user.lastName}` : 'Desconocido';
     },
-    
     getPatientPhoneById: (state) => (id) => {
       const patient = state.patients.find(p => String(p.id) === String(id));
       return patient ? patient.phone : 'No disponible';
     },
-
-    
-    
   },
 
   actions: {
+    // Acción de login
+    login() {
+      this.isAuthenticated = true;
+      localStorage.setItem('isAuthenticated', 'true');
+    },
+
+    // Acción de logout
+    logout() {
+      this.isAuthenticated = false;
+      localStorage.removeItem('isAuthenticated');
+    },
+
+  
     async loadInitialData() {
       try {
         const responseP = await axios.get(API + '/patients');
@@ -51,11 +62,18 @@ export const useDataStore = defineStore('data', {
         this.calls = responseC.data.data;
         const responseA = await axios.get(API + '/alerts');
         this.alerts = responseA.data.data;
+        const responsePr = await axios.get(API + '/prefix');
+        this.prefixes = responsePr.data.data;
+        const response = await axios.get(API + '/language');
+        this.languages = response.data.data;
       } catch (error) {
-        console.error("Error al cargar pacientes:", error);
+        console.error("Error al cargar los datos:", error);
       }
     },
-    async loadPatients() {calls
+
+
+    async loadPatients() {
+      
       try {
         const responseP = await axios.get(API + '/patients');
         //this.patients = responseP.data;
@@ -99,6 +117,25 @@ export const useDataStore = defineStore('data', {
         this.alerts = responseP.data.data;
       } catch (error) {
         console.error("Error al cargar alertas:", error);
+      }
+    },
+
+    async loadPrefixes() {
+      try {
+        const responsePr = await axios.get(API + '/prefix');
+        this.prefixes = responsePr.data.data;
+      } catch (error) {
+        console.error("Error al cargar prefijos:", error);
+      }
+    },
+
+    async loadLanguages() {
+      try {
+        const response = await axios.get(API + '/language');
+        debugger
+        this.languages = response.data.data;  
+      } catch (error) {
+        console.error('Error al cargar los idioma:', error);
       }
     },
   }

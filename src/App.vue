@@ -1,45 +1,46 @@
 <script>
-import { useDataStore } from './stores/data';
+import { useDataStore } from './stores/data'; 
 import { useRoute, useRouter } from 'vue-router'; 
-import { mapState, mapActions } from 'pinia';
-import { ref, watch } from 'vue'; 
+import { ref, computed, watch, onMounted } from 'vue';
 
 export default {
   name: 'App',
-  mounted(){
-    this.loadInitialData()
-  },
-  methods:{
-    ...mapActions(useDataStore, ['loadInitialData'])
-  },
-  computed: {
-    ...mapState(useDataStore, ['users']),
-    isAuthenticated() {
-      return localStorage.getItem('isAuthenticated') === 'true'; // Comprobar si el usuario está autenticado
-    }
-  },
   setup() {
-    const route = useRoute();
+    const store = useDataStore();
     const router = useRouter();
-    const isLogin = ref(false); 
+    const route = useRoute();
+    const isLogin = ref(false);
 
-    // Usamos un watch para observar los cambios en la ruta
+    // Verificamos si estamos en la página de login usando watch
     watch(route, (newRoute) => {
-      isLogin.value = newRoute.name === 'login'; // Verificamos si la ruta actual es la de login
+      isLogin.value = newRoute.name === 'login'; // Comprobamos si la ruta es la de login
     }, { immediate: true });
 
+    // Acción de logout
     const logout = () => {
-      localStorage.removeItem('isAuthenticated'); // Eliminar autenticación
-      localStorage.removeItem('username'); // Eliminar nombre de usuario
-      router.push('/'); // Redirigir a la página de login
-    }
+      store.logout(); // Llamamos a la acción logout del store
+      localStorage.removeItem('isAuthenticated');
+      localStorage.removeItem('username');
+      router.push('/'); // Redirigimos al login
+    };
+
+    // Cargar datos iniciales cuando se monta el componente
+    onMounted(() => {
+      store.loadInitialData();
+    });
+
+    // Computed para verificar si el usuario está autenticado
+    const isAuthenticated = computed(() => {
+      return store.isAuthenticated || localStorage.getItem('isAuthenticated') === 'true';
+    });
 
     return {
       isLogin,
       logout,
+      isAuthenticated
     };
   }
-}
+};
 </script>
 
 <template>
@@ -52,7 +53,6 @@ export default {
         <RouterLink to="/calls">Llamadas</RouterLink>
         <RouterLink to="/calendar">Calendario</RouterLink>
         <button @click="logout" class="btn btn-primary">Cerrar Sesión</button>
-
       </nav>
     </header>
 
@@ -61,6 +61,7 @@ export default {
     <footer></footer>
   </div>
 </template>
+
 
 
 

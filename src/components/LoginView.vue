@@ -1,54 +1,79 @@
-<template>
-  <div class="login-container">
-    <h2>Iniciar Sesión</h2>
-    <form @submit.prevent="handleLogin">
-      <input v-model="nom" type="text" placeholder="Nombre" required />
-      <input v-model="password" type="password" placeholder="Contraseña" required />
-      <button class="btn btn-primary" id="iniciarButton" type="submit" :disabled="loading">
-        {{ loading ? "Cargando..." : "Iniciar Sesión" }}
-      </button>
-    </form>
-    <p v-if="error" class="error">{{ error }}</p>
-
-    <button @click="goToRegister" id="registerButton" class="btn btn-primary">
-      Registrarse
-    </button>
-  </div>
-</template>
-
 <script>
-import { ref } from "vue";
-import { useRouter } from "vue-router";
+import { useDataStore } from '../stores/data';
+import { useRouter } from 'vue-router';
+import { ref } from 'vue';
 
 export default {
+  name: 'LoginView',
   setup() {
-    const nom = ref("");
-    const password = ref("");
-    const loading = ref(false);
-    const error = ref(null);
+    const store = useDataStore(); // Usamos el store de datos
     const router = useRouter();
 
-    const handleLogin = async () => {
-      loading.value = true;
-      error.value = null;
+    // Campos para el login
+    const username = ref('');
+    const password = ref('');
 
-      setTimeout(() => {
-        localStorage.setItem("token", "fake_token"); // Simulación de login
-        localStorage.setItem("isAuthenticated", "true"); // Guardar autenticación
-        localStorage.setItem("username", nom.value); // Guardar el nombre del usuario
-        router.push("/index"); // Redirigir al index
-        loading.value = false;
-      }, 1000);
+    // Acción para el login
+    const login = () => {
+      // Aquí podrías hacer una llamada a una API para verificar el login, 
+      // por ahora simula una autenticación exitosa
+      if (username.value && password.value) {
+        store.login(); // Iniciar sesión
+        localStorage.setItem('username', username.value); // Guardar el nombre de usuario
+        router.push('/index'); // Redirigir a la página principal
+      } else {
+        alert('Por favor, ingrese usuario y contraseña');
+      }
     };
 
+    // Acción para redirigir a la ruta de registro
     const goToRegister = () => {
-      router.push("/register");
+      router.push('/register'); // Redirigir a la página de registro
     };
 
-    return { nom, password, handleLogin, loading, error, goToRegister };
+    return {
+      username,
+      password,
+      login,
+      goToRegister,
+    };
   },
 };
 </script>
+
+<template>
+  <div class="login">
+    <h1>Iniciar sesión</h1>
+
+    <div>
+      <input
+        type="text"
+        id="username"
+        v-model="username"
+        placeholder="Nombre"
+      />
+    </div>
+
+    <div>
+      <input
+        type="password"
+        id="password"
+        v-model="password"
+        placeholder="Contraseña"
+      />
+    </div>
+
+    <button @click="login">Iniciar sesión</button>
+    
+    <p>
+      ¿No tienes una cuenta? <button @click="goToRegister">Regístrate</button>
+    </p>
+  </div>
+</template>
+
+
+
+
 
   
   <style>

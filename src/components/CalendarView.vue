@@ -103,8 +103,7 @@ export default {
               });
               recurringDate.setDate(recurringDate.getDate() + 1);
             }
-          //} else if (alert.recurrenceType === 'weekly') {
-          } else if (alert.recurrenceType === 'Setmanal') {
+          } else if (alert.recurrenceType === 'weekly') {
             for (let i = 0; i < 10; i++) {
               allEvents.push({
                 start: recurringDate.toISOString().split('T')[0],

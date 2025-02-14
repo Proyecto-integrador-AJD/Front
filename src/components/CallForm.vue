@@ -7,8 +7,9 @@
         <div class="form-group">
           <label>Paciente:</label>
           <Field as="select" v-model="call.patientId" name="paciente" class="form-control">
-          <option 
-          v-for="patient in patients" :key="patient.id" :value="patient.id">{{ patient.name }} {{ patient.lastName }}</option>
+            <option v-for="patient in patients" :key="patient.id" :value="patient.id">
+              {{ patient.name }} {{ patient.lastName }}
+            </option>
           </Field>
           <ErrorMessage class="error" name="paciente" />
         </div>
@@ -16,15 +17,26 @@
         <div class="form-group">
           <label>Teleoperador:</label>
           <Field as="select" v-model="call.userId" name="user" class="form-control">
-          <option 
-          v-for="user in users" :key="user.id" :value="user.id">{{ user.name }} {{ user.lastName }}</option>
+            <option v-for="user in users" :key="user.id" :value="user.id">
+              {{ user.name }} {{ user.lastName }}
+            </option>
           </Field>
           <ErrorMessage class="error" name="user" />
         </div>
 
+        <!-- Campo para Saliente/Entrante -->
+        <div class="form-group">
+          <label>Tipo de llamada (Entrante/Saliente):</label>
+          <Field as="select" v-model="call.incoming" name="incoming" class="form-control">
+            <option :value="true">Entrante</option>
+            <option :value="false">Saliente</option>
+          </Field>
+          <ErrorMessage class="error" name="incoming" />
+        </div>
+
         <div class="form-group">
           <label>Fecha:</label>
-          <Field v-model="call.date" name="fecha" type="datetime" class="form-control" />
+          <Field v-model="call.date" name="fecha" type="date" class="form-control" />
           <ErrorMessage class="error" name="fecha" />
         </div>
 
@@ -103,6 +115,7 @@ export default {
       call: {
         patientId: '',
         userId: '',
+        incoming: null, 
         date: '',
         type: '',
         subType: '',
@@ -117,11 +130,22 @@ export default {
     async handleSubmit() {
       try {
         if (this.id) {
-          await axios.put(`${API}/calls/${this.id}`, this.call);
+          await axios.put(`${API}/calls/${this.id}`, this.call).then(response=>{
+            console.log(response);
+            this.$router.push('/calls');
+
+          }).catch(error=>{
+            console.error('error' + error);
+          })
         } else {
-          await axios.post(`${API}/calls/`, this.call);
+          await axios.post(`${API}/calls/`, this.call).then(response=>{
+            console.log(response);
+            this.$router.push('/calls');
+
+          }).catch(error=>{
+            console.error('error' + error);
+          })
         }
-        this.$router.push('/calls');
       } catch (error) {
         alert('Error en la solicitud');
       }
@@ -132,6 +156,7 @@ export default {
   },
 };
 </script>
+
 
 <style scoped>
 

@@ -73,14 +73,56 @@
           <ErrorMessage class="error" name="sanitario" />
         </div>
 
+
         <div class="form-group">
-          <label>Teléfono:</label>
-          <div class="phone-group">
-            <Field v-model="patient.prefix" name="prefijo" type="text" class="form-control" placeholder="Prefijo" />
-            <Field v-model="patient.phone" name="telefono" type="text" class="form-control" placeholder="Teléfono" />
-          </div>
-          <ErrorMessage class="error" name="telefono" />
+          <label>Idioma:</label>
+          <MultiSelect
+            v-model="patient.language"
+            :options="languages"
+            optionLabel="spanishName"
+            optionValue="name"
+            display="chip"
+            placeholder="Selecciona los idiomas"
+            class="w-full md:w-20rem multi-select-container"
+          >
+            <template #optiongroup="slotProps">
+              <div class="flex align-items-center">
+                <img :alt="slotProps.option.spanishName" :src="slotProps.option.flag" class="mr-2" style="width: 20px" />
+                <div>{{ slotProps.option.spanishName }}</div>
+              </div>
+            </template>
+          </MultiSelect>
+          <ErrorMessage class="error" name="idioma" />
         </div>
+
+          <div class="form-group">
+            <label>Teléfono:</label>
+            <div class="phone-group form-group-multiple">
+              <div>
+                
+                <Field as="select" v-model="patient.prefix" name="prefijo" class="form-control">
+                  <option 
+                    v-for="prefix in prefixes" 
+                    :key="prefix.id" 
+                    :value="prefix.prefix">
+                    {{ prefix.country }}
+                  </option>
+                </Field>
+                <ErrorMessage class="error" name="prefijo" />
+              </div>
+
+              <div>
+                <Field 
+                  v-model="patient.phone" 
+                  name="telefono" 
+                  type="number" 
+                  class="form-control" 
+                  placeholder="Teléfono" />
+                <ErrorMessage class="error" name="telefono" />
+              </div>
+            </div>
+          </div>
+
 
         <div class="form-group">
           <label>Correo:</label>
@@ -121,7 +163,7 @@
               <ErrorMessage class="error" name="estado" />
             </div>
             <div>
-              <Field v-model="patient.housingSituationNumberOfRooms" name="habitacion" type="text" class="form-control" placeholder="Habitación" />
+              <Field v-model="patient.housingSituationNumberOfRooms" name="habitacion" type="number" class="form-control" placeholder="Habitación" />
               <ErrorMessage class="error" name="habitacion" />
             </div>
             <div>
@@ -172,7 +214,10 @@
               <button type="button" class="btn btn-primary" @click="addContact">
                 <i class="bi bi-plus-circle"></i>
               </button>
-              <button v-if="patient.emergencyContacts.length > 1" type="button" class="btn btn-primary" @click="delContact(index)">
+              <button v-if="patient.emergencyContacts && patient.emergencyContacts.length > 1" 
+                      type="button" 
+                      class="btn btn-primary" 
+                      @click="delContact(index)">
                 <i class="bi bi-dash-circle"></i>
               </button>
             </div>
@@ -192,7 +237,11 @@ import { useDataStore } from '../stores/data';
 import { mapState, mapActions } from 'pinia';
 import { Form, Field, ErrorMessage } from 'vee-validate';
 import * as yup from 'yup';
+import MultiSelect from 'primevue/multiselect';
 import axios from 'axios';
+
+
+
 
 const API = import.meta.env.VITE_URL_API;
 
@@ -201,17 +250,22 @@ export default {
     Form,
     Field,
     ErrorMessage,
+    MultiSelect,
   },
   props: ['id'],
   async mounted() {
     await this.loadZones();
+    await this.loadPrefixes();
+    await this.loadLanguages();
+    console.log('Idiomas cargados:', this.languages);
+
     if (this.id) {
       const response = await axios.get(API + '/patients/' + this.id);
       this.patient = response.data.data;
     }
   },
   computed: {
-    ...mapState(useDataStore, ['zones']),
+    ...mapState(useDataStore, ['zones', 'prefixes', 'languages']),
     title() {
       return this.id ? 'Editar paciente' : 'Añadir paciente';
     },
@@ -223,7 +277,7 @@ export default {
         apellido: yup.string().required('El apellido es obligatorio'),
         fecha: yup.date().required('La fecha de nacimiento es obligatoria'),
         calle: yup.string().required('La calle es obligatoria'),
-        numero: yup.string().required('El número es obligatorio'),
+        numero: yup.number().required('El número es obligatorio'),
         piso: yup.string().nullable(),
         puerta: yup.string().nullable(),
         codigoPostal: yup.string().required('El código postal es obligatorio'),
@@ -233,7 +287,7 @@ export default {
         dni: yup.string().required('El DNI es obligatorio'),
         sanitario: yup.string().required('El número sanitario es obligatorio'),
         prefijo: yup.string().required('El prefijo es obligatorio'),
-        telefono: yup.string().required('El teléfono es obligatorio'),
+        telefono: yup.number().required('El teléfono es obligatorio'),
         correo: yup.string().email('Correo inválido').required('El correo es obligatorio'),
         zona: yup.string().required('La zona es obligatoria'),
         situacionPersonal: yup.string().required('La situación personal familiar es obligatoria'),
@@ -254,6 +308,7 @@ export default {
           })
         ).min(1, 'Debe haber al menos un contacto de emergencia')
       }),
+      languageOptions:[],
       patient: {
         name: '',
         birthDate: '',
@@ -261,7 +316,8 @@ export default {
         addressNumber: '',
         addressFloor: '',
         addressDoor: '',
-        addressPostalCode: '',
+        language:[],
+      addressPostalCode: '',
         addressCity: '',
         addressProvince: '',
         addressCountry: '',
@@ -284,15 +340,29 @@ export default {
     };
   },
   methods: {
-    ...mapActions(useDataStore, ['loadZones']),
+    ...mapActions(useDataStore, ['loadZones', 'loadPrefixes', 'loadLanguages']),
     async handleSubmit() {
       try {
         if (this.id) {
-          await axios.put(`${API}/patients/${this.id}`, this.patient);
-        } else {
-          await axios.post(`${API}/patients/`, this.patient);
+          await axios.put(`${API}/patients/${this.id}`, this.patient).then(response=>{
+            console.log(response);
+            this.$router.push('/patients');
+             this.loadPatients();
+
+          }).catch(error=>{
+            console.error('error' + error);
+          })
+        } else {console.log(this.patient);
+          await axios.post(`${API}/patients/`, this.patient).then(response=>{
+            console.log(response);
+            this.$router.push('/patients');
+            console.log(response);
+             this.loadPatients();
+          }).catch(error=>{
+            console.error('error' + error);
+          })
+
         }
-        this.$router.push('/patients');
       } catch (error) {
         alert('Error en la solicitud');
       }
