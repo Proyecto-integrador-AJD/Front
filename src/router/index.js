@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import { useDataStore } from '../stores/data';
 import IndexView from '../components/IndexView.vue';
 import PatientsView from '../components/PatientsView.vue';
 import CalendarView from '../components/CalendarView.vue';
@@ -31,49 +32,68 @@ const router = createRouter({
       path: '/index',
       name: 'index',
       component: IndexView,
+      meta: { requiresAuth: true } 
       
     },
     {
         path: '/patients',
         name: 'patients',
         component: PatientsView,
+        meta: { requiresAuth: true } 
       },
       {
         path: '/calls',
         name: 'calls',
         component: CallsView,
+        meta: { requiresAuth: true } 
       },
     {
       path: '/calendar',
       name: 'calendar',
       component: CalendarView,
+      meta: { requiresAuth: true } 
     },
     {
       path: '/edit-patient/:id?',
       name: 'editPatient',
       component: PatientForm,
-      props: true
+      props: true,
+      meta: { requiresAuth: true } 
     },   
     {
       path: '/edit-call/:id?',
       name: 'editCall',
       component: CallForm,
-      props: true
+      props: true,
+      meta: { requiresAuth: true } 
     }, 
     {
       path: '/view-patient/:id',
       name: 'viewPatient',
       component: PatientShow,
-      props: true
+      props: true,
+      meta: { requiresAuth: true } 
     },
     {
       path: '/view-call/:id',
       name: 'viewCall',
       component: CallShow,
-      props: true
+      props: true,
+      meta: { requiresAuth: true } 
     },
     
   ],
 })
+router.beforeEach((to, from, next) => {
+  const store = useDataStore(); // Accedemos al store para verificar la autenticación
 
+  // Si la ruta requiere autenticación y el usuario no está autenticado
+  if (to.meta.requiresAuth && !store.isAuthenticated) {
+    // Si no está autenticado, redirigir al login
+    next({ name: 'login' }); 
+  } else {
+    // Si la ruta no requiere autenticación o el usuario está autenticado
+    next();
+  }
+});
 export default router
