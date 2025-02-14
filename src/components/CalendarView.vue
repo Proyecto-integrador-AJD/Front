@@ -59,7 +59,7 @@ export default {
     await dataStore.loadAlerts(); // Cargar alertas desde el store
 
     this.loadEvents(this.alerts);
-    console.log("Alertas cargadas:", this.alerts); // Verifica si las alertas se cargan correctamente
+    // console.log("Alertas cargadas:", this.alerts); // Verifica si las alertas se cargan correctamente
   },
 
   methods: {
@@ -103,8 +103,8 @@ export default {
               });
               recurringDate.setDate(recurringDate.getDate() + 1);
             }
-          //} else if (alert.recurrenceType === 'weekly') {
-          } else if (alert.recurrenceType === 'Setmanal') {
+          } else if (alert.recurrenceType === 'weekly') {
+          // } else if (alert.recurrenceType === 'Setmanal') {
             for (let i = 0; i < 10; i++) {
               allEvents.push({
                 start: recurringDate.toISOString().split('T')[0],

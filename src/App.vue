@@ -44,9 +44,9 @@ export default {
 
 <template>
   <div class="container">
-    <header>
+    <header v-if="isAuthenticated && !isLogin">
       <!-- Solo mostrar el nav si está autenticado y no estamos en la página de login -->
-      <nav v-if="isAuthenticated && !isLogin">
+      <nav>
         <RouterLink to="/index">Inicio</RouterLink>
         <RouterLink to="/patients">Usuarios</RouterLink>
         <RouterLink to="/calls">Llamadas</RouterLink>

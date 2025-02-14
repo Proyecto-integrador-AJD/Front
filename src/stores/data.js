@@ -2,7 +2,7 @@ import { defineStore } from 'pinia'
 import axios from 'axios'
 
 const API = import.meta.env.VITE_URL_API
-const token='13|JL9fQNAK6Tz9PFYLcGYBAkL5W6978ri8KzCtWu5z43b80763';
+const token='2|YGUOGkYFCZlXfjzLB53rOy6wtkBMf9RTpFSu5p4i21f3b461';
 
 axios.defaults.headers.common['Authorization']=`Bearer ${token}`;
 

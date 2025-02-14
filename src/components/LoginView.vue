@@ -2,22 +2,22 @@
   <div class="login-container">
     <h2>Iniciar Sesión</h2>
     <form @submit.prevent="handleLogin">
-      <input v-model="nom" type="text" placeholder="Nombre" required />
-      <input v-model="password" type="password" placeholder="Contraseña" required />
-      <button class="btn btn-primary" id="iniciarButton" type="submit" :disabled="loading">
+      <input v-model="nom" type="text" placeholder="Nombre" required class="input-login"/>
+      <input v-model="password" type="password" placeholder="Contraseña" required class="input-login"/><br>
+      <button class="btn btn-primary button-login" id="iniciarButton" type="submit" :disabled="loading">
         {{ loading ? "Cargando..." : "Iniciar Sesión" }}
       </button>
     </form>
     <p v-if="error" class="error">{{ error }}</p>
 
-    <button @click="goToRegister" id="registerButton" class="btn btn-primary">
+    <button @click="goToRegister" id="registerButton" class="btn btn-primary button-login">
       Registrarse
     </button>
   </div>
 </template>
 
 <script>
-import { ref } from "vue";
+import { ref, onMounted, onBeforeUnmount } from "vue";
 import { useRouter } from "vue-router";
 
 export default {
@@ -45,13 +45,21 @@ export default {
       router.push("/register");
     };
 
+    onMounted(() => {
+      document.body.classList.add("login-page");
+    });
+
+    onBeforeUnmount(() => {
+      document.body.classList.remove("login-page");
+    });
+
     return { nom, password, handleLogin, loading, error, goToRegister };
   },
 };
 </script>
 
   
-  <style>
+<style>
   .login-container {
     max-width: 300px;
     margin: auto;
@@ -67,7 +75,7 @@ export default {
     color: red;
     margin-top: 10px;
   }
-  </style>
+</style>
   
   
     
