@@ -4,10 +4,10 @@ import { useAuthStore } from './auth';
 const API = import.meta.env.VITE_URL_API;
 // const token = '86|K9Y4Vx2jXjywZqr9PmODTtzh48OoHsAi7NioDoxR09e0bfa0';
 // axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-const auth=useAuthStore;
 
 export const useDataStore = defineStore('data', {
   state: () => ({
+    auth: useAuthStore(),
     patients: [],
     zones: [],
     calls: [],
@@ -15,6 +15,7 @@ export const useDataStore = defineStore('data', {
     prefixes: [],
     languages: [],
     users: [],
+    user: [],
     relationships: [],
     isAuthenticated: localStorage.getItem('isAuthenticated') === 'true',
   }),
@@ -53,8 +54,8 @@ export const useDataStore = defineStore('data', {
 
   
     async loadInitialData() {
-      debugger
-      auth.loadTokenFromStorage();
+      
+      this.auth.loadTokenFromStorage();
       try {
         const responseP = await axios.get(API + '/patients');
         this.patients = responseP.data.data;
@@ -78,12 +79,20 @@ export const useDataStore = defineStore('data', {
     },
 
 
+    async loadUser() {
+      this.auth.loadTokenFromStorage();
+      try {
+        const responseU = await axios.get(API + '/user');
+        this.user = responseU.data.data;
+      } catch (error) {
+        console.error("Error al cargar usuario:", error);
+      }
+    },
+
     async loadPatients() {
-      auth.loadTokenFromStorage();
+      this.auth.loadTokenFromStorage();
       try {
         const responseP = await axios.get(API + '/patients');
-        //this.patients = responseP.data;
-        
         this.patients = responseP.data.data;
         
       } catch (error) {
@@ -91,7 +100,7 @@ export const useDataStore = defineStore('data', {
       }
     },
     async loadUsers() {
-      auth.loadTokenFromStorage();
+      this.auth.loadTokenFromStorage();
       try {
         const responseP = await axios.get(API + '/users');
         this.users = responseP.data.data;
@@ -101,7 +110,7 @@ export const useDataStore = defineStore('data', {
     },
 
     async loadZones() {
-      auth.loadTokenFromStorage();
+      this.auth.loadTokenFromStorage();
       try {
         const responseZ = await axios.get(API + '/zones');
         this.zones = responseZ.data.data;
@@ -111,7 +120,7 @@ export const useDataStore = defineStore('data', {
     },
 
     async loadCalls() {
-      auth.loadTokenFromStorage();
+      this.auth.loadTokenFromStorage();
       try {
         const responseP = await axios.get(API + '/calls');
         this.calls = responseP.data.data;
@@ -121,7 +130,7 @@ export const useDataStore = defineStore('data', {
     },
 
     async loadAlerts() {
-      auth.loadTokenFromStorage();
+      this.auth.loadTokenFromStorage();
       try {
         const responseP = await axios.get(API + '/alerts');
         this.alerts = responseP.data.data;
@@ -131,7 +140,7 @@ export const useDataStore = defineStore('data', {
     },
 
     async loadPrefixes() {
-      auth.loadTokenFromStorage();
+      this.auth.loadTokenFromStorage();
       try {
         const responsePr = await axios.get(API + '/prefix');
         this.prefixes = responsePr.data.data;
@@ -141,7 +150,7 @@ export const useDataStore = defineStore('data', {
     },
 
     async loadLanguages() {
-      auth.loadTokenFromStorage();
+      this.auth.loadTokenFromStorage();
       try {
         const response = await axios.get(API + '/language');
         
@@ -152,7 +161,7 @@ export const useDataStore = defineStore('data', {
     },
 
     async loadRelationships() {
-      auth.loadTokenFromStorage();
+      this.auth.loadTokenFromStorage();
       try {
         const responseR = await axios.get(API + '/relationship');
         this.relationships = responseR.data.data;  

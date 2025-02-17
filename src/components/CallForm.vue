@@ -6,24 +6,22 @@
 
         <div class="form-group">
           <label>Paciente:</label>
-          <Field as="select" v-model="call.patientId" name="paciente" class="form-control">
+          <Field as="select" v-model="call.patientId" name="patientId" class="form-control">
             <option v-for="patient in patients" :key="patient.id" :value="patient.id">
               {{ patient.name }} {{ patient.lastName }}
             </option>
           </Field>
-          <ErrorMessage class="error" name="paciente" />
+          <ErrorMessage class="error" name="patientId" />
         </div>
 
-        <!-- Teleoperador -->
         <div class="form-group">
-            <label>Teleoperador:</label>
-            <div class="form-control-plaintext">
-              {{ loggedUser }}
-            </div>
+          <label>Teleoperador:</label>
+          <div class="form-control-plaintext">
+            {{ loggedUser }}
           </div>
+        </div>
 
-<!-- Tipo de llamada -->
-<div class="form-group">
+        <div class="form-group">
           <label>Tipo de llamada (Entrante/Saliente):</label>
           <Field as="select" v-model="call.incoming" name="incoming" class="form-control">
             <option :value="true">Entrante</option>
@@ -32,12 +30,9 @@
           <ErrorMessage class="error" name="incoming" />
         </div>
 
-        <!-- Resto del formulario... -->
-
-        <!-- Información de alerta (si es Saliente) -->
         <div v-if="call.incoming === false" class="form-group">
           <label>Información de Alerta:</label>
-          <div class="form-group-multiple">
+          <!-- <div class="form-group-multiple">
             <div>
               <Field v-model="call.alertId" name="alertId" type="number" class="form-control" placeholder="ID de Alerta" />
               <ErrorMessage class="error" name="alertId" />
@@ -51,39 +46,45 @@
               <ErrorMessage class="error" name="alertSubType" />
             </div>
             <div>
-              <Field v-model="call.alertDescription" name="alertDescription" class="form-control" placeholder="Descripción de Alerta" />
+              <Field v-model="call.alertDescription" name="alertDescription" class="form-control"
+                placeholder="Descripción de Alerta" />
               <ErrorMessage class="error" name="alertDescription" />
             </div>
             <div>
-              <Field v-model="call.alertStartDate" name="alertStartDate" type="datetime-local" class="form-control" placeholder="Fecha de Inicio de Alerta" />
+              <Field v-model="call.alertStartDate" name="alertStartDate" type="datetime-local" class="form-control"
+                placeholder="Fecha de Inicio de Alerta" />
               <ErrorMessage class="error" name="alertStartDate" />
             </div>
-            <div>
-              <Field v-model="call.alertRecurrenceType" name="alertRecurrenceType" class="form-control" placeholder="Tipo de Recurrencia"/>
-              <ErrorMessage class="error" name="alertRecurrenceType" />
-            </div>
-            <div>
-              <Field v-model="call.alertRecurrenceCount" name="alertRecurrenceCount" type="number" class="form-control" placeholder="Cantidad de Recurrencia" />
-              <ErrorMessage class="error" name="alertRecurrenceCount" />
-            </div>
-          </div>
+          </div> -->
         </div>
 
-        <!-- Duración -->
+        <!-- Luego se tiene que poner a un select, cunado se termine la api en el back -->
+        <div class="form-group">
+          <label>Tipo:</label>
+          <Field v-model="call.type" name="tipo" type="text" class="form-control" />
+          <ErrorMessage class="error" name="tipo" />
+        </div>
+        
+
+        <!-- Luego se tiene que poner a un select, cunado se termine la api en el back -->
+        <div class="form-group">
+          <label>SubTipo:</label>
+          <Field v-model="call.subType" name="subtipo" type="text" class="form-control" />
+          <ErrorMessage class="error" name="subtipo" />
+        </div>
+
         <div class="form-group">
           <label>Duración:</label>
-          <Field v-model="call.duration" name="duracion" type="number" class="form-control" />
-          <ErrorMessage class="error" name="duracion" />
+          <Field v-model="call.duration" name="duration" type="number" class="form-control" />
+          <ErrorMessage class="error" name="duration" />
         </div>
 
-        <!-- Descripción -->
         <div class="form-group">
           <label>Descripción:</label>
-          <Field v-model="call.description" name="descripcion" class="form-control" />
-          <ErrorMessage class="error" name="descripcion" />
+          <Field v-model="call.description" name="description" class="form-control" />
+          <ErrorMessage class="error" name="description" />
         </div>
 
-        <!-- Botones -->
         <div class="form-buttons">
           <button type="submit" class="btn btn-primary">Guardar</button>
           <button type="button" class="btn btn-danger" @click="handleCancel">Cancelar</button>
@@ -113,6 +114,7 @@ export default {
     await this.loadPatients();
     await this.loadAlerts();
     await this.loadUsers();
+    await this.loadUser();
     const user = JSON.parse(localStorage.getItem("user"));
     this.loggedUser = user ? user.name : "Usuario";
     if (this.id) {
@@ -121,7 +123,7 @@ export default {
     }
   },
   computed: {
-    ...mapState(useDataStore, ['patients', 'users', 'alerts']),
+    ...mapState(useDataStore, ['patients', 'users', 'alerts', 'user']),
     title() {
       return this.id ? 'Editar llamada' : 'Añadir llamada';
     },
@@ -131,59 +133,53 @@ export default {
       mySchema: yup.object({
         patientId: yup.string().required('Paciente es obligatorio'),
         incoming: yup.boolean().required('Tipo de llamada es obligatorio'),
-        date: yup.date().required('Fecha es obligatoria'),
-        type: yup.string().required('Tipo de llamada es obligatorio'),
-        subType: yup.string().required('Subtipo es obligatorio'),
+        tipo: yup.string().required('Tipo de llamada es obligatorio'),
+        subtipo: yup.string().required('SubTipo de llamada es obligatorio'),
         duration: yup.number().positive('Duración debe ser positiva').required('Duración es obligatoria'),
         description: yup.string().required('Descripción es obligatoria'),
       }),
       call: {
         patientId: '',
         userId: '',
-        incoming: null,  // Esto es lo que se debe actualizar
+        incoming: false, // Se inicializa en false en lugar de null
         date: '',
         type: '',
         subType: '',
+        duration: '',
+        description: '',
         alertId: '',
         alertType: '',
         alertSubType: '',
         alertDescription: '',
         alertStartDate: '',
-        alertRecurrenceType: '',
-        alertRecurrenceCount: null,
-        duration: '',
-        description: '',
-        isRecurring: null,
-        recurrenceType: '',
-        recurrence: null,
       },
       loggedUser: "Usuario",
     };
   },
   methods: {
-    ...mapActions(useDataStore, ['loadPatients','loadUsers', 'loadAlerts']),
+    ...mapActions(useDataStore, ['loadPatients', 'loadUsers', 'loadUser', 'loadAlerts']),
     async handleSubmit() {
-      debugger
+      console.log('Formulario enviado:', this.call);
+      const call = { 
+        patientId: this.call.patientId,
+        userId: this.user.id,
+        incoming: this.call.incoming,
+        type: this.call.type,
+        subType: this.call.subType,
+        date: new Date().toISOString().slice(0, 19).replace('T', ' '),
+        duration: this.call.duration,
+        description: this.call.description,
+        alertId: (this.call.alertId === '') ? null : this.call.alertId,
+      };
       try {
         if (this.id) {
-          await axios.put(`${API}/calls/${this.id}`, this.call).then(response=>{
-            console.log(response);
-            this.$router.push('/calls');
-
-          }).catch(error=>{
-            console.error('error' + error);
-          })
+          await axios.put(`${API}/calls/${this.id}`, call);
         } else {
-          debugger
-          await axios.post(`${API}/calls/`, this.call).then(response=>{
-            console.log(response);
-            this.$router.push('/calls');
-
-          }).catch(error=>{
-            console.error('error' + error);
-          })
+          await axios.post(`${API}/calls/`, call);
         }
+        this.$router.push('/calls');
       } catch (error) {
+        console.error('Error en la solicitud:', error);
         alert('Error en la solicitud');
       }
     },
@@ -196,7 +192,6 @@ export default {
 
 
 <style scoped>
-
 .row {
   /* width: 100vw;  */
   height: 100vh;
@@ -222,7 +217,7 @@ Form {
 
 .form-group label {
   font-weight: bold;
-  text-align: left; 
+  text-align: left;
   margin-bottom: 5px;
   font-size: 0.95rem;
 }
@@ -230,7 +225,7 @@ Form {
 
 .form-control {
   width: 100%;
-  max-width: 250px; 
+  max-width: 250px;
   padding: 6px 10px;
   font-size: 0.9rem;
   border: 1px solid #ccc;
@@ -267,6 +262,3 @@ button {
   font-size: 0.8rem;
 }
 </style>
-
-
-  
