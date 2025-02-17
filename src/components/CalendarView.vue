@@ -45,7 +45,7 @@ import ModalComponent from './Modal.vue';
 
 export default {
   computed: {
-    ...mapState(useDataStore, ['getPatientNameById', 'getPatientPhoneById', 'alerts', 'patients']),
+    ...mapState(useDataStore, ['getPatientFullNameById', 'loa', 'getPatientById', 'alerts', 'patients']),
   },
   components: {
     FullCalendar,
@@ -101,8 +101,9 @@ export default {
         let startDate = new Date(alert.startDate);
         let eventColor = alert.isRecurring ? 'dodgerblue' : 'limegreen';
 
-        let patient = this.getPatientNameById(alert.patientId); // Usa el getter para obtener el nombre
-        let patientPhone = this.getPatientPhoneById(alert.patientId); // Usa el getter para obtener el teléfono
+        let patientFullName = this.getPatientFullNameById(alert.patientId); // Usa el getter para obtener el nombre
+        let patient = this.getPatientById(alert.patientId); // Usa el getter para obtener el teléfono
+        let patientPhone = patient.prefix + ' ' + patient.phone; // Usa el getter para obtener el teléfono
 
         if (alert.isRecurring) {
           let recurringDate = new Date(startDate);
@@ -111,7 +112,7 @@ export default {
               allEvents.push({
                 start: recurringDate.toISOString().split('T')[0],
                 alertId: alert.id,
-                title: `${patient} ${alert.subType}`,
+                title: `${patientFullName} ${alert.subType}`,
                 description: alert.description,
                 phone: patientPhone,
                 color: eventColor,
@@ -122,7 +123,7 @@ export default {
             for (let i = 0; i < 10; i++) {
               allEvents.push({
                 start: recurringDate.toISOString().split('T')[0],
-                title: `${patient} ${alert.subType}`,
+                title: `${patientFullName} ${alert.subType}`,
                 description: alert.description,
                 phone: patientPhone,
                 color: eventColor,
@@ -133,7 +134,7 @@ export default {
         } else {
           allEvents.push({
             start: startDate.toISOString().split('T')[0],
-            title: `${patient} ${alert.subType}`,
+            title: `${patientFullName} ${alert.subType}`,
             description: alert.description,
             phone: patientPhone,
             color: eventColor,

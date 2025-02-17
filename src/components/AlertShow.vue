@@ -4,7 +4,7 @@
       <div class="card">
         <div class="card-body">
           <p><strong>Fecha de inicio:</strong> {{ formatDate(alert.startDate) }}</p> 
-          <p><strong>Paciente:</strong> {{ getPatientNameById(alert.patientId) }}</p>
+          <p><strong>Paciente:</strong> {{ getPatientFullNameById(alert.patientId) }}</p>
           <p><strong>Tipo de Llamada:</strong> {{ alert.type }}</p>
           <p><strong>Subtipo:</strong> {{ alert.subType }}</p>
           <p><strong>Duración:</strong> {{ alert.duration }} minutos</p>
@@ -34,7 +34,7 @@
   
   export default {
     computed: {
-      ...mapState(useDataStore, ['getPatientNameById', 'getUserNameById']),
+      ...mapState(useDataStore, ['getPatientFullNameById', 'getUserFullNameById']),
     },
     props: ['id'],
     data() {

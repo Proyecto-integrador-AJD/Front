@@ -21,21 +21,26 @@ export const useDataStore = defineStore('data', {
   }),
 
   getters: {
-    getZoneNameById: (state) => (id) => {
-      const zone = state.zones.find(z => String(z.id) === String(id));
-      return zone ? zone.name : 'Desconocido';
+    getZoneById: (state) => (id) => {
+      return state.zones.find(z => String(z.id) === String(id));
     },
-    getPatientNameById: (state) => (id) => {
+    getPatientFullNameById: (state) => (id) => {
       const patient = state.patients.find(p => String(p.id) === String(id));
       return patient ? `${patient.name} ${patient.lastName}` : 'Desconocido';
     },
-    getUserNameById: (state) => (id) => {
+    getPatientById: (state) => (id) => {
+      return state.patients.find(p => String(p.id) === String(id));
+    },
+    getUserFullNameById: (state) => (id) => {
       const user = state.users.find(u => String(u.id) === String(id));
       return user ? `${user.name} ${user.lastName}` : 'Desconocido';
     },
     getPatientPhoneById: (state) => (id) => {
       const patient = state.patients.find(p => String(p.id) === String(id));
       return patient ? patient.phone : 'No disponible';
+    },
+    getPatientById: (state) => (id) => {
+      return state.patients.find(p => String(p.id) === String(id));
     },
   },
 

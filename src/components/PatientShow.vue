@@ -12,7 +12,7 @@
           <p><strong>Numero sanitario:</strong> {{ patient.healthCardNumber }}</p>
           <p><strong>Teléfono:</strong> {{ patient.prefix }} {{ patient.phone }}</p>
           <p><strong>Correo:</strong> {{ patient.email }}</p>
-          <p><strong>Zona:</strong> {{ getZoneNameById(patient.zoneId) }}</p>
+          <p><strong>Zona:</strong> {{ getZoneById(patient.zoneId).name }}</p>
           <p><strong>Situación Personal:</strong> {{ patient.situationPersonalFamily }}</p>
           <p><strong>Situación Sanitaria:</strong> {{ patient.healthSituation }}</p>
           <p><strong>Situación de Alojamiento:</strong> {{ patient.housingSituationType }}, {{ patient.housingSituationStatus }},
@@ -41,7 +41,7 @@
   
   export default {
     computed: {
-    ...mapState(useDataStore, ['getZoneNameById']),
+    ...mapState(useDataStore, ['getZoneById']),
   },
     props: ['id'],
     data() {

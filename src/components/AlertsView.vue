@@ -15,7 +15,7 @@
       </thead>
       <tbody>
         <tr v-for="alert in alerts" :key="alert.id">
-          <td>{{ getPatientNameById(alert.patientId) }}</td>
+          <td>{{ getPatientFullNameById(alert.patientId) }}</td>
           <td>{{ alert.type }}</td>
           <td>{{ formatDate(alert.startDate) }}</td>
           <td>
@@ -48,7 +48,7 @@ export default {
     ...mapState(useDataStore, [
       'alerts',
       'patients',
-      'getPatientNameById',
+      'getPatientFullNameById',
     ]),
   },
   methods: {

@@ -98,7 +98,7 @@ export default {
         let startDate = new Date(alert.startDate);
         let eventColor = alert.isRecurring ? "dodgerblue" : "limegreen";
 
-        let patient = dataStore.getPatientNameById(alert.patientId);
+        let patient = dataStore.getPatientFullNameById(alert.patientId);
         let patientPhone = dataStore.getPatientPhoneById(alert.patientId);
 
         const eventData = {
