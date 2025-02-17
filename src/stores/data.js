@@ -15,6 +15,7 @@ export const useDataStore = defineStore('data', {
     prefixes: [],
     languages: [],
     users: [],
+    user: [],
     relationships: [],
     isAuthenticated: localStorage.getItem('isAuthenticated') === 'true',
   }),
@@ -53,7 +54,7 @@ export const useDataStore = defineStore('data', {
 
   
     async loadInitialData() {
-      debugger
+      
       this.auth.loadTokenFromStorage();
       try {
         const responseP = await axios.get(API + '/patients');
@@ -78,12 +79,20 @@ export const useDataStore = defineStore('data', {
     },
 
 
+    async loadUser() {
+      this.auth.loadTokenFromStorage();
+      try {
+        const responseU = await axios.get(API + '/user');
+        this.user = responseU.data.data;
+      } catch (error) {
+        console.error("Error al cargar usuario:", error);
+      }
+    },
+
     async loadPatients() {
       this.auth.loadTokenFromStorage();
       try {
         const responseP = await axios.get(API + '/patients');
-        //this.patients = responseP.data;
-        
         this.patients = responseP.data.data;
         
       } catch (error) {
