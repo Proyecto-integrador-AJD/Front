@@ -14,18 +14,16 @@
           <ErrorMessage class="error" name="paciente" />
         </div>
 
+        <!-- Teleoperador -->
         <div class="form-group">
-          <label>Teleoperador:</label>
-          <Field as="select" v-model="call.userId" name="user" class="form-control">
-            <option v-for="user in users" :key="user.id" :value="user.id">
-              {{ user.name }} {{ user.lastName }}
-            </option>
-          </Field>
-          <ErrorMessage class="error" name="user" />
-        </div>
+            <label>Teleoperador:</label>
+            <div class="form-control-plaintext">
+              {{ loggedUser }}
+            </div>
+          </div>
 
-        <!-- Campo para Saliente/Entrante -->
-        <div class="form-group">
+<!-- Tipo de llamada -->
+<div class="form-group">
           <label>Tipo de llamada (Entrante/Saliente):</label>
           <Field as="select" v-model="call.incoming" name="incoming" class="form-control">
             <option :value="true">Entrante</option>
@@ -34,42 +32,58 @@
           <ErrorMessage class="error" name="incoming" />
         </div>
 
-        <div class="form-group">
-          <label>Fecha:</label>
-          <Field v-model="call.date" name="fecha" type="date" class="form-control" />
-          <ErrorMessage class="error" name="fecha" />
+        <!-- Resto del formulario... -->
+
+        <!-- Información de alerta (si es Saliente) -->
+        <div v-if="call.incoming === false" class="form-group">
+          <label>Información de Alerta:</label>
+          <div class="form-group-multiple">
+            <div>
+              <Field v-model="call.alertId" name="alertId" type="number" class="form-control" placeholder="ID de Alerta" />
+              <ErrorMessage class="error" name="alertId" />
+            </div>
+            <div>
+              <Field v-model="call.alertType" name="alertType" class="form-control" placeholder="Tipo de Alerta" />
+              <ErrorMessage class="error" name="alertType" />
+            </div>
+            <div>
+              <Field v-model="call.alertSubType" name="alertSubType" class="form-control" placeholder="Subtipo de Alerta" />
+              <ErrorMessage class="error" name="alertSubType" />
+            </div>
+            <div>
+              <Field v-model="call.alertDescription" name="alertDescription" class="form-control" placeholder="Descripción de Alerta" />
+              <ErrorMessage class="error" name="alertDescription" />
+            </div>
+            <div>
+              <Field v-model="call.alertStartDate" name="alertStartDate" type="datetime-local" class="form-control" placeholder="Fecha de Inicio de Alerta" />
+              <ErrorMessage class="error" name="alertStartDate" />
+            </div>
+            <div>
+              <Field v-model="call.alertRecurrenceType" name="alertRecurrenceType" class="form-control" placeholder="Tipo de Recurrencia"/>
+              <ErrorMessage class="error" name="alertRecurrenceType" />
+            </div>
+            <div>
+              <Field v-model="call.alertRecurrenceCount" name="alertRecurrenceCount" type="number" class="form-control" placeholder="Cantidad de Recurrencia" />
+              <ErrorMessage class="error" name="alertRecurrenceCount" />
+            </div>
+          </div>
         </div>
 
-        <div class="form-group">
-          <label>Tipo de llamada:</label>
-          <Field v-model="call.type" name="tipo" class="form-control" />
-          <ErrorMessage class="error" name="tipo" />
-        </div>
-
-        <div class="form-group">
-          <label>Subtipo:</label>
-          <Field v-model="call.subType" name="subtipo" class="form-control" />
-          <ErrorMessage class="error" name="subtipo" />
-        </div>
-
-        <div class="form-group">
-          <label>Alerta:</label>
-          <Field v-model="call.alertId" name="alertId" type="number" class="form-control" />
-          <ErrorMessage class="error" name="alertId" />
-        </div>
-
+        <!-- Duración -->
         <div class="form-group">
           <label>Duración:</label>
           <Field v-model="call.duration" name="duracion" type="number" class="form-control" />
           <ErrorMessage class="error" name="duracion" />
         </div>
 
+        <!-- Descripción -->
         <div class="form-group">
           <label>Descripción:</label>
           <Field v-model="call.description" name="descripcion" class="form-control" />
           <ErrorMessage class="error" name="descripcion" />
         </div>
 
+        <!-- Botones -->
         <div class="form-buttons">
           <button type="submit" class="btn btn-primary">Guardar</button>
           <button type="button" class="btn btn-danger" @click="handleCancel">Cancelar</button>
@@ -97,37 +111,59 @@ export default {
   props: ['id'],
   async mounted() {
     await this.loadPatients();
+    await this.loadAlerts();
     await this.loadUsers();
+    const user = JSON.parse(localStorage.getItem("user"));
+    this.loggedUser = user ? user.name : "Usuario";
     if (this.id) {
       const response = await axios.get(`${API}/calls/${this.id}`);
       this.call = response.data;
     }
   },
   computed: {
-    ...mapState(useDataStore, ['patients', 'users']),
+    ...mapState(useDataStore, ['patients', 'users', 'alerts']),
     title() {
       return this.id ? 'Editar llamada' : 'Añadir llamada';
     },
   },
   data() {
     return {
-      mySchema: yup.object({}),
+      mySchema: yup.object({
+        patientId: yup.string().required('Paciente es obligatorio'),
+        incoming: yup.boolean().required('Tipo de llamada es obligatorio'),
+        date: yup.date().required('Fecha es obligatoria'),
+        type: yup.string().required('Tipo de llamada es obligatorio'),
+        subType: yup.string().required('Subtipo es obligatorio'),
+        duration: yup.number().positive('Duración debe ser positiva').required('Duración es obligatoria'),
+        description: yup.string().required('Descripción es obligatoria'),
+      }),
       call: {
         patientId: '',
         userId: '',
-        incoming: null, 
+        incoming: null,  // Esto es lo que se debe actualizar
         date: '',
         type: '',
         subType: '',
         alertId: '',
+        alertType: '',
+        alertSubType: '',
+        alertDescription: '',
+        alertStartDate: '',
+        alertRecurrenceType: '',
+        alertRecurrenceCount: null,
         duration: '',
         description: '',
+        isRecurring: null,
+        recurrenceType: '',
+        recurrence: null,
       },
+      loggedUser: "Usuario",
     };
   },
   methods: {
-    ...mapActions(useDataStore, ['loadPatients','loadUsers']),
+    ...mapActions(useDataStore, ['loadPatients','loadUsers', 'loadAlerts']),
     async handleSubmit() {
+      debugger
       try {
         if (this.id) {
           await axios.put(`${API}/calls/${this.id}`, this.call).then(response=>{
@@ -138,6 +174,7 @@ export default {
             console.error('error' + error);
           })
         } else {
+          debugger
           await axios.post(`${API}/calls/`, this.call).then(response=>{
             console.log(response);
             this.$router.push('/calls');
@@ -230,5 +267,6 @@ button {
   font-size: 0.8rem;
 }
 </style>
+
 
   

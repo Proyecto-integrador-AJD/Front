@@ -24,18 +24,29 @@ export default {
       try {
         const API = import.meta.env.VITE_URL_API;
         const response = await axios.post(`${API}/login`, {
-          email: this.username,
+          username: this.username,
           password: this.password,
         });
 
         if (response.status === 200) {
           const token = response.data.data.token;
-          console.log(token);
-          
+
           authStore.setToken(token); // Llama a la función para guardar el token
           console.log(authStore.token);
-          this.$router.push("/index"); // Redirige al usuario después de iniciar sesión
+          axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+
+          const responseP = await axios.get(API + '/user');
+          const user = responseP.data.data;
+           // Buscamos al usuario logueado por su email
+          console.log(token);
+          
+          if(user){
+            localStorage.setItem("user", JSON.stringify(user));
+            this.$router.push("/index"); // Redirige al usuario después de iniciar sesión
+        }else{
+          alert("Usuario no encontrado");
         }
+      }
 
         
       } catch (error) {

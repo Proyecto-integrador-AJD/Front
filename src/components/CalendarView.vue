@@ -9,17 +9,24 @@
       <p>Fecha seleccionada: {{ selectedDate }}</p>
       <ul>
         <li v-for="(event, index) in selectedEvents" :key="index" :style="{ color: event.color }">
-          {{ event.title }} - {{ event.description }}<br />
+          <!-- Enlace al formulario de edición al hacer clic en el nombre del paciente -->
+          <router-link 
+            :to="{ name: 'editCall', query: { alertId: event.alertId, patientId: event.patientId } }"
+            style="color: inherit; text-decoration: underline;" 
+          >
+            {{ event.title }}
+          </router-link>
+          - {{ event.description }}<br />
           Teléfono: {{ event.phone }}
         </li>
       </ul>
-      <!-- Nuevo botón arriba del botón de cerrar -->
       <button class="btn btn-primary" @click="$router.push('/edit-call')">
         Hacer llamada
       </button>
     </ModalComponent>
   </div>
 </template>
+
 
 <script>
 import FullCalendar from '@fullcalendar/vue3';
@@ -56,7 +63,8 @@ export default {
 
   async mounted() {
     const dataStore = useDataStore(); // Asegúrate de cargar el store
-    await dataStore.loadAlerts(); // Cargar alertas desde el store
+    await Promise.all([dataStore.loadAlerts(), dataStore.loadPatients()]);
+  
 
     this.loadEvents(this.alerts);
     console.log("Alertas cargadas:", this.alerts); // Verifica si las alertas se cargan correctamente

@@ -1,8 +1,6 @@
 <template>
   <div class="container">
-    <h2 class="welcome-text">{{ username }}</h2>
-    <h2 class="welcome-text">Bienvenido,</h2>
-    
+    <h2 class="welcome-text">¡Bienvenido, {{ username }}!</h2>
 
     <!-- Calendario -->
     <div class="calendar-wrapper">
@@ -18,13 +16,18 @@
           <li v-for="(event, index) in selectedEvent?.events" :key="index" :style="{ color: event.color }">
             <!-- Checkbox con su estado independiente -->
             <input type="checkbox" v-model="event.checked" @change="saveCheckboxState(event, selectedEvent.start)" />
-            {{ event.title }} - {{ event.description }}<br />
+            
+            <!-- Enlace al formulario de edición al hacer clic en el nombre del paciente -->
+            <router-link 
+              :to="{ name: 'editCall', query: { alertId: event.alertId, patientId: event.patientId } }"
+            >
+              {{ event.title }} - {{ event.description }}
+            </router-link><br />
+
             Teléfono: {{ event.phone }}
           </li>
         </ul>
-        <button class="btn btn-primary" @click="$router.push('/edit-call')">
-          Hacer llamada
-        </button>
+       
       </template>
     </ModalComponent>
   </div>
@@ -37,12 +40,15 @@ import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import { useDataStore } from "@/stores/data";
 import ModalComponent from "@/components/Modal.vue";
+import { useRouter } from 'vue-router';
 
 export default {
   components: { FullCalendar, ModalComponent },
   setup() {
-    const username = ref("");
+    const username = ref("");  // Variable para almacenar el nombre del usuario
     const dataStore = useDataStore();
+    const router = useRouter();
+
     const calendarOptions = ref({
       plugins: [timeGridPlugin, interactionPlugin],
       initialView: "timeGridDay",
@@ -58,6 +64,8 @@ export default {
             description: event.description,
             phone: event.phone,
             color: event.color,
+            alertId: event.alertId,
+            patientId: event.patientId,
             checked: ref(loadCheckboxState(event.title, info.event.startStr)),
           })),
         };
@@ -105,6 +113,8 @@ export default {
               description: alert.description,
               phone: patientPhone,
               color: eventColor,
+              alertId: alert.id,  // Incluyendo el alertId y patientId en los eventos
+              patientId: alert.patientId,
               checked: ref(loadCheckboxState(`${patient} - ${alert.subType}`, startDate.toISOString())),
             }],
           },
@@ -127,8 +137,22 @@ export default {
       calendarOptions.value.events = allEvents;
     };
 
+    const goToEditCallPage = () => {
+      if (selectedEvent.value && selectedEvent.value.events.length > 0) {
+        const firstEvent = selectedEvent.value.events[0];  // Tomar el primer evento
+        router.push({ 
+          name: "editCall", 
+          query: { 
+            alertId: firstEvent.alertId, 
+            patientId: firstEvent.patientId
+          } 
+        });
+      }
+    };
+
     onMounted(async () => {
-      username.value = localStorage.getItem("username") || "Usuario";
+      const user = JSON.parse(localStorage.getItem("user"));
+      username.value = user ? user.name : "Usuario";  // Obtiene el nombre del usuario
       await dataStore.loadAlerts();
       await dataStore.loadPatients();
       loadEvents();
@@ -138,10 +162,11 @@ export default {
       loadEvents();
     });
 
-    return { username, calendarOptions, isModalOpen, selectedEvent, saveCheckboxState };
+    return { username, calendarOptions, isModalOpen, selectedEvent, saveCheckboxState, goToEditCallPage };
   },
 };
 </script>
+
 
 <style scoped>
 body, html {
