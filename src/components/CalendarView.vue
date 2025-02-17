@@ -10,17 +10,23 @@
       <ul>
         <li v-for="(event, index) in selectedEvents" :key="index" :style="{ color: event.color }">
           <!-- Enlace al formulario de edición al hacer clic en el nombre del paciente -->
-          <router-link 
-            :to="{ name: 'editCall', query: { alertId: event.alertId, patientId: event.patientId } }"
+          <!-- <router-link 
+            :to="{ name: 'addCall', query: { alertId: event.alertId } }"
             style="color: inherit; text-decoration: underline;" 
-          >
+          > -->
+          <button class="btn btn-primary" @click="handleAddCall(event.alertId)">
             {{ event.title }}
-          </router-link>
+          </button>
+            <!-- {{ event.title }}
+          </router-link> -->
           - {{ event.description }}<br />
           Teléfono: {{ event.phone }}
         </li>
       </ul>
-      <button class="btn btn-primary" @click="$router.push('/edit-call')">
+      <button class="btn btn-primary" @click="$router.push({
+        name: 'addCall',
+        // query: { event.alertId }
+      });">
         Hacer llamada
       </button>
     </ModalComponent>
@@ -104,6 +110,7 @@ export default {
             for (let i = 0; i < 50; i++) {
               allEvents.push({
                 start: recurringDate.toISOString().split('T')[0],
+                alertId: alert.id,
                 title: `${patient} ${alert.subType}`,
                 description: alert.description,
                 phone: patientPhone,
@@ -140,6 +147,13 @@ export default {
     // Método para manejar la acción del nuevo botón
     handleNewButtonClick() {
       console.log("¡Nuevo botón clickeado!");
+    },
+    handleAddCall(alertId) {
+      debugger
+      this.$router.push({
+        name: 'addCall',
+        query: { alertId: alertId }
+      });
     },
   },
 };

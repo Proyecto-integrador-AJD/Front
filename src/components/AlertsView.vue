@@ -63,7 +63,6 @@ export default {
       // Redirige a la pantalla de llamada con los parámetros alertId y patientId
       this.$router.push({
         name: 'addCall',
-        // params: { alertId },
         query: { alertId }
       });
     },
