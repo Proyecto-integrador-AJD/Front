@@ -16,14 +16,14 @@
 
         <!-- Teleoperador -->
         <div class="form-group">
-            <label>Teleoperador:</label>
-            <div class="form-control-plaintext">
-              {{ loggedUser }}
-            </div>
+          <label>Teleoperador:</label>
+          <div class="form-control-plaintext">
+            {{ loggedUser }}
           </div>
+        </div>
 
-<!-- Tipo de llamada -->
-<div class="form-group">
+        <!-- Tipo de llamada -->
+        <div class="form-group">
           <label>Tipo de llamada (Entrante/Saliente):</label>
           <Field as="select" v-model="call.incoming" name="incoming" class="form-control">
             <option :value="true">Entrante</option>
@@ -39,7 +39,8 @@
           <label>Información de Alerta:</label>
           <div class="form-group-multiple">
             <div>
-              <Field v-model="call.alertId" name="alertId" type="number" class="form-control" placeholder="ID de Alerta" />
+              <Field v-model="call.alertId" name="alertId" type="number" class="form-control"
+                placeholder="ID de Alerta" />
               <ErrorMessage class="error" name="alertId" />
             </div>
             <div>
@@ -47,23 +48,28 @@
               <ErrorMessage class="error" name="alertType" />
             </div>
             <div>
-              <Field v-model="call.alertSubType" name="alertSubType" class="form-control" placeholder="Subtipo de Alerta" />
+              <Field v-model="call.alertSubType" name="alertSubType" class="form-control"
+                placeholder="Subtipo de Alerta" />
               <ErrorMessage class="error" name="alertSubType" />
             </div>
             <div>
-              <Field v-model="call.alertDescription" name="alertDescription" class="form-control" placeholder="Descripción de Alerta" />
+              <Field v-model="call.alertDescription" name="alertDescription" class="form-control"
+                placeholder="Descripción de Alerta" />
               <ErrorMessage class="error" name="alertDescription" />
             </div>
             <div>
-              <Field v-model="call.alertStartDate" name="alertStartDate" type="datetime-local" class="form-control" placeholder="Fecha de Inicio de Alerta" />
+              <Field v-model="call.alertStartDate" name="alertStartDate" type="datetime-local" class="form-control"
+                placeholder="Fecha de Inicio de Alerta" />
               <ErrorMessage class="error" name="alertStartDate" />
             </div>
             <div>
-              <Field v-model="call.alertRecurrenceType" name="alertRecurrenceType" class="form-control" placeholder="Tipo de Recurrencia"/>
+              <Field v-model="call.alertRecurrenceType" name="alertRecurrenceType" class="form-control"
+                placeholder="Tipo de Recurrencia" />
               <ErrorMessage class="error" name="alertRecurrenceType" />
             </div>
             <div>
-              <Field v-model="call.alertRecurrenceCount" name="alertRecurrenceCount" type="number" class="form-control" placeholder="Cantidad de Recurrencia" />
+              <Field v-model="call.alertRecurrenceCount" name="alertRecurrenceCount" type="number" class="form-control"
+                placeholder="Cantidad de Recurrencia" />
               <ErrorMessage class="error" name="alertRecurrenceCount" />
             </div>
           </div>
@@ -161,25 +167,25 @@ export default {
     };
   },
   methods: {
-    ...mapActions(useDataStore, ['loadPatients','loadUsers', 'loadAlerts']),
+    ...mapActions(useDataStore, ['loadPatients', 'loadUsers', 'loadAlerts']),
     async handleSubmit() {
       debugger
       try {
         if (this.id) {
-          await axios.put(`${API}/calls/${this.id}`, this.call).then(response=>{
+          await axios.put(`${API}/calls/${this.id}`, this.call).then(response => {
             console.log(response);
             this.$router.push('/calls');
 
-          }).catch(error=>{
+          }).catch(error => {
             console.error('error' + error);
           })
         } else {
           debugger
-          await axios.post(`${API}/calls/`, this.call).then(response=>{
+          await axios.post(`${API}/calls/`, this.call).then(response => {
             console.log(response);
             this.$router.push('/calls');
 
-          }).catch(error=>{
+          }).catch(error => {
             console.error('error' + error);
           })
         }
@@ -196,7 +202,6 @@ export default {
 
 
 <style scoped>
-
 .row {
   /* width: 100vw;  */
   height: 100vh;
@@ -222,7 +227,7 @@ Form {
 
 .form-group label {
   font-weight: bold;
-  text-align: left; 
+  text-align: left;
   margin-bottom: 5px;
   font-size: 0.95rem;
 }
@@ -230,7 +235,7 @@ Form {
 
 .form-control {
   width: 100%;
-  max-width: 250px; 
+  max-width: 250px;
   padding: 6px 10px;
   font-size: 0.9rem;
   border: 1px solid #ccc;
@@ -267,6 +272,3 @@ button {
   font-size: 0.8rem;
 }
 </style>
-
-
-  
