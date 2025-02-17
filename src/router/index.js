@@ -71,6 +71,13 @@ const router = createRouter({
       meta: { requiresAuth: true } 
     },   
     {
+      path: '/add-call',
+      name: 'addCall',
+      component: CallForm,
+      props: true,
+      meta: { requiresAuth: true } 
+    }, 
+    {
       path: '/edit-call/:id?',
       name: 'editCall',
       component: CallForm,

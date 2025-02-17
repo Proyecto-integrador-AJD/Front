@@ -1,7 +1,7 @@
 <template>
   <div class="row">
     <div class="mb-3">
-      <button class="btn btn-primary" @click="$router.push('/edit-call')">
+      <button class="btn btn-primary" @click="$router.push('/add-call')">
         Hacer llamada
       </button>
       <button class="btn btn-primary" @click="toggleFilter">

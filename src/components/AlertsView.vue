@@ -24,7 +24,7 @@
             </button>
             <button 
               class="btn btn-primary ml-2" 
-              @click="handleCallClick(alert.id, alert.patientId)"
+              @click="handleCallClick(alert.id)"
             >
               Hacer llamada
             </button>
@@ -59,11 +59,12 @@ export default {
       return date.toLocaleString();
     },
     
-    handleCallClick(alertId, patientId) {
+    handleCallClick(alertId) {
       // Redirige a la pantalla de llamada con los parámetros alertId y patientId
       this.$router.push({
-        name: 'editCall',
-        query: { alertId, patientId }
+        name: 'addCall',
+        // params: { alertId },
+        query: { alertId }
       });
     },
   },
