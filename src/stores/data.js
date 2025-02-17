@@ -9,6 +9,7 @@ export const useDataStore = defineStore('data', {
   state: () => ({
     auth: useAuthStore(),
     patients: [],
+    patientsCurrent: [],
     zones: [],
     calls: [],
     alerts: [],
@@ -72,7 +73,7 @@ export const useDataStore = defineStore('data', {
         const response = await axios.get(API + '/language');
         this.languages = response.data.data;
         const responseR = await axios.get(API + '/relationship');
-        this.relationships = response.data.data;
+        this.relationships = responseR.data.data;
       } catch (error) {
         console.error("Error al cargar los datos:", error);
       }
@@ -94,6 +95,16 @@ export const useDataStore = defineStore('data', {
       try {
         const responseP = await axios.get(API + '/patients');
         this.patients = responseP.data.data;
+        
+      } catch (error) {
+        console.error("Error al cargar pacientes:", error);
+      }
+    },
+    async loadPatientsCurrentUser() {
+      this.auth.loadTokenFromStorage();
+      try {
+        const responseP = await axios.get(API + '/patients/current');
+        this.patientsCurrent = responseP.data.data;
         
       } catch (error) {
         console.error("Error al cargar pacientes:", error);

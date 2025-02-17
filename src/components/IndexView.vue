@@ -1,10 +1,21 @@
 <template>
   <div class="container">
-    <h2 class="welcome-text">¡Bienvenido, {{ username }}!</h2>
+    <div class="welcome-div">
+      <h2 class="welcome-text">¡Bienvenido, {{ username }}!</h2>
+    </div>
 
     <!-- Calendario -->
     <div class="calendar-wrapper">
       <FullCalendar :options="calendarOptions" />
+    </div>
+
+    <div class="patients-wrapper">
+      <h2>Pacientes asignados</h2>
+      <div v-for="patient in patientsCurrent" :key="patient.id">
+          <button class="btn btn-info" @click="$router.push('/view-patient/' + patient.id)">
+            {{ patient.name }} {{ patient.lastName }}
+          </button>
+      </div>
     </div>
 
     <!-- Modal -->
@@ -30,6 +41,7 @@
        
       </template>
     </ModalComponent>
+    
   </div>
 </template>
 
@@ -41,6 +53,7 @@ import interactionPlugin from "@fullcalendar/interaction";
 import { useDataStore } from "@/stores/data";
 import ModalComponent from "@/components/Modal.vue";
 import { useRouter } from 'vue-router';
+import { storeToRefs } from "pinia";
 
 export default {
   components: { FullCalendar, ModalComponent },
@@ -48,6 +61,8 @@ export default {
     const username = ref("");  // Variable para almacenar el nombre del usuario
     const dataStore = useDataStore();
     const router = useRouter();
+
+    const { patientsCurrent } = storeToRefs(dataStore);
 
     const calendarOptions = ref({
       plugins: [timeGridPlugin, interactionPlugin],
@@ -155,6 +170,7 @@ export default {
       username.value = user ? user.name : "Usuario";  // Obtiene el nombre del usuario
       await dataStore.loadAlerts();
       await dataStore.loadPatients();
+      await dataStore.loadPatientsCurrentUser();
       loadEvents();
     });
 
@@ -162,7 +178,7 @@ export default {
       loadEvents();
     });
 
-    return { username, calendarOptions, isModalOpen, selectedEvent, saveCheckboxState, goToEditCallPage };
+    return { username, patientsCurrent, calendarOptions, isModalOpen, selectedEvent, saveCheckboxState, goToEditCallPage };
   },
 };
 </script>
@@ -178,15 +194,14 @@ body, html {
 
 
 .container {
-  .container {
-  display: flex;
-  flex-direction: column;
-  overflow: visible; /* Permite que el contenido que se mueve hacia arriba sea visible */
-  height: 100%;
-}
+    .container {
+    display: flex;
+    flex-direction: column;
+    overflow: visible; /* Permite que el contenido que se mueve hacia arriba sea visible */
+    height: 100%;
+  }
 
 }
-
 
 .calendar-wrapper {
   width: 50%;
@@ -195,21 +210,38 @@ body, html {
   padding: 20px;
   border-radius: 10px;
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+  border: 2px solid #66c2ff;
   position: fixed;
   top: 100px;
   right: 0;
 }
+
+.patients-wrapper {
+  width: 45%;
+  height: 40%;
+  background: #fcfcfc;
+  padding: 20px;
+  border-radius: 10px;
+  border: 2px solid #66c2ff;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+  position: fixed;
+  bottom: 57px;
+  left: 0;
+}
+
 .welcome-text {
   font-size: 80px;
   font-weight: bold;
   color: #333;
   padding: 0;
-  margin-top:-200px;
-  margin-left: -600px;
+  margin-top:-350px;
+  margin-left: -150px;
   display: block; /* Asegura que estén en líneas separadas */
 }
 
-
+.welcome-div {
+  width: 50%;
+}
 
 .fc {
   height: 80vh;
