@@ -1,10 +1,21 @@
 <template>
   <div class="container">
-    <h2 class="welcome-text">¡Bienvenido, {{ username }}!</h2>
+    <div class="welcome-div">
+      <h2 class="welcome-text">¡Bienvenido, {{ username }}!</h2>
+    </div>
 
     <!-- Calendario -->
     <div class="calendar-wrapper">
       <FullCalendar :options="calendarOptions" />
+    </div>
+
+    <div class="patients-wrapper">
+      <h2>Pacientes asignados</h2>
+      <div v-for="patient in patientsCurrent" :key="patient.id">
+          <button class="btn btn-info" @click="$router.push('/view-patient/' + patient.id)">
+            {{ patient.name }} {{ patient.lastName }}
+          </button>
+      </div>
     </div>
 
     <!-- Modal -->
@@ -30,6 +41,7 @@
        
       </template>
     </ModalComponent>
+    
   </div>
 </template>
 
@@ -41,6 +53,7 @@ import interactionPlugin from "@fullcalendar/interaction";
 import { useDataStore } from "@/stores/data";
 import ModalComponent from "@/components/Modal.vue";
 import { useRouter } from 'vue-router';
+import { storeToRefs } from "pinia";
 
 export default {
   components: { FullCalendar, ModalComponent },
@@ -48,11 +61,7 @@ export default {
     const username = ref("");  // Variable para almacenar el nombre del usuario
     const dataStore = useDataStore();
     const router = useRouter();
-
-
-    // plugins: [timeGridPlugin],
-    //   initialView: 'timeGridDay', // O 'timeGridWeek'
-    //   scrollTime: new Date().getHours() + ':00:00', // Hace scroll a la hora actual
+    const { patientsCurrent, alertsCurrent } = storeToRefs(dataStore);
 
     const calendarOptions = ref({
       plugins: [timeGridPlugin, interactionPlugin],
@@ -93,14 +102,14 @@ export default {
     };
 
     const loadEvents = () => {
-      if (!dataStore.alerts || !Array.isArray(dataStore.alerts) || dataStore.alerts.length === 0) {
+      if (!alertsCurrent.value || !Array.isArray(alertsCurrent.value) || alertsCurrent.value.length === 0) {
         console.warn("No hay alertas disponibles aún.");
         return;
       }
 
       let allEvents = [];
 
-      dataStore.alerts.forEach((alert) => {
+      alertsCurrent.value.forEach((alert) => {
         let startDate = new Date(alert.startDate);
         let eventColor = alert.isRecurring ? "dodgerblue" : "limegreen";
 
@@ -119,7 +128,7 @@ export default {
               description: alert.description,
               phone: patientPhone,
               color: eventColor,
-              alertId: alert.id,  // Incluyendo el alertId y patientId en los eventos
+              alertId: alert.id,
               patientId: alert.patientId,
               checked: ref(loadCheckboxState(`${patient} - ${alert.subType}`, startDate.toISOString())),
             }],
@@ -143,24 +152,12 @@ export default {
       calendarOptions.value.events = allEvents;
     };
 
-    const goToEditCallPage = () => {
-      if (selectedEvent.value && selectedEvent.value.events.length > 0) {
-        const firstEvent = selectedEvent.value.events[0];  // Tomar el primer evento
-        router.push({ 
-          name: "editCall", 
-          query: { 
-            alertId: firstEvent.alertId, 
-            patientId: firstEvent.patientId
-          } 
-        });
-      }
-    };
-
     onMounted(async () => {
       const user = JSON.parse(localStorage.getItem("user"));
-      username.value = user ? user.name : "Usuario";  // Obtiene el nombre del usuario
-      await dataStore.loadAlerts();
+      username.value = user ? user.name : "Usuario";
+      await dataStore.loadAlertsCurrent();
       await dataStore.loadPatients();
+      await dataStore.loadPatientsCurrentUser();
       loadEvents();
       calendarOptions.value.scrollTime = new Date().getHours() + ':00:00';
       debugger
@@ -170,7 +167,7 @@ export default {
       loadEvents();
     });
 
-    return { username, calendarOptions, isModalOpen, selectedEvent, saveCheckboxState, goToEditCallPage };
+    return { username, patientsCurrent, calendarOptions, isModalOpen, selectedEvent, saveCheckboxState };
   },
 };
 </script>
@@ -186,15 +183,14 @@ body, html {
 
 
 .container {
-  .container {
-  display: flex;
-  flex-direction: column;
-  overflow: visible; /* Permite que el contenido que se mueve hacia arriba sea visible */
-  height: 100%;
-}
+    .container {
+    display: flex;
+    flex-direction: column;
+    overflow: visible; /* Permite que el contenido que se mueve hacia arriba sea visible */
+    height: 100%;
+  }
 
 }
-
 
 .calendar-wrapper {
   width: 50%;
@@ -203,21 +199,38 @@ body, html {
   padding: 20px;
   border-radius: 10px;
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+  border: 2px solid #66c2ff;
   position: fixed;
   top: 100px;
   right: 0;
 }
+
+.patients-wrapper {
+  width: 45%;
+  height: 40%;
+  background: #fcfcfc;
+  padding: 20px;
+  border-radius: 10px;
+  border: 2px solid #66c2ff;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+  position: fixed;
+  bottom: 57px;
+  left: 0;
+}
+
 .welcome-text {
   font-size: 80px;
   font-weight: bold;
   color: #333;
   padding: 0;
-  margin-top:-200px;
-  margin-left: -600px;
+  margin-top:-350px;
+  margin-left: -150px;
   display: block; /* Asegura que estén en líneas separadas */
 }
 
-
+.welcome-div {
+  width: 50%;
+}
 
 .fc {
   height: 80vh;
@@ -266,14 +279,8 @@ button {
 button:hover {
   background-color: #0056b3;
 }
+
+.no-alerts {
+  opacity: 0.4;
+}
 </style>
-
-
-
-
-
-
-
-
-
-

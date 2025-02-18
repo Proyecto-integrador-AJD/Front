@@ -22,7 +22,7 @@
             <button class="btn btn-info" @click="$router.push('/view-alert/' + alert.id)">
               Ver
             </button>
-            <button 
+            <button v-if="isToday(alert.startDate)"
               class="btn btn-primary ml-2" 
               @click="handleCallClick(alert.id)"
             >
@@ -49,16 +49,27 @@ export default {
       'alerts',
       'patients',
       'getPatientFullNameById',
+      'alertsCurrent',
     ]),
   },
   methods: {
-    ...mapActions(useDataStore, ['loadCalls', 'loadPatients', 'loadAlerts']),
+    ...mapActions(useDataStore, ['loadCalls', 'loadPatients', 'loadAlerts', 'loadAlertsCurrent']),
     
     formatDate(dateString) {
       const date = new Date(dateString);
       return date.toLocaleString();
     },
-    
+    isToday(dateString) {
+      const date = new Date(dateString);
+      const today = new Date();
+
+      return (
+        date.getDate() === today.getDate() &&
+        date.getMonth() === today.getMonth() &&
+        date.getFullYear() === today.getFullYear()
+      );
+    },
+
     handleCallClick(alertId) {
       // Redirige a la pantalla de llamada con los parámetros alertId y patientId
       this.$router.push({
@@ -71,6 +82,7 @@ export default {
     this.loadAlerts();
     this.loadPatients();
     this.loadCalls();
+    this.loadAlertsCurrent();
   },
 };
 </script>

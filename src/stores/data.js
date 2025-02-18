@@ -9,10 +9,12 @@ export const useDataStore = defineStore('data', {
   state: () => ({
     auth: useAuthStore(),
     patients: [],
+    patientsCurrent: [],
     zones: [],
     calls: [],
     alerts: [],
     alertTypes: [],
+    alertsCurrent: [],
     prefixes: [],
     languages: [],
     users: [],
@@ -118,6 +120,15 @@ export const useDataStore = defineStore('data', {
       try {
         const responseP = await axios.get(API + '/patients/' + id);
         return responseP.data.data;
+        } catch (error) {
+          console.error("Error al cargar pacientes:", error);
+      }
+    },
+    async loadPatientsCurrentUser() {
+      this.auth.loadTokenFromStorage();
+      try {
+        const responseP = await axios.get(API + '/patients/current');
+        this.patientsCurrent = responseP.data.data;
       } catch (error) {
         console.error("Error al cargar pacientes:", error);
       }
@@ -176,6 +187,15 @@ export const useDataStore = defineStore('data', {
       try {
         const responseP = await axios.get(API + '/alerts/' + id);
         return responseP.data.data;
+      } catch (error) {
+        console.error("Error al cargar alertas:", error);
+      }
+    },
+    async loadAlertsCurrent() {
+      this.auth.loadTokenFromStorage();
+      try {
+        const responseP = await axios.get(API + '/alerts/user');
+        this.alertsCurrent = responseP.data.data;
       } catch (error) {
         console.error("Error al cargar alertas:", error);
       }
