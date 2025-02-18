@@ -26,7 +26,7 @@
   
   export default {
     computed: {
-    ...mapState(useDataStore, ['getPatientFullNameById', 'findCallById', 'getUserFullNameById']),
+    ...mapState(useDataStore, ['getPatientFullNameById', 'loadCall', 'getUserFullNameById']),
   },
     props: ['id'],
     data() {
@@ -34,8 +34,8 @@
         call: {},
       };
     },
-    mounted() {
-      this.call = this.findCallById(this.id);
+    async mounted() {
+      this.call = await this.loadCall(this.id);
     },
   };
   </script>

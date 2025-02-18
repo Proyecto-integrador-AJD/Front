@@ -34,7 +34,7 @@
   
   export default {
     computed: {
-      ...mapState(useDataStore, ['getPatientFullNameById', 'getUserFullNameById', 'findAlertById']),
+      ...mapState(useDataStore, ['getPatientFullNameById', 'getUserFullNameById', 'loadAlert']),
     },
     props: ['id'],
     data() {
@@ -49,7 +49,7 @@
       },
     },
     async mounted() {
-      this.alert = this.findAlertById(this.id);
+      this.alert = await this.loadAlert(this.id);
       console.log("Alerta cargada:", this.alert);
       
     },

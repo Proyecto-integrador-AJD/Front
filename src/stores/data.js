@@ -12,6 +12,7 @@ export const useDataStore = defineStore('data', {
     zones: [],
     calls: [],
     alerts: [],
+    alertTypes: [],
     prefixes: [],
     languages: [],
     users: [],
@@ -36,11 +37,9 @@ export const useDataStore = defineStore('data', {
       return user ? `${user.name} ${user.lastName}` : 'Desconocido';
     },
     getPatientPhoneById: (state) => (id) => {
+      
       const patient = state.patients.find(p => String(p.id) === String(id));
       return patient ? patient.phone : 'No disponible';
-    },
-    getPatientById: (state) => (id) => {
-      return state.patients.find(p => String(p.id) === String(id));
     },
   },
 
@@ -86,6 +85,8 @@ export const useDataStore = defineStore('data', {
         // const responseR = await axios.get(API + '/relationship');
         // this.relationships = response.data.data;
         await this.loadRelationships();
+        await this.loadUser();
+        await this.loadAlertTypes();
       } catch (error) {
         console.error("Error al cargar los datos:", error);
       }
@@ -108,6 +109,15 @@ export const useDataStore = defineStore('data', {
         const responseP = await axios.get(API + '/patients');
         this.patients = responseP.data.data;
         
+      } catch (error) {
+        console.error("Error al cargar pacientes:", error);
+      }
+    },
+    async loadPatient(id) {
+      this.auth.loadTokenFromStorage();
+      try {
+        const responseP = await axios.get(API + '/patients/' + id);
+        return responseP.data.data;
       } catch (error) {
         console.error("Error al cargar pacientes:", error);
       }
@@ -141,12 +151,31 @@ export const useDataStore = defineStore('data', {
         console.error("Error al cargar llamadas:", error);
       }
     },
+    async loadCall(id) {
+      this.auth.loadTokenFromStorage();
+      try {
+        const responseP = await axios.get(API + '/calls/' + id);
+        return responseP.data.data;
+      } catch (error) {
+        console.error("Error al cargar llamadas:", error);
+      }
+    },
 
     async loadAlerts() {
       this.auth.loadTokenFromStorage();
       try {
         const responseP = await axios.get(API + '/alerts');
         this.alerts = responseP.data.data;
+      } catch (error) {
+        console.error("Error al cargar alertas:", error);
+      }
+    },
+
+    async loadAlert(id) {
+      this.auth.loadTokenFromStorage();
+      try {
+        const responseP = await axios.get(API + '/alerts/' + id);
+        return responseP.data.data;
       } catch (error) {
         console.error("Error al cargar alertas:", error);
       }
@@ -167,7 +196,7 @@ export const useDataStore = defineStore('data', {
       try {
         const response = await axios.get(API + '/language');
         
-        this.languages = response.data.data;  
+        this.languages = response.data.data;
       } catch (error) {
         console.error('Error al cargar los idioma:', error);
       }
@@ -182,9 +211,19 @@ export const useDataStore = defineStore('data', {
         console.error('Error al cargar las relaciones:', error);
       }
     },
-    findAlertById(id) {
-      return this.alerts.find(a => a.id == id);
+
+    async loadAlertTypes() {
+      this.auth.loadTokenFromStorage();
+      try {
+        let response = await axios.get(API + '/alert/types');
+        this.alertTypes = response.data.data;
+      } catch (error) {
+        console.error('Error al cargar los tipos de alerta:', error);
+      }
     },
+
+
+    
     async loadAlertById(id) {
       this.auth.loadTokenFromStorage();
       try {
@@ -194,9 +233,7 @@ export const useDataStore = defineStore('data', {
         console.error('Error al cargar alerta:', error);
       }
     },
-    findCallById(id) {
-      return this.calls.find(a => a.id == id);
-    },
+    
     async loadCallById(id) {
       this.auth.loadTokenFromStorage();
       try {
@@ -205,9 +242,6 @@ export const useDataStore = defineStore('data', {
       } catch (error) {
         console.error('Error al cargar Calls:', error);
       }
-    },
-    findPatientById(id) {
-      return this.patients.find(a => a.id == id);
     },
     async loadPatientById(id) {
       this.auth.loadTokenFromStorage();

@@ -29,7 +29,6 @@ export default {
 
     // Cargar datos iniciales cuando se monta el componente
     onMounted(async () => {
-      
       await store.loadInitialData();
     });
 

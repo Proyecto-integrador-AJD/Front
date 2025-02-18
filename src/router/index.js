@@ -15,6 +15,8 @@ import RegisterView from '../components/RegisterView.vue';
 import AlertsView from '../components/AlertsView.vue';
 import AlertShow from '../components/AlertShow.vue';
 
+import test from '../components/test.vue';
+
 
 
 
@@ -26,6 +28,11 @@ const router = createRouter({
       path: '/',
       name: 'login',
       component: LoginView,
+    },
+    {
+      path: '/test',
+      name: 'test',
+      component: test,
     },
     {
       path: '/register',
