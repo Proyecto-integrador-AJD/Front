@@ -39,7 +39,7 @@ import ModalComponent from './Modal.vue';
 
 export default {
   computed: {
-    ...mapState(useDataStore, ['getPatientNameById', 'getPatientPhoneById', 'alerts', 'patients']),
+    ...mapState(useDataStore, ['getPatientNameById', 'getPatientPhoneById', 'alertsCurrent', 'patients']),
   },
   components: {
     FullCalendar,
@@ -52,51 +52,38 @@ export default {
         initialView: 'dayGridMonth',
         events: [],
         dateClick: (info) => this.handleDateClick(info),
-        dayMaxEvents: 3, // Limitar a 3 eventos por día
-        eventLimitText: "Ver más eventos", // Texto personalizado para el enlace de más eventos
+        dayMaxEvents: 3,
+        eventLimitText: "Ver más eventos",
       },
-      isModalOpen: false, // Controla si el modal está abierto o cerrado
-      selectedDate: null, // Guarda la fecha clickeada
-      selectedEvents: [], // Guarda los eventos de la fecha clickeada
+      isModalOpen: false,
+      selectedDate: null,
+      selectedEvents: [],
     };
   },
 
   async mounted() {
-    const dataStore = useDataStore(); // Asegúrate de cargar el store
-    await Promise.all([dataStore.loadAlerts(), dataStore.loadPatients()]);
-  
-
-    this.loadEvents(this.alerts);
-    console.log("Alertas cargadas:", this.alerts); // Verifica si las alertas se cargan correctamente
+    const dataStore = useDataStore();
+    await dataStore.loadAlertsCurrent();
+    this.loadEvents(this.alertsCurrent);
+    console.log("Alertas actuales cargadas:", this.alertsCurrent);
   },
 
   methods: {
     handleDateClick(info) {
       console.log("Clic en fecha:", info.dateStr);
       this.selectedDate = info.dateStr;
-
-      this.selectedEvents = this.calendarOptions.events.filter(
-        event => event.start === info.dateStr
-      );
-
-      if (this.selectedEvents.length > 0) {
-        console.log("Abriendo modal con eventos:", this.selectedEvents);
-        this.isModalOpen = true;
-      } else {
-        console.log("No hay eventos para esta fecha.");
-      }
+      this.selectedEvents = this.calendarOptions.events.filter(event => event.start === info.dateStr);
+      this.isModalOpen = this.selectedEvents.length > 0;
     },
+
     loadEvents(alerts) {
       if (!alerts.length) return;
-
       let allEvents = [];
-
       alerts.forEach((alert) => {
         let startDate = new Date(alert.startDate);
         let eventColor = alert.isRecurring ? 'dodgerblue' : 'limegreen';
-
-        let patient = this.getPatientNameById(alert.patientId); // Usa el getter para obtener el nombre
-        let patientPhone = this.getPatientPhoneById(alert.patientId); // Usa el getter para obtener el teléfono
+        let patient = this.getPatientNameById(alert.patientId);
+        let patientPhone = this.getPatientPhoneById(alert.patientId);
 
         if (alert.isRecurring) {
           let recurringDate = new Date(startDate);
@@ -133,17 +120,12 @@ export default {
           });
         }
       });
-
       this.calendarOptions.events = allEvents;
-    },
-
-    // Método para manejar la acción del nuevo botón
-    handleNewButtonClick() {
-      console.log("¡Nuevo botón clickeado!");
     },
   },
 };
 </script>
+
 
 
 <style scoped>

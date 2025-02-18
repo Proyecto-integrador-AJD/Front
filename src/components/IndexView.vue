@@ -62,7 +62,7 @@ export default {
     const dataStore = useDataStore();
     const router = useRouter();
 
-    const { patientsCurrent } = storeToRefs(dataStore);
+    const { patientsCurrent, alertsCurrent } = storeToRefs(dataStore);
 
     const calendarOptions = ref({
       plugins: [timeGridPlugin, interactionPlugin],
@@ -102,14 +102,14 @@ export default {
     };
 
     const loadEvents = () => {
-      if (!dataStore.alerts || !Array.isArray(dataStore.alerts) || dataStore.alerts.length === 0) {
+      if (!alertsCurrent.value || !Array.isArray(alertsCurrent.value) || alertsCurrent.value.length === 0) {
         console.warn("No hay alertas disponibles aún.");
         return;
       }
 
       let allEvents = [];
 
-      dataStore.alerts.forEach((alert) => {
+      alertsCurrent.value.forEach((alert) => {
         let startDate = new Date(alert.startDate);
         let eventColor = alert.isRecurring ? "dodgerblue" : "limegreen";
 
@@ -128,7 +128,7 @@ export default {
               description: alert.description,
               phone: patientPhone,
               color: eventColor,
-              alertId: alert.id,  // Incluyendo el alertId y patientId en los eventos
+              alertId: alert.id,
               patientId: alert.patientId,
               checked: ref(loadCheckboxState(`${patient} - ${alert.subType}`, startDate.toISOString())),
             }],
@@ -152,23 +152,10 @@ export default {
       calendarOptions.value.events = allEvents;
     };
 
-    const goToEditCallPage = () => {
-      if (selectedEvent.value && selectedEvent.value.events.length > 0) {
-        const firstEvent = selectedEvent.value.events[0];  // Tomar el primer evento
-        router.push({ 
-          name: "editCall", 
-          query: { 
-            alertId: firstEvent.alertId, 
-            patientId: firstEvent.patientId
-          } 
-        });
-      }
-    };
-
     onMounted(async () => {
       const user = JSON.parse(localStorage.getItem("user"));
-      username.value = user ? user.name : "Usuario";  // Obtiene el nombre del usuario
-      await dataStore.loadAlerts();
+      username.value = user ? user.name : "Usuario";
+      await dataStore.loadAlertsCurrent();
       await dataStore.loadPatients();
       await dataStore.loadPatientsCurrentUser();
       loadEvents();
@@ -178,7 +165,7 @@ export default {
       loadEvents();
     });
 
-    return { username, patientsCurrent, calendarOptions, isModalOpen, selectedEvent, saveCheckboxState, goToEditCallPage };
+    return { username, patientsCurrent, calendarOptions, isModalOpen, selectedEvent, saveCheckboxState };
   },
 };
 </script>
@@ -290,14 +277,8 @@ button {
 button:hover {
   background-color: #0056b3;
 }
+
+.no-alerts {
+  opacity: 0.4;
+}
 </style>
-
-
-
-
-
-
-
-
-
-

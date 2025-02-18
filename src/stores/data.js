@@ -13,6 +13,7 @@ export const useDataStore = defineStore('data', {
     zones: [],
     calls: [],
     alerts: [],
+    alertsCurrent: [],
     prefixes: [],
     languages: [],
     users: [],
@@ -145,6 +146,16 @@ export const useDataStore = defineStore('data', {
       try {
         const responseP = await axios.get(API + '/alerts');
         this.alerts = responseP.data.data;
+      } catch (error) {
+        console.error("Error al cargar alertas:", error);
+      }
+    },
+
+    async loadAlertsCurrent() {
+      this.auth.loadTokenFromStorage();
+      try {
+        const responseP = await axios.get(API + '/alerts/user');
+        this.alertsCurrent = responseP.data.data;
       } catch (error) {
         console.error("Error al cargar alertas:", error);
       }
