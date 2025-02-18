@@ -23,7 +23,7 @@
 
         <div class="form-group">
           <label>Tipo de llamada (Entrante/Saliente):</label>
-          <Field as="select" v-model="call.incoming" name="incoming" class="form-control">
+          <Field as="select" v-model="call.incoming" name="incoming" class="form-control" :disabled="!alert.id">
             <option :value="true">Entrante</option>
             <option :value="false">Saliente</option>
           </Field>
