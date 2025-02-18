@@ -19,125 +19,16 @@
 </template>
 
 <script>
+import axios from 'axios';
+
 export default {
 	data() {
 		return {
-			types: [
-				{
-					"name": "Follow-up according to protocols",
-					"spanishName": "Seguimiento según protocolos",
-					"valencianName": "Seguiment segons protocols",
-					"subtypes": [
-						{
-							"id": 4,
-							"name": "After emergencies",
-							"spanishName": "Después de emergencias",
-							"valencianName": "Després d’emergències"
-						},
-						{
-							"id": 5,
-							"name": "For grief processes",
-							"spanishName": "Por procesos de duelo",
-							"valencianName": "Per processos de dol"
-						},
-						{
-							"id": 6,
-							"name": "For hospital discharges",
-							"spanishName": "Por altas hospitalarias",
-							"valencianName": "Per altes hospitalàries"
-						},
-						{
-							"id": 13,
-							"name": "After emergencies",
-							"spanishName": "Después de emergencias",
-							"valencianName": "Després d’emergències"
-						},
-						{
-							"id": 14,
-							"name": "For grief processes",
-							"spanishName": "Por procesos de duelo",
-							"valencianName": "Per processos de dol"
-						},
-						{
-							"id": 15,
-							"name": "For hospital discharges",
-							"spanishName": "Por altas hospitalarias",
-							"valencianName": "Per altes hospitalàries"
-						}
-					]
-				},
-				{
-					"name": "Notice",
-					"spanishName": "Aviso",
-					"valencianName": "Aviso",
-					"subtypes": [
-						{
-							"id": 1,
-							"name": "medication",
-							"spanishName": "medicación",
-							"valencianName": "medicació"
-						},
-						{
-							"id": 2,
-							"name": "Specials",
-							"spanishName": "Especiales",
-							"valencianName": "Especials"
-						},
-						{
-							"id": 3,
-							"name": "per alert",
-							"spanishName": "por alerta",
-							"valencianName": "per alerta"
-						}
-					]
-				}
-			],
+			types: [],
 			selectedType: null, // Tipo seleccionado
 			selectedSubtype: null, // Subtipo seleccionado
-			preselectedType: { // Valor preseleccionado para el tipo
-				name: "Follow-up according to protocols",
-				spanishName: "Seguimiento según protocolos",
-				valencianName: "Seguiment segons protocols",
-				subtypes: [
-					{
-						"id": 7,
-						"name": "Temporary service suspension",
-						"spanishName": "Suspensión temporal del servicio",
-						"valencianName": "Suspensió temporal del servei"
-					},
-					{
-						"id": 8,
-						"name": "Home absence",
-						"spanishName": "Ausencia domiciliaria",
-						"valencianName": "Ausència domiciliària"
-					},
-					{
-						"id": 9,
-						"name": "Returns or end of absence",
-						"spanishName": "Retornos o fin de la ausencia",
-						"valencianName": "Retorns o fi de l’absència"
-					},
-					{
-						"id": 16,
-						"name": "Temporary service suspension",
-						"spanishName": "Suspensión temporal del servicio",
-						"valencianName": "Suspensió temporal del servei"
-					},
-					{
-						"id": 17,
-						"name": "Home absence",
-						"spanishName": "Ausencia domiciliaria",
-						"valencianName": "Ausència domiciliària"
-					},
-					{
-						"id": 18,
-						"name": "Returns or end of absence",
-						"spanishName": "Retornos o fin de la ausencia",
-						"valencianName": "Retorns o fi de l’absència"
-					}
-				]
-			},
-			preselectedSubtype: { id: 4, name: "After emergencies" }, // Subtipo preseleccionado
+			preselectedType: {}, // Tipo preseleccionado
+			preselectedSubtype: {}, // Subtipo preseleccionado
 		};
 	},
 	computed: {
@@ -158,10 +49,13 @@ export default {
 			this.selectedSubtype = this.selectedType.subtypes.find(subtype => subtype.id === this.preselectedSubtype.id);
 		}
 	},
-	mounted() {
+	async mounted() {
 		// Asignamos los valores preseleccionados al cargar el componente
+		this.types = await axios.get('http://localhost/api/alert/types').then(response => response.data.data);
+		this.preselectedType = this.types.find(type => type.name === "Follow-up according to protocols");
+		this.preselectedSubtype = this.preselectedType.subtypes.find(subtype => subtype.id === 5);
 		this.selectedType = this.types.find(type => type.name === this.preselectedType.name);
-		this.selectedSubtype = this.selectedType.subtypes.find(subtype => subtype.id === this.preselectedSubtype.id);
+		this.selectedType.selectedSubtype = this.preselectedType.preselectedSubtype;
 	}
 };
 </script>

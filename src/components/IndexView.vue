@@ -49,9 +49,15 @@ export default {
     const dataStore = useDataStore();
     const router = useRouter();
 
+
+    // plugins: [timeGridPlugin],
+    //   initialView: 'timeGridDay', // O 'timeGridWeek'
+    //   scrollTime: new Date().getHours() + ':00:00', // Hace scroll a la hora actual
+
     const calendarOptions = ref({
       plugins: [timeGridPlugin, interactionPlugin],
       initialView: "timeGridDay",
+      scrollTime: new Date().getHours() + ':00:00', // Hace scroll a la hora actual
       editable: true,
       selectable: true,
       slotLabelFormat: { hour: "2-digit", minute: "2-digit", hour12: false },
@@ -156,6 +162,8 @@ export default {
       await dataStore.loadAlerts();
       await dataStore.loadPatients();
       loadEvents();
+      calendarOptions.value.scrollTime = new Date().getHours() + ':00:00';
+      debugger
     });
 
     watchEffect(() => {
