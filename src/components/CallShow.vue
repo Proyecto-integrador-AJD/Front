@@ -26,7 +26,7 @@
   
   export default {
     computed: {
-    ...mapState(useDataStore, ['getPatientFullNameById', 'getUserFullNameById']),
+    ...mapState(useDataStore, ['getPatientFullNameById', 'findCallById', 'getUserFullNameById']),
   },
     props: ['id'],
     data() {
@@ -34,13 +34,8 @@
         call: {},
       };
     },
-    async mounted() {
-      try {
-        const response = await axios.get(`${API}/calls/${this.id}`);
-        this.call = response.data.data;
-      } catch (error) {
-        alert('Error al cargar los datos de la llamada.');
-      }
+    mounted() {
+      this.call = this.findCallById(this.id);
     },
   };
   </script>

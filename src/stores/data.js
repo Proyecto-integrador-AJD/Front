@@ -62,22 +62,30 @@ export const useDataStore = defineStore('data', {
       
       this.auth.loadTokenFromStorage();
       try {
-        const responseP = await axios.get(API + '/patients');
-        this.patients = responseP.data.data;
-        const responseD = await axios.get(API + '/users');
-        this.users = responseD.data.data;
-        const responseZ = await axios.get(API + '/zones');
-        this.zones = responseZ.data.data;
-        const responseC = await axios.get(API + '/calls');
-        this.calls = responseC.data.data;
-        const responseA = await axios.get(API + '/alerts');
-        this.alerts = responseA.data.data;
-        const responsePr = await axios.get(API + '/prefix');
-        this.prefixes = responsePr.data.data;
-        const response = await axios.get(API + '/language');
-        this.languages = response.data.data;
-        const responseR = await axios.get(API + '/relationship');
-        this.relationships = response.data.data;
+        // const responseP = await axios.get(API + '/patients');
+        // this.patients = responseP.data.data;
+        await this.loadPatients();
+        // const responseD = await axios.get(API + '/users');
+        // this.users = responseD.data.data;
+        await this.loadUsers();
+        // const responseZ = await axios.get(API + '/zones');
+        // this.zones = responseZ.data.data;
+        await this.loadZones();
+        // const responseC = await axios.get(API + '/calls');
+        // this.calls = responseC.data.data;
+        await this.loadCalls();
+        // const responseA = await axios.get(API + '/alerts');
+        // this.alerts = responseA.data.data;
+        await this.loadAlerts();
+        // const responsePr = await axios.get(API + '/prefix');
+        // this.prefixes = responsePr.data.data;
+        await this.loadPrefixes();
+        // const response = await axios.get(API + '/language');
+        // this.languages = response.data.data;
+        await this.loadLanguages();
+        // const responseR = await axios.get(API + '/relationship');
+        // this.relationships = response.data.data;
+        await this.loadRelationships();
       } catch (error) {
         console.error("Error al cargar los datos:", error);
       }
@@ -172,6 +180,45 @@ export const useDataStore = defineStore('data', {
         this.relationships = responseR.data.data;  
       } catch (error) {
         console.error('Error al cargar las relaciones:', error);
+      }
+    },
+    findAlertById(id) {
+      this.auth.loadTokenFromStorage();
+      return this.alerts.find(a => a.id == id);
+    },
+    async loadAlertById(id) {
+      this.auth.loadTokenFromStorage();
+      try {
+        const response = await axios.get(API + '/alerts/' + id);
+        return response.data.data;
+      } catch (error) {
+        console.error('Error al cargar alerta:', error);
+      }
+    },
+    findCallById(id) {
+      this.auth.loadTokenFromStorage();
+      return this.calls.find(a => a.id == id);
+    },
+    async loadCallById(id) {
+      this.auth.loadTokenFromStorage();
+      try {
+        const response = await axios.get(API + '/calls/' + id);
+        return response.data.data;
+      } catch (error) {
+        console.error('Error al cargar Calls:', error);
+      }
+    },
+    findPatientById(id) {
+      this.auth.loadTokenFromStorage();
+      return this.patients.find(a => a.id == id);
+    },
+    async loadPatientById(id) {
+      this.auth.loadTokenFromStorage();
+      try {
+        const response = await axios.get(API + '/patients/' + id);
+        return response.data.data;
+      } catch (error) {
+        console.error('Error al cargar Patients:', error);
       }
     },
   }

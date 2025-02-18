@@ -34,7 +34,7 @@
   
   export default {
     computed: {
-      ...mapState(useDataStore, ['getPatientFullNameById', 'getUserFullNameById']),
+      ...mapState(useDataStore, ['getPatientFullNameById', 'getUserFullNameById', 'findAlertById']),
     },
     props: ['id'],
     data() {
@@ -49,12 +49,9 @@
       },
     },
     async mounted() {
-      try {
-        const response = await axios.get(`${API}/alerts/${this.id}`); 
-        this.alert = response.data.data; 
-      } catch (error) {
-        alert('Error al cargar los datos de la alerta.'); 
-      }
+      this.alert = this.findAlertById(this.id);
+      console.log("Alerta cargada:", this.alert);
+      
     },
   };
   </script>
