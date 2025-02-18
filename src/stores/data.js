@@ -183,7 +183,6 @@ export const useDataStore = defineStore('data', {
       }
     },
     findAlertById(id) {
-      this.auth.loadTokenFromStorage();
       return this.alerts.find(a => a.id == id);
     },
     async loadAlertById(id) {
@@ -196,7 +195,6 @@ export const useDataStore = defineStore('data', {
       }
     },
     findCallById(id) {
-      this.auth.loadTokenFromStorage();
       return this.calls.find(a => a.id == id);
     },
     async loadCallById(id) {
@@ -209,7 +207,6 @@ export const useDataStore = defineStore('data', {
       }
     },
     findPatientById(id) {
-      this.auth.loadTokenFromStorage();
       return this.patients.find(a => a.id == id);
     },
     async loadPatientById(id) {

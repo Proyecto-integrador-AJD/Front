@@ -150,7 +150,7 @@ export default {
       console.log("¡Nuevo botón clickeado!");
     },
     handleAddCall(alertId) {
-      debugger
+      
       this.$router.push({
         name: 'addCall',
         query: { alertId: alertId }

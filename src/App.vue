@@ -28,8 +28,9 @@ export default {
     };
 
     // Cargar datos iniciales cuando se monta el componente
-    onMounted(() => {
-      store.loadInitialData();
+    onMounted(async () => {
+      
+      await store.loadInitialData();
     });
 
     // Computed para verificar si el usuario está autenticado
