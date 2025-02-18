@@ -14,7 +14,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-for="alert in alerts" :key="alert.id">
+        <tr v-for="alert in alertsCurrent" :key="alert.id">
           <td>{{ getPatientFullNameById(alert.patientId) }}</td>
           <td>{{ alert.type }}</td>
           <td>{{ formatDate(alert.startDate) }}</td>
@@ -22,7 +22,7 @@
             <button class="btn btn-info" @click="$router.push('/view-alert/' + alert.id)">
               Ver
             </button>
-            <button v-if="isToday(alert.startDate)"
+            <button v-if="isToday(alert.startDate, alert.recurrenceType)"
               class="btn btn-primary ml-2" 
               @click="handleCallClick(alert.id)"
             >
@@ -59,10 +59,15 @@ export default {
       const date = new Date(dateString);
       return date.toLocaleString();
     },
-    isToday(dateString) {
+    isToday(dateString, recurrenceType) {
+      debugger
       const date = new Date(dateString);
       const today = new Date();
 
+      if (recurrenceType === 'daily') {
+        return true;
+      }
+      
       return (
         date.getDate() === today.getDate() &&
         date.getMonth() === today.getMonth() &&
