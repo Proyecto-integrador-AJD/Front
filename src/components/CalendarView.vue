@@ -3,36 +3,37 @@
     <!-- Calendario -->
     <FullCalendar :options="calendarOptions" />
 
-    <!-- Modal -->
+    <!-- Modal de eventos del día -->
     <ModalComponent v-model="isModalOpen">
       <h2>Detalles del Día</h2>
       <p>Fecha seleccionada: {{ selectedDate }}</p>
       <ul>
-        <li v-for="(event, index) in selectedEvents" :key="index" :style="{ color: event.color }">
-          <!-- Enlace al formulario de edición al hacer clic en el nombre del paciente -->
-          <!-- <router-link 
-            :to="{ name: 'addCall', query: { alertId: event.alertId } }"
-            style="color: inherit; text-decoration: underline;" 
-          > -->
-          <button class="btn btn-primary" @click="handleAddCall(event.alertId)">
+        <li v-for="(event, index) in selectedEvents" :key="index">
+          <button class="btn btn-primary" :style="{ backgroundColor: event.color }" @click="handleEventClick(event)">
             {{ event.title }}
           </button>
-            <!-- {{ event.title }}
-          </router-link> -->
           - {{ event.description }}<br />
           Teléfono: {{ event.phone }}
         </li>
       </ul>
-      <button class="btn btn-primary" @click="$router.push({
-        name: 'addCall',
-        // query: { event.alertId }
-      });">
-        Hacer llamada
-      </button>
+    </ModalComponent>
+
+    <!-- Modal de detalles de un evento individual -->
+     
+    <ModalComponent v-model="isEventModalOpen">
+      <h2>Detalles de alerta</h2>
+      <ul>
+        <li>
+          <button :style="{ backgroundColor: selectedEvent.color }" @click="handleAddCall(selectedEvent?.alertId)">
+            {{ selectedEvent.title }}
+          </button>
+          - {{ selectedEvent.description }}<br />
+          Teléfono: {{ selectedEvent.phone }}
+        </li>
+      </ul>
     </ModalComponent>
   </div>
 </template>
-
 
 <script>
 import FullCalendar from '@fullcalendar/vue3';
@@ -40,7 +41,6 @@ import dayGridPlugin from '@fullcalendar/daygrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import { useDataStore } from '@/stores/data';
 import { mapState } from 'pinia';
-import { ref } from 'vue';
 import ModalComponent from './Modal.vue';
 
 export default {
@@ -58,12 +58,15 @@ export default {
         initialView: 'dayGridMonth',
         events: [],
         dateClick: (info) => this.handleDateClick(info),
+        eventClick: (info) => this.handleEventClick(info.event),
         dayMaxEvents: 3,
         eventLimitText: "Ver más eventos",
       },
       isModalOpen: false,
+      isEventModalOpen: false,
       selectedDate: null,
       selectedEvents: [],
+      selectedEvent: null,
     };
   },
 
@@ -82,45 +85,48 @@ export default {
       this.isModalOpen = this.selectedEvents.length > 0;
     },
 
+    handleEventClick(event) {
+      console.log("Evento clickeado:", event);
+      this.selectedEvent = {
+        title: event.title,
+        description: event.extendedProps?.description || "",
+        phone: event.extendedProps?.phone || "No disponible",
+        color: event.backgroundColor || "black",
+        alertId: event.extendedProps?.alertId || null,
+      };
+      this.isEventModalOpen = true;
+    },
+
     loadEvents(alerts) {
       if (!alerts.length) return;
       let allEvents = [];
       alerts.forEach((alert) => {
         let startDate = new Date(alert.startDate);
         let eventColor = alert.isRecurring ? 'dodgerblue' : 'limegreen';
-        let patientFullName = this.getPatientFullNameById(alert.patientId); // Usa el getter para obtener el nombre
-        let patient = this.getPatientById(alert.patientId); // Usa el getter para obtener el teléfono
-        let patientPhone = patient.prefix + ' ' + patient.phone; // Usa el getter para obtener el teléfono
+        let patientFullName = this.getPatientFullNameById(alert.patientId);
+        let patient = this.getPatientById(alert.patientId);
+        let patientPhone = patient.prefix + ' ' + patient.phone;
 
         if (alert.isRecurring) {
           let recurringDate = new Date(startDate);
-          if (alert.recurrenceType === 'daily') {
-            for (let i = 0; i < 50; i++) {
-              allEvents.push({
-                start: recurringDate.toISOString().split('T')[0],
-                alertId: alert.id,
-                title: `${patientFullName} ${alert.subType}`,
-                description: alert.description,
-                phone: patientPhone,
-                color: eventColor,
-              });
-              recurringDate.setDate(recurringDate.getDate() + 1);
-            }
-          } else if (alert.recurrenceType === 'weekly') {
-            for (let i = 0; i < 10; i++) {
-              allEvents.push({
-                start: recurringDate.toISOString().split('T')[0],
-                title: `${patientFullName} ${alert.subType}`,
-                description: alert.description,
-                phone: patientPhone,
-                color: eventColor,
-              });
-              recurringDate.setDate(recurringDate.getDate() + 7);
-            }
+          let recurrenceStep = alert.recurrenceType === 'daily' ? 1 : 7;
+          let iterations = alert.recurrenceType === 'daily' ? 50 : 10;
+
+          for (let i = 0; i < iterations; i++) {
+            allEvents.push({
+              start: recurringDate.toISOString().split('T')[0],
+              alertId: alert.id,
+              title: `${patientFullName} ${alert.subType}`,
+              description: alert.description,
+              phone: patientPhone,
+              color: eventColor,
+            });
+            recurringDate.setDate(recurringDate.getDate() + recurrenceStep);
           }
         } else {
           allEvents.push({
             start: startDate.toISOString().split('T')[0],
+            alertId: alert.id,
             title: `${patientFullName} ${alert.subType}`,
             description: alert.description,
             phone: patientPhone,
@@ -130,12 +136,9 @@ export default {
       });
       this.calendarOptions.events = allEvents;
     },
-    // Método para manejar la acción del nuevo botón
-    handleNewButtonClick() {
-      console.log("¡Nuevo botón clickeado!");
-    },
+
     handleAddCall(alertId) {
-      
+      if (!alertId) return;
       this.$router.push({
         name: 'addCall',
         query: { alertId: alertId }
@@ -144,8 +147,6 @@ export default {
   },
 };
 </script>
-
-
 
 <style scoped>
 html,
@@ -164,33 +165,11 @@ body {
   flex-direction: column;
 }
 
-.calendar-container {
-  flex: 1;
-  width: 10%;
-}
-
 .fc {
   height: 90vh;
   width: 80vw;
 }
 
-h1 {
-  font-weight: 500;
-  font-size: 2.6rem;
-  position: relative;
-  top: -10px;
-}
-
-h3 {
-  font-size: 1.2rem;
-}
-
-.greetings h1,
-.greetings h3 {
-  text-align: center;
-}
-
-/* Estilo para el nuevo botón */
 button {
   background-color: #007bff;
   color: white;
