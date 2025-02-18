@@ -13,6 +13,7 @@
 
 <script>
 import { useAuthStore } from "../stores/auth";
+import { useDataStore } from "../stores/data";
 import axios from "axios";
 import { onMounted, onBeforeUnmount } from "vue";
 
@@ -27,6 +28,7 @@ export default {
   methods: {
     async handleLogin() {
       const authStore = useAuthStore();
+      const dataStore = useDataStore();
       try {
         const API = import.meta.env.VITE_URL_API;
         const response = await axios.post(`${API}/login`, {
@@ -36,14 +38,25 @@ export default {
 
         if (response.status === 200) {
           const token = response.data.data.token;
-          console.log(token);
-          
+
           authStore.setToken(token); // Llama a la función para guardar el token
           axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
 
           console.log(authStore.token);
-          this.$router.push("/index"); // Redirige al usuario después de iniciar sesión
+          axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+
+          await dataStore.loadUser();
+          const user = dataStore.user; 
+           // Buscamos al usuario logueado por su email
+          console.log(token);
+          
+          if(user){
+            localStorage.setItem("user", JSON.stringify(user));
+            this.$router.push("/index"); // Redirige al usuario después de iniciar sesión
+        }else{
+          alert("Usuario no encontrado");
         }
+      }
 
         
       } catch (error) {

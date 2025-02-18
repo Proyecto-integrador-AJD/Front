@@ -1,7 +1,7 @@
 <template>
   <div class="row">
     <div class="mb-3">
-      <button class="btn btn-primary" @click="$router.push('/edit-call')">
+      <button class="btn btn-primary" @click="$router.push('/add-call')">
         Hacer llamada
       </button>
       <button class="btn btn-primary" @click="toggleFilter">
@@ -22,8 +22,8 @@
       </thead>
       <tbody>
         <tr v-for="call in filteredCalls" :key="call.id">
-          <td>{{ getPatientNameById(call.patientId) }}</td>
-          <td>{{ getUserNameById(call.userId) }}</td>
+          <td>{{ getPatientFullNameById(call.patientId) }}</td>
+          <td>{{ getUserFullNameById(call.userId) }}</td>
           <td>{{ call.incoming == 1 ? 'Entrante' : 'Saliente' }}</td>
           <td>{{ call.subType }}</td>
           <td>{{ formatDate(call.date) }}</td>
@@ -47,9 +47,30 @@
       <div class="form-group">
         <label for="patientSelect">Paciente:</label>
         <div class="select-container">
-          <select id="patientSelect" v-model="selectedPatientId" class="form-control">
-            <option value="">Todos</option>
-            <option v-for="patient in patients" :key="patient.id" :value="patient.id">
+          <!-- Barra de búsqueda y desplegable para pacientes -->
+          <input
+            v-model="searchQuery"
+            id="patientSelect"
+            type="text"
+            class="form-control"
+            placeholder="Escribe para buscar..."
+            @focus="showPatientList = true"
+            @input="filterPatients"
+            @blur="handleBlur"
+          />
+          <select
+            v-show="showPatientList"
+            v-model="selectedPatientId"
+            class="form-control custom-select"
+            size="5"
+          >
+            <option value="">Selecciona un paciente</option>
+            <option
+              v-for="patient in filteredPatients"
+              :key="patient.id"
+              :value="patient.id"
+              @click="selectPatient(patient)"
+            >
               {{ patient.name }} {{ patient.lastName }}
             </option>
           </select>
@@ -60,9 +81,30 @@
       <div class="form-group">
         <label for="teleoperadorSelect">Teleoperador:</label>
         <div class="select-container">
-          <select id="teleoperadorSelect" v-model="selectedTeleoperadorId" class="form-control">
-            <option value="">Todos</option>
-            <option v-for="user in users" :key="user.id" :value="user.id">
+          <!-- Barra de búsqueda y desplegable para teleoperadores -->
+          <input
+            v-model="teleoperadorSearchQuery"
+            id="teleoperadorSelect"
+            type="text"
+            class="form-control"
+            placeholder="Escribe para buscar..."
+            @focus="showTeleoperadorList = true"
+            @input="filterTeleoperadores"
+            @blur="handleTeleoperadorBlur"
+          />
+          <select
+            v-show="showTeleoperadorList"
+            v-model="selectedTeleoperadorId"
+            class="form-control custom-select"
+            size="5"
+          >
+            <option value="">Selecciona un teleoperador</option>
+            <option
+              v-for="user in filteredTeleoperadores"
+              :key="user.id"
+              :value="user.id"
+              @click="selectTeleoperador(user)"
+            >
               {{ user.name }} {{ user.lastName }}
             </option>
           </select>
@@ -148,14 +190,17 @@ export default {
   },
   data() {
     return {
+      selectedPatientId: "",
+      selectedTeleoperadorId: "",
+      searchQuery: "",
+      teleoperadorSearchQuery: "",
       isModalOpen: false,
       isFiltering: false,
-      selectedPatientId: null,
-      selectedTeleoperadorId: null,
-      // "" sin selección, "0" para Saliente y "1" para Entrante
       selectedCallDirection: "",
       selectedSalienteOption: "",
       selectedEntranteOption: "",
+      showPatientList: false,
+      showTeleoperadorList: false,
     };
   },
   computed: {
@@ -163,39 +208,50 @@ export default {
       'calls',
       'patients',
       'users',
-      'getPatientNameById',
-      'getUserNameById',
+      'getPatientFullNameById',
+      'getUserFullNameById',
     ]),
+    filteredPatients() {
+      return this.patients.filter(patient => {
+        return (
+          patient.name.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
+          patient.lastName.toLowerCase().includes(this.searchQuery.toLowerCase())
+        );
+      });
+    },
+    filteredTeleoperadores() {
+      return this.users.filter(user => {
+        return (
+          user.name.toLowerCase().includes(this.teleoperadorSearchQuery.toLowerCase()) ||
+          user.lastName.toLowerCase().includes(this.teleoperadorSearchQuery.toLowerCase())
+        );
+      });
+    },
     filteredCalls() {
       let filtered = this.calls;
 
-      // Filtrado por paciente
       if (this.selectedPatientId) {
         filtered = filtered.filter(
           (call) => Number(call.patientId) === Number(this.selectedPatientId)
         );
       }
 
-      // Filtrado por teleoperador
       if (this.selectedTeleoperadorId) {
         filtered = filtered.filter(
           (call) => Number(call.userId) === Number(this.selectedTeleoperadorId)
         );
       }
 
-      // Filtrado por dirección (Saliente o Entrante)
       if (this.selectedCallDirection !== "") {
         filtered = filtered.filter(
           (call) => Number(call.incoming) === Number(this.selectedCallDirection)
         );
       }
 
-      // Filtrado adicional según la opción seleccionada
       if (this.selectedCallDirection === "0" && this.selectedSalienteOption) {
         filtered = filtered.filter((call) => call.type === this.selectedSalienteOption);
       }
       if (this.selectedCallDirection === "1" && this.selectedEntranteOption) {
-        // Aquí filtramos por subType para llamadas entrantes
         filtered = filtered.filter((call) => call.subType === this.selectedEntranteOption);
       }
 
@@ -206,13 +262,14 @@ export default {
     ...mapActions(useDataStore, ['loadCalls', 'loadPatients', 'loadUsers']),
     toggleFilter() {
       if (this.isFiltering) {
-        // Resetear todos los filtros
         this.isFiltering = false;
         this.selectedPatientId = null;
         this.selectedTeleoperadorId = null;
         this.selectedCallDirection = "";
         this.selectedSalienteOption = "";
         this.selectedEntranteOption = "";
+        this.searchQuery = "";
+        this.teleoperadorSearchQuery = ""; // Limpiar el campo de búsqueda de teleoperador
       } else {
         this.isModalOpen = true;
       }
@@ -220,6 +277,32 @@ export default {
     applyFilter() {
       this.isFiltering = true;
       this.isModalOpen = false;
+    },
+    selectPatient(patient) {
+      this.selectedPatientId = patient.id;
+      this.searchQuery = `${patient.name} ${patient.lastName}`;
+      this.showPatientList = false;
+    },
+    selectTeleoperador(user) {
+      this.selectedTeleoperadorId = user.id;
+      this.teleoperadorSearchQuery = `${user.name} ${user.lastName}`;
+      this.showTeleoperadorList = false;
+    },
+    handleBlur() {
+      setTimeout(() => {
+        this.showPatientList = false;
+      }, 200);
+    },
+    handleTeleoperadorBlur() {
+      setTimeout(() => {
+        this.showTeleoperadorList = false;
+      }, 200);
+    },
+    filterPatients() {
+      this.showPatientList = true;
+    },
+    filterTeleoperadores() {
+      this.showTeleoperadorList = true;
     },
     formatDate(dateString) {
       const date = new Date(dateString);
@@ -235,45 +318,3 @@ export default {
 </script>
 
 
-
-
-
-
-<style scoped>
-/* Estilo para el contenedor de select para centrarlo */
-.select-container {
-  display: flex;
-  justify-content: center;
-}
-
-.form-group {
-  margin-bottom: 20px;
-}
-
-select.form-control {
-  max-width: 300px;  /* Ajusta el ancho del select */
-  font-size: 0.875rem; /* Ajusta el tamaño de la fuente */
-}
-
-button {
-  margin-top: 15px;
-}
-</style>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  

@@ -4,8 +4,8 @@
       <div class="card">
         <div class="card-body">
           <p><strong>Fecha:</strong> {{ call.date }}</p>
-          <p><strong>Paciente:</strong> {{ getPatientNameById(call.patientId) }}</p>
-          <p><strong>Teleoperador:</strong> {{ getUserNameById(call.userId) }}</p>
+          <p><strong>Paciente:</strong> {{ getPatientFullNameById(call.patientId) }}</p>
+          <p><strong>Teleoperador:</strong> {{ getUserFullNameById(call.userId) }}</p>
           <p><strong>Tipo de Llamada:</strong> {{ call.type }}</p>
           <p><strong>Subtipo:</strong> {{ call.subType  }}</p>
           <p><strong>Alerta:</strong> {{ call.alertId }}</p>
@@ -26,7 +26,7 @@
   
   export default {
     computed: {
-    ...mapState(useDataStore, ['getPatientNameById', 'getUserNameById']),
+    ...mapState(useDataStore, ['getPatientFullNameById', 'loadCall', 'getUserFullNameById']),
   },
     props: ['id'],
     data() {
@@ -35,12 +35,7 @@
       };
     },
     async mounted() {
-      try {
-        const response = await axios.get(`${API}/calls/${this.id}`);
-        this.call = response.data.data;
-      } catch (error) {
-        alert('Error al cargar los datos de la llamada.');
-      }
+      this.call = await this.loadCall(this.id);
     },
   };
   </script>
