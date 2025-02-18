@@ -21,7 +21,7 @@
           <td>{{ patient.name }} {{ patient.lastName }}</td>
           <td>{{ patient.dni }}</td>
           <td>{{ patient.phone }}</td>
-          <td>{{ getZoneNameById(patient.zoneId)}}</td>
+          <td>{{ getZoneById(patient.zoneId).name}}</td>
           <td>
             <button class="btn btn-info" @click="$router.push('/view-patient/' + patient.id)">
               Ver
@@ -48,7 +48,7 @@ const API = import.meta.env.VITE_URL_API;
 
 export default {
   computed: {
-    ...mapState(useDataStore, ['patients', 'getZoneNameById']),
+    ...mapState(useDataStore, ['patients', 'getZoneById']),
   },
   mounted() {
     this.loadPatients();

@@ -8,6 +8,7 @@
 
 <script>
 import { useAuthStore } from "../stores/auth";
+import { useDataStore } from "../stores/data";
 import axios from "axios";
 
 export default {
@@ -21,6 +22,7 @@ export default {
   methods: {
     async handleLogin() {
       const authStore = useAuthStore();
+      const dataStore = useDataStore();
       try {
         const API = import.meta.env.VITE_URL_API;
         const response = await axios.post(`${API}/login`, {
@@ -35,8 +37,8 @@ export default {
           console.log(authStore.token);
           axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
 
-          const responseP = await axios.get(API + '/user');
-          const user = responseP.data.data;
+          await dataStore.loadUser();
+          const user = dataStore.user; 
            // Buscamos al usuario logueado por su email
           console.log(token);
           

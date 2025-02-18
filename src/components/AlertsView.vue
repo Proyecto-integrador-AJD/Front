@@ -14,8 +14,8 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-for="alert in alertsCurrent" :key="alert.id">
-          <td>{{ getPatientNameById(alert.patientId) }}</td>
+        <tr v-for="alert in alerts" :key="alert.id">
+          <td>{{ getPatientFullNameById(alert.patientId) }}</td>
           <td>{{ alert.type }}</td>
           <td>{{ formatDate(alert.startDate) }}</td>
           <td>
@@ -24,7 +24,7 @@
             </button>
             <button v-if="isToday(alert.startDate)"
               class="btn btn-primary ml-2" 
-              @click="handleCallClick(alert.id, alert.patientId)"
+              @click="handleCallClick(alert.id)"
             >
               Hacer llamada
             </button>
@@ -48,8 +48,8 @@ export default {
     ...mapState(useDataStore, [
       'alerts',
       'patients',
+      'getPatientFullNameById',
       'alertsCurrent',
-      'getPatientNameById',
     ]),
   },
   methods: {
@@ -59,7 +59,6 @@ export default {
       const date = new Date(dateString);
       return date.toLocaleString();
     },
-
     isToday(dateString) {
       const date = new Date(dateString);
       const today = new Date();
@@ -71,11 +70,11 @@ export default {
       );
     },
 
-    handleCallClick(alertId, patientId) {
+    handleCallClick(alertId) {
       // Redirige a la pantalla de llamada con los parámetros alertId y patientId
       this.$router.push({
-        name: 'editCall',
-        query: { alertId, patientId }
+        name: 'addCall',
+        query: { alertId }
       });
     },
   },

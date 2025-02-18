@@ -61,12 +61,12 @@ export default {
     const username = ref("");  // Variable para almacenar el nombre del usuario
     const dataStore = useDataStore();
     const router = useRouter();
-
     const { patientsCurrent, alertsCurrent } = storeToRefs(dataStore);
 
     const calendarOptions = ref({
       plugins: [timeGridPlugin, interactionPlugin],
       initialView: "timeGridDay",
+      scrollTime: new Date().getHours() + ':00:00', // Hace scroll a la hora actual
       editable: true,
       selectable: true,
       slotLabelFormat: { hour: "2-digit", minute: "2-digit", hour12: false },
@@ -113,7 +113,7 @@ export default {
         let startDate = new Date(alert.startDate);
         let eventColor = alert.isRecurring ? "dodgerblue" : "limegreen";
 
-        let patient = dataStore.getPatientNameById(alert.patientId);
+        let patient = dataStore.getPatientFullNameById(alert.patientId);
         let patientPhone = dataStore.getPatientPhoneById(alert.patientId);
 
         const eventData = {
@@ -159,6 +159,8 @@ export default {
       await dataStore.loadPatients();
       await dataStore.loadPatientsCurrentUser();
       loadEvents();
+      calendarOptions.value.scrollTime = new Date().getHours() + ':00:00';
+      debugger
     });
 
     watchEffect(() => {

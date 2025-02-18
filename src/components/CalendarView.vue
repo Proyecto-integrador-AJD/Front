@@ -10,17 +10,23 @@
       <ul>
         <li v-for="(event, index) in selectedEvents" :key="index" :style="{ color: event.color }">
           <!-- Enlace al formulario de edición al hacer clic en el nombre del paciente -->
-          <router-link 
-            :to="{ name: 'editCall', query: { alertId: event.alertId, patientId: event.patientId } }"
+          <!-- <router-link 
+            :to="{ name: 'addCall', query: { alertId: event.alertId } }"
             style="color: inherit; text-decoration: underline;" 
-          >
+          > -->
+          <button class="btn btn-primary" @click="handleAddCall(event.alertId)">
             {{ event.title }}
-          </router-link>
+          </button>
+            <!-- {{ event.title }}
+          </router-link> -->
           - {{ event.description }}<br />
           Teléfono: {{ event.phone }}
         </li>
       </ul>
-      <button class="btn btn-primary" @click="$router.push('/edit-call')">
+      <button class="btn btn-primary" @click="$router.push({
+        name: 'addCall',
+        // query: { event.alertId }
+      });">
         Hacer llamada
       </button>
     </ModalComponent>
@@ -39,7 +45,7 @@ import ModalComponent from './Modal.vue';
 
 export default {
   computed: {
-    ...mapState(useDataStore, ['getPatientNameById', 'getPatientPhoneById', 'alertsCurrent', 'patients']),
+    ...mapState(useDataStore, ['getPatientFullNameById', 'loadAlerts', 'alertsCurrent', 'getPatientById', 'alerts', 'patients']),
   },
   components: {
     FullCalendar,
@@ -82,8 +88,9 @@ export default {
       alerts.forEach((alert) => {
         let startDate = new Date(alert.startDate);
         let eventColor = alert.isRecurring ? 'dodgerblue' : 'limegreen';
-        let patient = this.getPatientNameById(alert.patientId);
-        let patientPhone = this.getPatientPhoneById(alert.patientId);
+        let patientFullName = this.getPatientFullNameById(alert.patientId); // Usa el getter para obtener el nombre
+        let patient = this.getPatientById(alert.patientId); // Usa el getter para obtener el teléfono
+        let patientPhone = patient.prefix + ' ' + patient.phone; // Usa el getter para obtener el teléfono
 
         if (alert.isRecurring) {
           let recurringDate = new Date(startDate);
@@ -91,7 +98,8 @@ export default {
             for (let i = 0; i < 50; i++) {
               allEvents.push({
                 start: recurringDate.toISOString().split('T')[0],
-                title: `${patient} ${alert.subType}`,
+                alertId: alert.id,
+                title: `${patientFullName} ${alert.subType}`,
                 description: alert.description,
                 phone: patientPhone,
                 color: eventColor,
@@ -102,7 +110,7 @@ export default {
             for (let i = 0; i < 10; i++) {
               allEvents.push({
                 start: recurringDate.toISOString().split('T')[0],
-                title: `${patient} ${alert.subType}`,
+                title: `${patientFullName} ${alert.subType}`,
                 description: alert.description,
                 phone: patientPhone,
                 color: eventColor,
@@ -113,7 +121,7 @@ export default {
         } else {
           allEvents.push({
             start: startDate.toISOString().split('T')[0],
-            title: `${patient} ${alert.subType}`,
+            title: `${patientFullName} ${alert.subType}`,
             description: alert.description,
             phone: patientPhone,
             color: eventColor,
@@ -121,6 +129,17 @@ export default {
         }
       });
       this.calendarOptions.events = allEvents;
+    },
+    // Método para manejar la acción del nuevo botón
+    handleNewButtonClick() {
+      console.log("¡Nuevo botón clickeado!");
+    },
+    handleAddCall(alertId) {
+      
+      this.$router.push({
+        name: 'addCall',
+        query: { alertId: alertId }
+      });
     },
   },
 };
