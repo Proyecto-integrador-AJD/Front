@@ -2,7 +2,7 @@ import { defineStore } from 'pinia';
 import axios from 'axios';
 import { useAuthStore } from './auth';
 const API = import.meta.env.VITE_URL_API;
-// const token = '86|K9Y4Vx2jXjywZqr9PmODTtzh48OoHsAi7NioDoxR09e0bfa0';
+// const token = '38|o9ono92WXEBHdWsahbXNYf29DGckn2YwgFp6LO9N046c2ce1';
 // axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
 
 export const useDataStore = defineStore('data', {
