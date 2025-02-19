@@ -1,7 +1,7 @@
 <template>
   <div>
     <!-- Calendario -->
-    <FullCalendar :options="calendarOptions" />
+    <FullCalendar ref="calendarRef" :options="calendarOptions" />
 
     <!-- Modal de eventos del día -->
     <ModalComponent v-model="isModalOpen">
@@ -19,7 +19,7 @@
     </ModalComponent>
 
     <!-- Modal de detalles de un evento individual -->
-     
+
     <ModalComponent v-model="isEventModalOpen">
       <h2>Detalles de alerta</h2>
       <ul>
@@ -62,6 +62,7 @@ export default {
         dayMaxEvents: 3,
         eventLimitText: "Ver más eventos",
       },
+      dateCalendar: null,
       isModalOpen: false,
       isEventModalOpen: false,
       selectedDate: null,
@@ -73,6 +74,7 @@ export default {
   async mounted() {
     const dataStore = useDataStore();
     await dataStore.loadAlertsCurrent();
+    this.getCurrentMonth();
     this.loadEvents(this.alertsCurrent);
     console.log("Alertas actuales cargadas:", this.alertsCurrent);
   },
@@ -96,6 +98,12 @@ export default {
       };
       this.isEventModalOpen = true;
     },
+    getCurrentMonth() {
+      if (this.$refs.calendarRef) {
+        const calendarApi = this.$refs.calendarRef.getApi();
+        this.dateCalendar = calendarApi.getDate();
+      }
+    },
 
     loadEvents(alerts) {
       if (!alerts.length) return;
@@ -108,21 +116,60 @@ export default {
         let patientPhone = patient.prefix + ' ' + patient.phone;
 
         if (alert.isRecurring) {
-          let recurringDate = new Date(startDate);
-          let recurrenceStep = alert.recurrenceType === 'daily' ? 1 : 7;
-          let iterations = alert.recurrenceType === 'daily' ? 50 : 10;
+          // let recurringDate = new Date(startDate);
+          // let recurrenceStep = alert.recurrenceType === 'daily' ? 1 : 7;
+          // let iterations = alert.recurrenceType === 'daily' ? 50 : 10;
 
-          for (let i = 0; i < iterations; i++) {
-            allEvents.push({
-              start: recurringDate.toISOString().split('T')[0],
-              alertId: alert.id,
-                title: `${patientFullName} ${alert.subType || ''}`,
-              description: alert.description,
-              phone: patientPhone,
-              color: eventColor,
-            });
-            recurringDate.setDate(recurringDate.getDate() + recurrenceStep);
+          // for (let i = 0; i < iterations; i++) {
+          //   allEvents.push({
+          //     start: recurringDate.toISOString().split('T')[0],
+          //     alertId: alert.id,
+          //     title: `${patientFullName} ${alert.subType || ''}`,
+          //     description: alert.description,
+          //     phone: patientPhone,
+          //     color: eventColor,
+          //   });
+          //   recurringDate.setDate(recurringDate.getDate() + recurrenceStep);
+          const getSpecificDay = (isNextMonth, year, month) => {
+            const today = new Date(year, month - 1); // Ajustar el mes ya que los meses en JavaScript son 0-indexados
+            let targetDate;
+
+            if (isNextMonth) {
+              // Avanzar un mes a la fecha proporcionada
+              const nextMonth = new Date(today.getFullYear(), today.getMonth() + 1, 1);
+              // Establecer la fecha al primer día del mes siguiente
+              const firstDayOfNextMonth = new Date(nextMonth.getFullYear(), nextMonth.getMonth(), 1);
+              // Avanzar hasta el domingo de la segunda semana del mes siguiente
+              const dayOfWeek = firstDayOfNextMonth.getDay();
+              targetDate = new Date(firstDayOfNextMonth);
+              targetDate.setDate(firstDayOfNextMonth.getDate() + (14 - dayOfWeek) % 14);
+            } else {
+              // Restar un mes a la fecha proporcionada
+              const lastMonth = new Date(today.getFullYear(), today.getMonth() - 1, 1);
+              // Establecer la fecha al último día del mes pasado
+              const lastDayOfLastMonth = new Date(lastMonth.getFullYear(), lastMonth.getMonth() + 1, 0);
+              // Retroceder hasta el lunes de la penúltima semana del mes pasado
+              const dayOfWeek = lastDayOfLastMonth.getDay();
+              targetDate = new Date(lastDayOfLastMonth);
+              targetDate.setDate(lastDayOfLastMonth.getDate() - ((dayOfWeek + 13) % 14));
+            }
+
+            return targetDate;
           }
+
+          // Ejemplo de uso
+          // console.log(getSpecificDay(true, '2025', '2'));  // Domingo de la segunda semana del mes siguiente
+          // console.log(getSpecificDay(false, '2025', '2')); // Lunes de la penúltima semana del mes pasado
+          
+          const mes = this.dateCalendar.getMonth() + 1;
+          const anio = this.dateCalendar.getFullYear();
+          // Ejemplo de uso
+          const recurringEvents = this.generateAlerts(getSpecificDay(false, anio, mes), getSpecificDay(true, anio, mes), alert, patientFullName, patientPhone, eventColor);
+          // debugger
+          console.log('recurringEvents', recurringEvents);
+          allEvents = allEvents.concat(recurringEvents);
+          
+        
         } else {
           allEvents.push({
             start: startDate.toISOString().split('T')[0],
@@ -143,6 +190,89 @@ export default {
         name: 'addCall',
         query: { alertId: alertId }
       });
+    },
+    generateAlerts(startDate, endDate, alert, patientFullName, patientPhone, eventColor) {
+      const alerts = [];
+      const recurrenceType = alert.recurrenceType;
+      let initialPoint = null;
+      let intervalDays = 0;
+
+      switch (recurrenceType) {
+        case 'daily':
+          intervalDays = 1;
+          break;
+        case 'weekly':
+          intervalDays = 7;
+          break;
+        case 'monthly':
+          intervalDays = 30;
+          break;
+      }
+
+      const totalAlertDays = intervalDays * alert.recurrence;
+      const alertStartDate = new Date(alert.startDate);
+      let tempStartDate = new Date(alert.startDate);
+
+      // Fecha de fin de la alerta
+      const alertEndDate = new Date(tempStartDate.setDate(tempStartDate.getDate() + totalAlertDays));
+
+      // Si la fecha de fin de la alerta es anterior a la fecha de inicio del rango, no hay alertas
+      if (alertEndDate < startDate) {
+        return [];
+      }
+
+      // Si la fecha de inicio de la alerta es posterior a la fecha de fin del rango, no hay alertas
+      if (alertStartDate > endDate) {
+        return [];
+      }
+
+      // Determinar el punto inicial de la alerta basado en el tipo de recurrencia
+      if (recurrenceType === 'daily') {
+        initialPoint = new Date(alert.startDate);
+      } else if (recurrenceType === 'weekly') {
+        const alertDayOfWeek = new Date(alert.startDate).getDay();
+
+        for (let i = 0; i < 7; i++) {
+          const currentDayOfWeek = new Date(startDate).getDay();
+          if (currentDayOfWeek === alertDayOfWeek) {
+            initialPoint = new Date(startDate);
+            break;
+          }
+          startDate.setDate(startDate.getDate() + 1);
+        }
+      } else if (recurrenceType === 'monthly') {
+        const alertDayOfMonth = new Date(alert.startDate).getDate();
+
+        for (let i = 0; i < 30; i++) {
+          const currentDayOfMonth = new Date(startDate).getDate();
+          if (currentDayOfMonth === alertDayOfMonth) {
+            initialPoint = new Date(startDate);
+            break;
+          }
+          startDate.setDate(startDate.getDate() + 1);
+        }
+      }
+
+      // Generar las alertas basadas en el punto inicial y el intervalo de días
+      if (initialPoint) {
+        let currentDate = new Date(initialPoint);
+        while (currentDate >= startDate && currentDate <= alertEndDate && currentDate <= endDate) {
+          // const alertCopy = { ...alert };
+          const alertCopy = { 
+            start: currentDate.toISOString().slice(0, 19).replace('T', ' '),
+            alertId: alert.id,
+            title: `${patientFullName} ${alert.subType || ''}`,
+            description: alert.description,
+            phone: patientPhone,
+            color: eventColor, 
+          };
+          // alertCopy.startDate = currentDate.toISOString().slice(0, 19).replace('T', ' ');
+          alerts.push(alertCopy);
+          currentDate.setDate(currentDate.getDate() + intervalDays);
+        }
+      }
+
+      return alerts;
     },
   },
 };
