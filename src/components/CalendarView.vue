@@ -9,9 +9,12 @@
       <p>Fecha seleccionada: {{ selectedDate }}</p>
       <ul>
         <li v-for="(event, index) in selectedEvents" :key="index">
-          <button class="btn btn-primary" :style="{ backgroundColor: event.color }" @click="handleEventClick(event)">
+          <button class="btn btn-primary" :style="{ backgroundColor: event.color }" @click="debugger; handleAddCall(event?.alertId)">
             {{ event.title }}
           </button>
+          <!-- <button class="btn btn-primary" :style="{ backgroundColor: event.color }" @click="handleEventClick(event)">
+            {{ event.title }}
+          </button> -->
           - {{ event.description }}<br />
           Teléfono: {{ event.phone }}
         </li>
