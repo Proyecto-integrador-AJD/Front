@@ -1,14 +1,21 @@
 <template>
-  <form @submit.prevent="handleLogin">
-    <input type="text" v-model="username" placeholder="Username" />
-    <input type="password" v-model="password" placeholder="Password" />
-    <button type="submit">Iniciar sesión</button>
-  </form>
+  <div class="login-container">
+    <h2>Iniciar Sesión</h2>
+      <form @submit.prevent="handleLogin">
+        <input type="text" v-model="username" placeholder="Username" class="input-login"/>
+        <input type="password" v-model="password" placeholder="Password" class="input-login"/><br>
+        <button class="btn btn-primary button-login" type="submit" :disabled="loading">
+          {{ loading ? "Cargando..." : "Iniciar Sesión" }}
+        </button>
+      </form>
+  </div>
 </template>
 
 <script>
 import { useAuthStore } from "../stores/auth";
+import { useDataStore } from "../stores/data";
 import axios from "axios";
+import { onMounted, onBeforeUnmount } from "vue";
 
 export default {
   name: "LoginView",
@@ -21,6 +28,7 @@ export default {
   methods: {
     async handleLogin() {
       const authStore = useAuthStore();
+      const dataStore = useDataStore();
       try {
         const API = import.meta.env.VITE_URL_API;
         const response = await axios.post(`${API}/login`, {
@@ -32,11 +40,13 @@ export default {
           const token = response.data.data.token;
 
           authStore.setToken(token); // Llama a la función para guardar el token
+          axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+
           console.log(authStore.token);
           axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
 
-          const responseP = await axios.get(API + '/user');
-          const user = responseP.data.data;
+          await dataStore.loadUser();
+          const user = dataStore.user; 
            // Buscamos al usuario logueado por su email
           console.log(token);
           
@@ -60,6 +70,12 @@ export default {
     const authStore = useAuthStore();
     authStore.loadTokenFromStorage();
   },
+  mounted() {
+    document.body.classList.add("login-page");
+  },
+  beforeUnmount() {
+    document.body.classList.remove("login-page");
+  }
 };
 </script>
 

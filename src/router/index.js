@@ -15,6 +15,8 @@ import RegisterView from '../components/RegisterView.vue';
 import AlertsView from '../components/AlertsView.vue';
 import AlertShow from '../components/AlertShow.vue';
 
+import test from '../components/test.vue';
+
 
 
 
@@ -26,6 +28,11 @@ const router = createRouter({
       path: '/',
       name: 'login',
       component: LoginView,
+    },
+    {
+      path: '/test',
+      name: 'test',
+      component: test,
     },
     {
       path: '/register',
@@ -71,6 +78,13 @@ const router = createRouter({
       meta: { requiresAuth: true } 
     },   
     {
+      path: '/add-call',
+      name: 'addCall',
+      component: CallForm,
+      props: true,
+      meta: { requiresAuth: true } 
+    }, 
+    {
       path: '/edit-call/:id?',
       name: 'editCall',
       component: CallForm,
@@ -102,6 +116,23 @@ const router = createRouter({
     
   ],
 })
+
+axios.interceptors.response.use(
+  (response) => {
+    // Si la respuesta es exitosa, simplemente la devolvemos
+    return response;
+  },
+  (error) => {
+    // Si se recibe un error 401
+    if (error.response && error.response.status === 401) {
+      const auth = useAuthStore();
+      auth.logout(); // O el método que uses para cerrar sesión
+      router.push({ name: 'login' }); // Redirigir al login
+    }
+    return Promise.reject(error); // Rechazar la promesa con el error
+  }
+);
+
 router.beforeEach((to, from, next) => {
   const store = useDataStore(); // Accedemos al store para verificar la autenticación
   const auth = useAuthStore(); // Accedemos al store para verificar la autenticación

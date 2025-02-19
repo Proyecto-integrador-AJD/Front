@@ -4,7 +4,7 @@
       <div class="card">
         <div class="card-body">
           <p><strong>Fecha de inicio:</strong> {{ formatDate(alert.startDate) }}</p> 
-          <p><strong>Paciente:</strong> {{ getPatientNameById(alert.patientId) }}</p>
+          <p><strong>Paciente:</strong> {{ getPatientFullNameById(alert.patientId) }}</p>
           <p><strong>Tipo de Llamada:</strong> {{ alert.type }}</p>
           <p><strong>Subtipo:</strong> {{ alert.subType }}</p>
           <p><strong>Duración:</strong> {{ alert.duration }} minutos</p>
@@ -21,7 +21,7 @@
         </div>
       </div>
   
-      <button class="btn btn-secondary mt-3" @click="$router.push('/alerts')">Volver</button>
+      <BackButton />
     </div>
   </template>
   
@@ -29,12 +29,16 @@
   import axios from 'axios';
   import { mapState } from 'pinia';
   import { useDataStore } from '../stores/data';
+  import BackButton from './BackButton.vue';
   
   const API = import.meta.env.VITE_URL_API;
   
   export default {
+    components: {
+      BackButton,
+    },
     computed: {
-      ...mapState(useDataStore, ['getPatientNameById', 'getUserNameById']),
+      ...mapState(useDataStore, ['getPatientFullNameById', 'getUserFullNameById', 'loadAlert']),
     },
     props: ['id'],
     data() {
@@ -49,12 +53,9 @@
       },
     },
     async mounted() {
-      try {
-        const response = await axios.get(`${API}/alerts/${this.id}`); 
-        this.alert = response.data.data; 
-      } catch (error) {
-        alert('Error al cargar los datos de la alerta.'); 
-      }
+      this.alert = await this.loadAlert(this.id);
+      console.log("Alerta cargada:", this.alert);
+      
     },
   };
   </script>

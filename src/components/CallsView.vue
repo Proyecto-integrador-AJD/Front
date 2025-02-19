@@ -1,7 +1,7 @@
 <template>
   <div class="row">
     <div class="mb-3">
-      <button class="btn btn-primary" @click="$router.push('/edit-call')">
+      <button class="btn btn-primary" @click="$router.push('/add-call')">
         Hacer llamada
       </button>
       <button class="btn btn-primary" @click="toggleFilter">
@@ -22,8 +22,8 @@
       </thead>
       <tbody>
         <tr v-for="call in filteredCalls" :key="call.id">
-          <td>{{ getPatientNameById(call.patientId) }}</td>
-          <td>{{ getUserNameById(call.userId) }}</td>
+          <td>{{ getPatientFullNameById(call.patientId) }}</td>
+          <td>{{ getUserFullNameById(call.userId) }}</td>
           <td>{{ call.incoming == 1 ? 'Entrante' : 'Saliente' }}</td>
           <td>{{ call.subType }}</td>
           <td>{{ formatDate(call.date) }}</td>
@@ -208,8 +208,8 @@ export default {
       'calls',
       'patients',
       'users',
-      'getPatientNameById',
-      'getUserNameById',
+      'getPatientFullNameById',
+      'getUserFullNameById',
     ]),
     filteredPatients() {
       return this.patients.filter(patient => {

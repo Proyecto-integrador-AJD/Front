@@ -6,7 +6,7 @@
 
         <div class="form-group">
           <label>Paciente:</label>
-          <Field as="select" v-model="call.patientId" name="patientId" class="form-control">
+          <Field as="select" v-model="call.patientId" name="patientId" class="form-control" :disabled="!call.incoming && alert.patientId ">
             <option v-for="patient in patients" :key="patient.id" :value="patient.id">
               {{ patient.name }} {{ patient.lastName }}
             </option>
@@ -23,7 +23,7 @@
 
         <div class="form-group">
           <label>Tipo de llamada (Entrante/Saliente):</label>
-          <Field as="select" v-model="call.incoming" name="incoming" class="form-control">
+          <Field as="select" v-model="call.incoming" name="incoming" class="form-control" :disabled="!alert.id">
             <option :value="true">Entrante</option>
             <option :value="false">Saliente</option>
           </Field>
@@ -32,30 +32,34 @@
 
         <div v-if="call.incoming === false" class="form-group">
           <label>Información de Alerta:</label>
-          <!-- <div class="form-group-multiple">
-            <div>
-              <Field v-model="call.alertId" name="alertId" type="number" class="form-control" placeholder="ID de Alerta" />
-              <ErrorMessage class="error" name="alertId" />
-            </div>
-            <div>
-              <Field v-model="call.alertType" name="alertType" class="form-control" placeholder="Tipo de Alerta" />
-              <ErrorMessage class="error" name="alertType" />
-            </div>
-            <div>
-              <Field v-model="call.alertSubType" name="alertSubType" class="form-control" placeholder="Subtipo de Alerta" />
-              <ErrorMessage class="error" name="alertSubType" />
-            </div>
-            <div>
-              <Field v-model="call.alertDescription" name="alertDescription" class="form-control"
-                placeholder="Descripción de Alerta" />
-              <ErrorMessage class="error" name="alertDescription" />
-            </div>
-            <div>
-              <Field v-model="call.alertStartDate" name="alertStartDate" type="datetime-local" class="form-control"
-                placeholder="Fecha de Inicio de Alerta" />
-              <ErrorMessage class="error" name="alertStartDate" />
-            </div>
-          </div> -->
+          
+          <div class="flex justify-center items-center min-h-screen bg-gray-100">
+            <form class="bg-white shadow-lg rounded-2xl p-6 w-full max-w-md">
+              <h2 class="text-xl font-semibold text-gray-700 mb-4">Detalles de la Alerta</h2>
+
+              <div class="space-y-4">
+                <div>
+                  <label class="block text-sm font-medium text-gray-600">Tipo</label>
+                  <input type="text" :value="alert.type" disabled class="w-full mt-1 p-2 border rounded-lg bg-gray-100 text-gray-500" />
+                </div>
+
+                <div>
+                  <label class="block text-sm font-medium text-gray-600">Subtipo</label>
+                  <input type="text" :value="alert.subType" disabled class="w-full mt-1 p-2 border rounded-lg bg-gray-100 text-gray-500" />
+                </div>
+
+                <div>
+                  <label class="block text-sm font-medium text-gray-600">Descripción</label>
+                  <textarea :value="alert.description" disabled class="w-full mt-1 p-2 border rounded-lg bg-gray-100 text-gray-500"></textarea>
+                </div>
+
+                <div>
+                  <label class="block text-sm font-medium text-gray-600">Fecha de Inicio</label>
+                  <input type="text" :value="alert.startDate" disabled class="w-full mt-1 p-2 border rounded-lg bg-gray-100 text-gray-500" />
+                </div>
+              </div>
+            </form>
+          </div>
         </div>
 
         <!-- Luego se tiene que poner a un select, cunado se termine la api en el back -->
@@ -100,6 +104,8 @@ import { mapState, mapActions } from 'pinia';
 import { Form, Field, ErrorMessage } from 'vee-validate';
 import * as yup from 'yup';
 import axios from 'axios';
+import { ref } from 'vue';
+import { useRoute } from 'vue-router';
 
 const API = import.meta.env.VITE_URL_API;
 
@@ -111,6 +117,8 @@ export default {
   },
   props: ['id'],
   async mounted() {
+    const route = useRoute();
+    const alertId = route.query.alertId;
     await this.loadPatients();
     await this.loadAlerts();
     await this.loadUsers();
@@ -119,7 +127,19 @@ export default {
     this.loggedUser = user ? user.name : "Usuario";
     if (this.id) {
       const response = await axios.get(`${API}/calls/${this.id}`);
-      this.call = response.data;
+      this.call = response.data.data;
+    }
+    if (alertId) {
+      const response = await axios.get(`${API}/alerts/${alertId}`);
+      this.alert = response.data.data;
+      this.call.alertId = this.alert.id;
+      this.call.patientId = this.alert.patientId;
+      this.alert.id = this.alert.id;
+      this.alert.type = this.alert.type;
+      this.alert.subType = this.alert.subType;
+      this.alert.description = this.alert.description;
+      this.alert.startDate = this.alert.startDate;
+      this.call.incoming =false;
     }
   },
   computed: {
@@ -141,17 +161,20 @@ export default {
       call: {
         patientId: '',
         userId: '',
-        incoming: false, // Se inicializa en false en lugar de null
+        incoming: true, // Se inicializa en false en lugar de null
         date: '',
         type: '',
         subType: '',
         duration: '',
         description: '',
-        alertId: '',
-        alertType: '',
-        alertSubType: '',
-        alertDescription: '',
-        alertStartDate: '',
+      },
+      alert: {
+        id: '',
+        type: '',
+        subType: '',
+        description: '',
+        patientId: '',
+        startDate: '',
       },
       loggedUser: "Usuario",
     };
@@ -185,6 +208,13 @@ export default {
     },
     handleCancel() {
       this.$router.push('/calls');
+    },
+  },
+  watch: {
+    'call.incoming'() {
+      if (!this.call.incoming) {
+        this.call.patientId = this.alert.patientId;
+      }
     },
   },
 };
