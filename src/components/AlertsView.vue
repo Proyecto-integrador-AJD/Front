@@ -60,7 +60,6 @@ export default {
       return date.toLocaleString();
     },
     isToday(dateString, recurrenceType) {
-      debugger
       const date = new Date(dateString);
       const today = new Date();
 

@@ -232,7 +232,7 @@ body, html {
   border: 2px solid #66c2ff;
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
   position: fixed;
-  bottom: 57px;
+  top: 496px;
   left: 0;
 }
 
@@ -241,8 +241,8 @@ body, html {
   font-weight: bold;
   color: #333;
   padding: 0;
-  margin-top:-350px;
-  margin-left: -150px;
+  margin-top: 50px;
+  margin-left: -300px;
   display: block; /* Asegura que estén en líneas separadas */
 }
 

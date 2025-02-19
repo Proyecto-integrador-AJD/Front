@@ -88,13 +88,13 @@ export default {
   width: 100%;
 }
 
-.table {
+/* .table {
   width: 100%;
   height: 8vh;
   width: 900vh;
   border-collapse: collapse;
   table-layout: fixed;
-}
+} */
 
 .table th, .table td {
   padding: 15px;

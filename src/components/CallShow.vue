@@ -1,5 +1,5 @@
 <template>
-    <div class="container">
+    <div class="container elemento-show">
       <h2>Detalles de la Llamada</h2>
       <div class="card">
         <div class="card-body">
