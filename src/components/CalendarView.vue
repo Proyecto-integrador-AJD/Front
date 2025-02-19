@@ -110,6 +110,7 @@ export default {
       let allEvents = [];
       alerts.forEach((alert) => {
         let startDate = new Date(alert.startDate);
+        // let eventColor = alert.isRecurring ? 'dodgerblue' : 'limegreen';
         let eventColor = alert.isRecurring ? 'dodgerblue' : 'limegreen';
         let patientFullName = this.getPatientFullNameById(alert.patientId);
         let patient = this.getPatientById(alert.patientId);
@@ -130,6 +131,22 @@ export default {
           //     color: eventColor,
           //   });
           //   recurringDate.setDate(recurringDate.getDate() + recurrenceStep);
+          // }
+
+          /*
+          const alertCopy = { 
+            start: currentDate.toISOString().slice(0, 19).replace('T', ' '),
+            alertId: alert.id,
+            title: `${patientFullName} ${alert.subType || ''}`,
+            description: alert.description,
+            phone: patientPhone,
+            color: eventColor, 
+          };
+          */
+
+
+
+
           const getSpecificDay = (isNextMonth, year, month) => {
             const today = new Date(year, month - 1); // Ajustar el mes ya que los meses en JavaScript son 0-indexados
             let targetDate;
@@ -156,20 +173,15 @@ export default {
 
             return targetDate;
           }
-
-          // Ejemplo de uso
-          // console.log(getSpecificDay(true, '2025', '2'));  // Domingo de la segunda semana del mes siguiente
-          // console.log(getSpecificDay(false, '2025', '2')); // Lunes de la penúltima semana del mes pasado
-          
           const mes = this.dateCalendar.getMonth() + 1;
           const anio = this.dateCalendar.getFullYear();
           // Ejemplo de uso
           const recurringEvents = this.generateAlerts(getSpecificDay(false, anio, mes), getSpecificDay(true, anio, mes), alert, patientFullName, patientPhone, eventColor);
-          // debugger
           console.log('recurringEvents', recurringEvents);
-          allEvents = allEvents.concat(recurringEvents);
-          
-        
+          recurringEvents.forEach((event) => {
+            allEvents.push(event);
+          });
+
         } else {
           allEvents.push({
             start: startDate.toISOString().split('T')[0],
@@ -259,7 +271,7 @@ export default {
         while (currentDate >= startDate && currentDate <= alertEndDate && currentDate <= endDate) {
           // const alertCopy = { ...alert };
           const alertCopy = { 
-            start: currentDate.toISOString().slice(0, 19).replace('T', ' '),
+            start: currentDate.toISOString().split('T')[0],
             alertId: alert.id,
             title: `${patientFullName} ${alert.subType || ''}`,
             description: alert.description,
