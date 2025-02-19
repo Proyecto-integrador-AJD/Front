@@ -116,7 +116,7 @@ export default {
             allEvents.push({
               start: recurringDate.toISOString().split('T')[0],
               alertId: alert.id,
-              title: `${patientFullName} ${alert.subType}`,
+                title: `${patientFullName} ${alert.subType || ''}`,
               description: alert.description,
               phone: patientPhone,
               color: eventColor,
@@ -127,7 +127,7 @@ export default {
           allEvents.push({
             start: startDate.toISOString().split('T')[0],
             alertId: alert.id,
-            title: `${patientFullName} ${alert.subType}`,
+            title: `${patientFullName} ${alert.subType || ''}`,
             description: alert.description,
             phone: patientPhone,
             color: eventColor,
