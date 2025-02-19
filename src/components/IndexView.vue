@@ -174,6 +174,9 @@ export default {
     onMounted(async () => {
       const user = JSON.parse(localStorage.getItem("user"));
       username.value = user ? user.name : "Usuario";
+      if (!dataStore.isLoadData()) {
+        await dataStore.loadInitialData(); 
+      }
       await dataStore.loadAlertsCurrent();
       await dataStore.loadPatients();
       await dataStore.loadPatientsCurrentUser();
