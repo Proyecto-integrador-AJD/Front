@@ -206,48 +206,48 @@ export default {
       });
     },
     generateAlerts(startDate, endDate, alert, patientFullName, patientPhone, eventColor) {
-  const alerts = [];
-  if (!alert.isRecurring) return []; // Si no es recurrente, no generamos alertas
+      const alerts = [];
+      if (!alert.isRecurring) return []; // Si no es recurrente, no generamos alertas
 
-  const recurrenceType = alert.recurrenceType;
-  const recurrenceCount = alert.recurrence;
-  const alertStartDate = new Date(alert.startDate); // Fecha inicial de la alerta
+      const recurrenceType = alert.recurrenceType;
+      const recurrenceCount = alert.recurrence;
+      const alertStartDate = new Date(alert.startDate); // Fecha inicial de la alerta
 
-  if (isNaN(alertStartDate.getTime()) || recurrenceCount <= 0) return []; // Validaciones básicas
+      if (isNaN(alertStartDate.getTime()) || recurrenceCount <= 0) return []; // Validaciones básicas
 
-  let intervalDays = 0;
-  switch (recurrenceType) {
-    case 'daily':
-      intervalDays = 1;
-      break;
-    case 'weekly':
-      intervalDays = 7;
-      break;
-    case 'monthly':
-      intervalDays = 30; // Nota: Esto no maneja meses con diferente cantidad de días
-      break;
-    default:
-      return []; // Si la recurrencia no es válida, no generamos alertas
-  }
+      let intervalDays = 0;
+      switch (recurrenceType) {
+        case 'daily':
+          intervalDays = 1;
+          break;
+        case 'weekly':
+          intervalDays = 7;
+          break;
+        case 'monthly':
+          intervalDays = 30; // Nota: Esto no maneja meses con diferente cantidad de días
+          break;
+        default:
+          return []; // Si la recurrencia no es válida, no generamos alertas
+      }
 
-  // Calcular todas las fechas de recurrencia
-  let currentDate = new Date(alertStartDate);
-  for (let i = 0; i < recurrenceCount; i++) {
-    if (currentDate >= startDate && currentDate <= endDate) {
-      alerts.push({
-        start: currentDate.toISOString().split('T')[0], // Formato 'YYYY-MM-DD HH:MM'
-        alertId: alert.id,
-        title: `${patientFullName} ${alert.subType || ''}`.trim(),
-        description: alert.description,
-        phone: patientPhone,
-        color: eventColor,
-      });
+      // Calcular todas las fechas de recurrencia
+      let currentDate = new Date(alertStartDate);
+      for (let i = 0; i < recurrenceCount; i++) {
+        if (currentDate >= startDate && currentDate <= endDate) {
+          alerts.push({
+            start: currentDate.toISOString().split('T')[0], // Formato 'YYYY-MM-DD HH:MM'
+            alertId: alert.id,
+            title: `${patientFullName} ${alert.subType || ''}`.trim(),
+            description: alert.description,
+            phone: patientPhone,
+            color: eventColor,
+          });
+        }
+        currentDate.setDate(currentDate.getDate() + intervalDays);
+      }
+
+      return alerts;
     }
-    currentDate.setDate(currentDate.getDate() + intervalDays);
-  }
-
-  return alerts;
-}
 
   },
 };
