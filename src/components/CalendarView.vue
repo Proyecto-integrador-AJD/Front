@@ -206,89 +206,49 @@ export default {
       });
     },
     generateAlerts(startDate, endDate, alert, patientFullName, patientPhone, eventColor) {
-      debugger
-      const alerts = [];
-      const recurrenceType = alert.recurrenceType;
-      let initialPoint = null;
-      let intervalDays = 0;
+  const alerts = [];
+  if (!alert.isRecurring) return []; // Si no es recurrente, no generamos alertas
 
-      switch (recurrenceType) {
-        case 'daily':
-          intervalDays = 1;
-          break;
-        case 'weekly':
-          intervalDays = 7;
-          break;
-        case 'monthly':
-          intervalDays = 30;
-          break;
-      }
+  const recurrenceType = alert.recurrenceType;
+  const recurrenceCount = alert.recurrence;
+  const alertStartDate = new Date(alert.startDate); // Fecha inicial de la alerta
 
-      const totalAlertDays = intervalDays * alert.recurrence;
-      const alertStartDate = new Date(alert.startDate);
-      let tempStartDate = new Date(alert.startDate);
+  if (isNaN(alertStartDate.getTime()) || recurrenceCount <= 0) return []; // Validaciones básicas
 
-      // Fecha de fin de la alerta
-      const alertEndDate = new Date(tempStartDate.setDate(tempStartDate.getDate() + totalAlertDays));
+  let intervalDays = 0;
+  switch (recurrenceType) {
+    case 'daily':
+      intervalDays = 1;
+      break;
+    case 'weekly':
+      intervalDays = 7;
+      break;
+    case 'monthly':
+      intervalDays = 30; // Nota: Esto no maneja meses con diferente cantidad de días
+      break;
+    default:
+      return []; // Si la recurrencia no es válida, no generamos alertas
+  }
 
-      // Si la fecha de fin de la alerta es anterior a la fecha de inicio del rango, no hay alertas
-      if (alertEndDate < startDate) {
-        return [];
-      }
+  // Calcular todas las fechas de recurrencia
+  let currentDate = new Date(alertStartDate);
+  for (let i = 0; i < recurrenceCount; i++) {
+    if (currentDate >= startDate && currentDate <= endDate) {
+      alerts.push({
+        start: currentDate.toISOString().split('T')[0], // Formato 'YYYY-MM-DD HH:MM'
+        alertId: alert.id,
+        title: `${patientFullName} ${alert.subType || ''}`.trim(),
+        description: alert.description,
+        phone: patientPhone,
+        color: eventColor,
+      });
+    }
+    currentDate.setDate(currentDate.getDate() + intervalDays);
+  }
 
-      // Si la fecha de inicio de la alerta es posterior a la fecha de fin del rango, no hay alertas
-      if (alertStartDate > endDate) {
-        return [];
-      }
+  return alerts;
+}
 
-      // Determinar el punto inicial de la alerta basado en el tipo de recurrencia
-      if (recurrenceType === 'daily') {
-        initialPoint = new Date(alert.startDate);
-      } else if (recurrenceType === 'weekly') {
-        const alertDayOfWeek = new Date(alert.startDate).getDay();
-        debugger
-        for (let i = 0; i < 7; i++) {
-          const currentDayOfWeek = new Date(startDate).getDay();
-          if (currentDayOfWeek === alertDayOfWeek) {
-            initialPoint = new Date(startDate);
-            break;
-          }
-          startDate.setDate(startDate.getDate() + 1);
-        }
-      } else if (recurrenceType === 'monthly') {
-        const alertDayOfMonth = new Date(alert.startDate).getDate();
-
-        for (let i = 0; i < 30; i++) {
-          const currentDayOfMonth = new Date(startDate).getDate();
-          if (currentDayOfMonth === alertDayOfMonth) {
-            initialPoint = new Date(startDate);
-            break;
-          }
-          startDate.setDate(startDate.getDate() + 1);
-        }
-      }
-
-      // Generar las alertas basadas en el punto inicial y el intervalo de días
-      if (initialPoint) {
-        let currentDate = new Date(initialPoint);
-        while (currentDate >= startDate && currentDate <= alertEndDate && currentDate <= endDate) {
-          // const alertCopy = { ...alert };
-          const alertCopy = { 
-            start: currentDate.toISOString().split('T')[0],
-            alertId: alert.id,
-            title: `${patientFullName} ${alert.subType || ''}`,
-            description: alert.description,
-            phone: patientPhone,
-            color: eventColor, 
-          };
-          // alertCopy.startDate = currentDate.toISOString().slice(0, 19).replace('T', ' ');
-          alerts.push(alertCopy);
-          currentDate.setDate(currentDate.getDate() + intervalDays);
-        }
-      }
-
-      return alerts;
-    },
   },
 };
 </script>
