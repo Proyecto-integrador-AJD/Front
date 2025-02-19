@@ -25,35 +25,35 @@
         <div class="form-group">
           <label>Dirección:</label>
           <div class="form-group-multiple">
-            <div>
+            <div class="form-group">
               <Field v-model="patient.addressStreet" name="calle" type="text" class="form-control" placeholder="Calle" />
               <ErrorMessage class="error" name="calle" />
             </div>
-            <div>
+            <div class="form-group">
               <Field v-model="patient.addressNumber" name="numero" type="text" class="form-control" placeholder="Número" />
               <ErrorMessage class="error" name="numero" />
             </div>
-            <div>
+            <div class="form-group">
               <Field v-model="patient.addressFloor" name="piso" type="text" class="form-control" placeholder="Piso" />
               <ErrorMessage class="error" name="piso" />
             </div>
-            <div>
+            <div class="form-group">
               <Field v-model="patient.addressDoor" name="puerta" type="text" class="form-control" placeholder="Puerta" />
               <ErrorMessage class="error" name="puerta" />
             </div>
-            <div>
+            <div class="form-group">
               <Field v-model="patient.addressPostalCode" name="codigoPostal" type="text" class="form-control" placeholder="Código Postal" />
               <ErrorMessage class="error" name="codigoPostal" />
             </div>
-            <div>
+            <div class="form-group">
               <Field v-model="patient.addressCity" name="ciudad" type="text" class="form-control" placeholder="Ciudad" />
               <ErrorMessage class="error" name="ciudad" />
             </div>
-            <div>
+            <div class="form-group">
               <Field v-model="patient.addressProvince" name="provincia" type="text" class="form-control" placeholder="Provincia" />
               <ErrorMessage class="error" name="provincia" />
             </div>
-            <div>
+            <div class="form-group">
               <Field v-model="patient.addressCountry" name="pais" type="text" class="form-control" placeholder="País" />
               <ErrorMessage class="error" name="pais" />
             </div>
@@ -188,7 +188,7 @@
         <div class="form-group" >
           <label>Contacto de emergencia:</label>
           <div class="form-group-multiple">
-            <div v-for="(contact, index) in patient.emergencyContacts" :key="index">
+            <div v-for="(contact, index) in patient.emergencyContacts" :key="index" class="contact-card">
               <div>
                 <Field v-model="contact.name" :name="`emergencyContacts[${index}].nombre`" placeholder="Nombre" class="form-control" />
                 <ErrorMessage class="error" :name="`emergencyContacts[${index}].nombre`" />
@@ -243,7 +243,7 @@
               </button>
             </div>
           </div>
-        </div>
+        </div><br>
 
         <button type="submit" class="btn btn-primary">Guardar</button>
         <button type="button" class="btn btn-danger" @click="handleCancel">Cancelar</button>
@@ -297,9 +297,15 @@ export default {
       mySchema: yup.object().shape({
         nombrePacient: yup.string().required('El nombre es obligatorio'),
         apellido: yup.string().required('El apellido es obligatorio'),
-        fecha: yup.date().required('La fecha de nacimiento es obligatoria'),
+        fecha: yup
+          .date()
+          .typeError('La fecha debe ser válida en formato YYYY-MM-DD')
+          .required('La fecha de nacimiento es obligatoria'),
         calle: yup.string().required('La calle es obligatoria'),
-        numero: yup.number().required('El número es obligatorio'),
+        numero: yup
+          .number()
+          .typeError('El número debe ser un número')
+          .required('El número es obligatorio'),
         piso: yup.string().nullable(),
         puerta: yup.string().nullable(),
         codigoPostal: yup.string().required('El código postal es obligatorio'),
@@ -309,7 +315,10 @@ export default {
         dni: yup.string().required('El DNI es obligatorio'),
         sanitario: yup.string().required('El número sanitario es obligatorio'),
         prefijo: yup.string().required('El prefijo es obligatorio'),
-        telefono: yup.number().required('El teléfono es obligatorio'),
+        telefono: yup
+          .number()
+          .typeError('El teléfono debe ser un número')
+          .required('El teléfono es obligatorio'),
         correo: yup.string().email('Correo inválido').required('El correo es obligatorio'),
         zona: yup.string().required('La zona es obligatoria'),
         situacionPersonal: yup.string().required('La situación personal familiar es obligatoria'),
@@ -320,15 +329,20 @@ export default {
         localizacion: yup.string().required('La localización es obligatoria'),
         autonomia: yup.string().required('La autonomía es obligatoria'),
         situacionEconomica: yup.string().required('La situación económica es obligatoria'),
-        emergencyContacts: yup.array().of(
-          yup.object({
-            nombre: yup.string().required('El nombre es obligatorio'),
-            apellido: yup.string().required('El apellido es obligatorio'),
-            prefix: yup.string().required('El prefijo es obligatorio'),
-            telefono: yup.string().required('El teléfono es obligatorio'),
-            relacion: yup.string().required('La relación es obligatoria')
-          })
-        ).min(1, 'Debe haber al menos un contacto de emergencia')
+        emergencyContacts: yup.array()
+          .of(
+            yup.object({
+              nombre: yup.string().required('El nombre es obligatorio'),
+              apellido: yup.string().required('El apellido es obligatorio'),
+              prefix: yup.string().required('El prefijo es obligatorio'),
+              telefono: yup
+                .string()
+                .matches(/^\d+$/, 'El teléfono debe contener solo números')
+                .required('El teléfono es obligatorio'),
+              relacion: yup.string().required('La relación es obligatoria')
+            })
+          )
+          .min(1, 'Debe haber al menos un contacto de emergencia')
       }),
       languageOptions:[],
       patient: {
@@ -430,12 +444,10 @@ export default {
 
 <style scoped>
 .row {
-  /* width: 100vw; */
-  height: 100vh;
+  /* height: 100vh; */
   display: flex;
   justify-content: center;
   align-items: center;
-
 }
 
 Form {
@@ -446,6 +458,7 @@ Form {
   border-radius: 10px;
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
 }
+
 
 .form-group {
   margin-top: 20px;
@@ -471,7 +484,7 @@ Form {
 
 .form-control {
   width: 100%;
-  max-width: 220px; 
+  /* max-width: 220px;  */
   padding: 6px;
   font-size: 0.9rem;
   border: 1px solid #ccc;
@@ -502,11 +515,13 @@ button {
   border-left: 4px solid #d32f2f;
   padding: 8px 12px;
   font-size: 0.875rem;
-  font-weight: 500;
+  font-weight: bold;
   border-radius: 4px;
   margin-top: 4px;
   display: inline-block;
+  width: 100%;
 }
+
 </style>
 
 

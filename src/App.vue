@@ -51,16 +51,16 @@ export default {
     <header v-if="isAuthenticated && !isLogin">
       <!-- Solo mostrar el nav si está autenticado y no estamos en la página de login -->
       <nav>
-        <RouterLink to="/index">Inicio</RouterLink>
-        <RouterLink to="/patients">Usuarios</RouterLink>
-        <RouterLink to="/calls">Llamadas</RouterLink>
-        <RouterLink to="/alerts">Alertas</RouterLink>
-        <RouterLink to="/calendar">Calendario</RouterLink>
-        <button @click="logout" class="btn btn-primary">Cerrar Sesión</button>
+        <RouterLink class="menu-item" to="/index">Inicio</RouterLink>
+        <RouterLink class="menu-item" to="/patients">Usuarios</RouterLink>
+        <RouterLink class="menu-item" to="/calls">Llamadas</RouterLink>
+        <RouterLink class="menu-item" to="/alerts">Alertas</RouterLink>
+        <RouterLink class="menu-item" to="/calendar">Calendario</RouterLink>
+        <button @click="logout" class="menu-item menu-button">Cerrar Sesión</button>
       </nav>
     </header>
 
-    <RouterView />
+    <RouterView class="margin-container"/>
 
     <footer></footer>
   </div>
@@ -71,7 +71,7 @@ export default {
 
 
 <style scoped>
-header {
+/* header {
   background-color: #66c2ff;
   padding: 15px;
   text-align: center;
@@ -80,6 +80,9 @@ header {
   top: 0;
   left: 0;
   z-index: 1000;
+} */
+.margin-container {
+ margin: 60px;
 }
 
 nav {
@@ -93,11 +96,11 @@ nav a {
   font-weight: bold;
   text-decoration: none;
   padding: 5px 10px;
-  transition: background 0.3s ease-in-out;
+  transition: all 0.3s ease-in-out;
 }
 
 nav a:hover {
-  background-color: #89DCFF;
+  background-color: #85d2f3;
   border-radius: 5px;
 }
 

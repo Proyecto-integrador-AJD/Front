@@ -5,8 +5,12 @@
     </div>
 
     <!-- Calendario -->
-    <div class="calendar-wrapper">
+    <div v-if="hayAlertas()" class="calendar-wrapper">
       <FullCalendar :options="calendarOptions" />
+    </div>
+
+    <div v-else class="calendar-wrapper">
+      <h2>No hay alertas para hoy</h2>
     </div>
 
     <div class="patients-wrapper">
@@ -101,6 +105,21 @@ export default {
       return JSON.parse(localStorage.getItem(key)) || false;
     };
 
+    const hayAlertas = () => {
+      const today = new Date();
+      return (
+        Array.isArray(alertsCurrent.value) &&
+        alertsCurrent.value.some(alert => {
+          const alertDate = new Date(alert.startDate);
+          return (
+            alertDate.getDate() === today.getDate() &&
+            alertDate.getMonth() === today.getMonth() &&
+            alertDate.getFullYear() === today.getFullYear()
+          );
+        })
+      );
+    };
+
     const loadEvents = () => {
       if (!alertsCurrent.value || !Array.isArray(alertsCurrent.value) || alertsCurrent.value.length === 0) {
         console.warn("No hay alertas disponibles aún.");
@@ -160,14 +179,13 @@ export default {
       await dataStore.loadPatientsCurrentUser();
       loadEvents();
       calendarOptions.value.scrollTime = new Date().getHours() + ':00:00';
-      debugger
     });
 
     watchEffect(() => {
       loadEvents();
     });
 
-    return { username, patientsCurrent, calendarOptions, isModalOpen, selectedEvent, saveCheckboxState };
+    return { username, patientsCurrent, calendarOptions, isModalOpen, selectedEvent, saveCheckboxState, hayAlertas };
   },
 };
 </script>
@@ -282,5 +300,9 @@ button:hover {
 
 .no-alerts {
   opacity: 0.4;
+}
+
+li {
+  list-style: none;
 }
 </style>
