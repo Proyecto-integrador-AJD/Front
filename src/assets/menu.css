@@ -46,11 +46,12 @@ nav {
 }  
 
 .menu-button {
-    color: black;
+    color: rgb(255, 255, 255);
+    background-color: #0051ff;
+    border-radius: 5px;
     font-weight: bold;
     text-decoration: none;
     padding: 5px 10px;
-    background-color: #007bff00;
     border: 0px;
 }
 

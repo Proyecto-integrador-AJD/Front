@@ -1,6 +1,6 @@
 <template>
   <div class="row">
-    <Form novalidate :validation-schema="mySchema" @submit="handleSubmit">
+    <Form novalidate :validation-schema="mySchema" @submit="handleSubmit" class="form-datos">
       <fieldset>
         <legend>{{ title }}</legend>
 
@@ -155,7 +155,7 @@ export default {
         incoming: yup.boolean().required('Tipo de llamada es obligatorio'),
         tipo: yup.string().required('Tipo de llamada es obligatorio'),
         subtipo: yup.string().required('SubTipo de llamada es obligatorio'),
-        duration: yup.number().positive('Duración debe ser positiva').required('Duración es obligatoria'),
+        duration: yup.number().typeError('La duración debe ser un número').positive('Duración debe ser positiva').required('Duración es obligatoria'),
         description: yup.string().required('Descripción es obligatoria'),
       }),
       call: {
@@ -219,76 +219,3 @@ export default {
   },
 };
 </script>
-
-
-<style scoped>
-.row {
-  /* width: 100vw;  */
-  height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-
-}
-
-Form {
-  width: 100%;
-  max-width: 900px;
-  background: white;
-  padding: 20px;
-  border-radius: 10px;
-  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-  box-sizing: border-box;
-}
-
-.form-group {
-  margin-bottom: 15px;
-}
-
-.form-group label {
-  font-weight: bold;
-  text-align: left;
-  margin-bottom: 5px;
-  font-size: 0.95rem;
-}
-
-
-.form-control {
-  width: 100%;
-  max-width: 250px;
-  padding: 6px 10px;
-  font-size: 0.9rem;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-}
-
-
-.form-buttons {
-  display: flex;
-  justify-content: center;
-  gap: 15px;
-}
-
-button {
-  padding: 8px 15px;
-  font-size: 0.9rem;
-  border-radius: 5px;
-  border: none;
-  cursor: pointer;
-}
-
-.btn-primary {
-  background-color: #007bff;
-  color: white;
-}
-
-.btn-danger {
-  background-color: #dc3545;
-  color: white;
-}
-
-.error {
-  color: red;
-  font-size: 0.8rem;
-}
-</style>
