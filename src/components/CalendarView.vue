@@ -61,6 +61,7 @@ export default {
         eventClick: (info) => this.handleEventClick(info.event),
         dayMaxEvents: 3,
         eventLimitText: "Ver más eventos",
+        datesSet: () => this.loadEvents(this.alertsCurrent),
       },
       dateCalendar: null,
       isModalOpen: false,
@@ -173,6 +174,7 @@ export default {
 
             return targetDate;
           }
+          this.getCurrentMonth();
           const mes = this.dateCalendar.getMonth() + 1;
           const anio = this.dateCalendar.getFullYear();
           // Ejemplo de uso
@@ -204,6 +206,7 @@ export default {
       });
     },
     generateAlerts(startDate, endDate, alert, patientFullName, patientPhone, eventColor) {
+      debugger
       const alerts = [];
       const recurrenceType = alert.recurrenceType;
       let initialPoint = null;
@@ -243,7 +246,7 @@ export default {
         initialPoint = new Date(alert.startDate);
       } else if (recurrenceType === 'weekly') {
         const alertDayOfWeek = new Date(alert.startDate).getDay();
-
+        debugger
         for (let i = 0; i < 7; i++) {
           const currentDayOfWeek = new Date(startDate).getDay();
           if (currentDayOfWeek === alertDayOfWeek) {
