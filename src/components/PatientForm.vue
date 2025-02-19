@@ -1,59 +1,59 @@
 <template>
   <div class="row">
     <Form novalidate :validation-schema="mySchema" @submit="handleSubmit" class="form-datos">
-      <fieldset>
-        <legend>{{ title }}</legend>
+      <fieldset class="grid-form">
+        <legend class="title">{{ title }}</legend>
 
-        <div class="form-group">
+        <div class="form-group nombre">
           <label>Nombre:</label>
           <Field v-model="patient.name" name="nombrePacient" class="form-control" />
           <ErrorMessage class="error" name="nombrePacient" />
         </div>
 
-        <div class="form-group">
+        <div class="form-group apellido">
           <label>Apellido:</label>
           <Field v-model="patient.lastName" name="apellido" class="form-control" />
           <ErrorMessage class="error" name="apellido" />
         </div>
 
-        <div class="form-group">
+        <div class="form-group fecha">
           <label>Fecha de nacimiento:</label>
           <Field v-model="patient.birthDate" name="fecha" type="date" class="form-control" />
           <ErrorMessage class="error" name="fecha" />
         </div>
 
-        <div class="form-group">
+        <div class="form-group calle">
           <label>Dirección:</label>
-          <div class="form-group-multiple">
-            <div class="form-group">
+          <div class="form-group-multiple little-margin row">
+            <div class="form-group col-md-3 col-6">
               <Field v-model="patient.addressStreet" name="calle" type="text" class="form-control" placeholder="Calle" />
               <ErrorMessage class="error" name="calle" />
             </div>
-            <div class="form-group">
+            <div class="form-group col-md-3 col-6">
               <Field v-model="patient.addressNumber" name="numero" type="text" class="form-control" placeholder="Número" />
               <ErrorMessage class="error" name="numero" />
             </div>
-            <div class="form-group">
+            <div class="form-group col-md-3 col-6">
               <Field v-model="patient.addressFloor" name="piso" type="text" class="form-control" placeholder="Piso" />
               <ErrorMessage class="error" name="piso" />
             </div>
-            <div class="form-group">
+            <div class="form-group col-md-3 col-6">
               <Field v-model="patient.addressDoor" name="puerta" type="text" class="form-control" placeholder="Puerta" />
               <ErrorMessage class="error" name="puerta" />
             </div>
-            <div class="form-group">
+            <div class="form-group col-md-3 col-6">
               <Field v-model="patient.addressPostalCode" name="codigoPostal" type="text" class="form-control" placeholder="Código Postal" />
               <ErrorMessage class="error" name="codigoPostal" />
             </div>
-            <div class="form-group">
+            <div class="form-group col-md-3 col-6">
               <Field v-model="patient.addressCity" name="ciudad" type="text" class="form-control" placeholder="Ciudad" />
               <ErrorMessage class="error" name="ciudad" />
             </div>
-            <div class="form-group">
+            <div class="form-group col-md-3 col-6">
               <Field v-model="patient.addressProvince" name="provincia" type="text" class="form-control" placeholder="Provincia" />
               <ErrorMessage class="error" name="provincia" />
             </div>
-            <div class="form-group">
+            <div class="form-group col-md-3 col-6">
               <Field v-model="patient.addressCountry" name="pais" type="text" class="form-control" placeholder="País" />
               <ErrorMessage class="error" name="pais" />
             </div>
@@ -61,20 +61,20 @@
           <ErrorMessage class="error" name="direccion" />
         </div>
 
-        <div class="form-group">
+        <div class="form-group dni">
           <label>DNI:</label>
           <Field v-model="patient.dni" name="dni" class="form-control" />
           <ErrorMessage class="error" name="dni" />
         </div>
 
-        <div class="form-group">
+        <div class="form-group sanitario">
           <label>Número Sanitario:</label>
           <Field v-model="patient.healthCardNumber" name="sanitario" class="form-control" />
           <ErrorMessage class="error" name="sanitario" />
         </div>
 
 
-        <div class="form-group">
+        <div class="form-group idioma">
           <label>Idioma:</label>
           <MultiSelect
             v-model="patient.language"
@@ -95,7 +95,7 @@
           <ErrorMessage class="error" name="idioma" />
         </div>
 
-          <div class="form-group">
+          <div class="form-group telefono">
             <label>Teléfono:</label>
             <div class="phone-group form-group-multiple">
               <div>
@@ -124,13 +124,13 @@
           </div>
 
 
-        <div class="form-group">
+        <div class="form-group correo">
           <label>Correo:</label>
           <Field v-model="patient.email" name="correo" class="form-control" />
           <ErrorMessage class="error" name="correo" />
         </div>
 
-        <div class="form-group">
+        <div class="form-group zona">
             <label>Zona:</label>
             <Field as="select" v-model="patient.zoneId" name="zona" class="form-control">
             <option 
@@ -139,55 +139,55 @@
             <ErrorMessage class="error" name="zona" />
           </div>
 
-        <div class="form-group">
+        <div class="form-group situacionPersonal">
           <label>Situación personal familiar:</label>
           <Field v-model="patient.situationPersonalFamily" name="situacionPersonal" class="form-control" />
           <ErrorMessage class="error" name="situacionPersonal" />
         </div>
 
-        <div class="form-group">
+        <div class="form-group situacionSanitaria">
           <label>Situación sanitaria:</label>
           <Field v-model="patient.healthSituation" name="situacionSanitaria" class="form-control" />
           <ErrorMessage class="error" name="situacionSanitaria" />
         </div>
 
-        <div class="form-group">
+        <div class="form-group situacionAlojamiento">
           <label>Situacion de Alojamiento:</label>
-          <div class="form-group-multiple"> 
-            <div>
+          <div class="form-group-multiple little-margin row"> 
+            <div class="col-md-3 col-6">
               <Field v-model="patient.housingSituationType" name="tipo" type="text" class="form-control" placeholder="Tipo" />
               <ErrorMessage class="error" name="tipo" />
             </div>
-            <div>
+            <div class="col-md-3 col-6">
               <Field v-model="patient.housingSituationStatus" name="estado" type="text" class="form-control" placeholder="Estado" />
               <ErrorMessage class="error" name="estado" />
             </div>
-            <div>
+            <div class="col-md-3 col-6">
               <Field v-model="patient.housingSituationNumberOfRooms" name="habitacion" type="number" class="form-control" placeholder="Habitación" />
               <ErrorMessage class="error" name="habitacion" />
             </div>
-            <div>
+            <div class="col-md-3 col-6">
               <Field v-model="patient.housingSituationLocation" name="localizacion" type="text" class="form-control" placeholder="Localización" />
               <ErrorMessage class="error" name="localizacion" />
             </div>
           </div> 
         </div>
 
-        <div class="form-group">
+        <div class="form-group autonomia">
           <label>Autonomía:</label>
           <Field v-model="patient.personalAutonomy" name="autonomia" class="form-control" />
           <ErrorMessage class="error" name="autonomia" />
         </div>
 
-        <div class="form-group">
+        <div class="form-group situacionEconomica">
           <label>Situación económica:</label>
           <Field v-model="patient.economicSituation" name="situacionEconomica" class="form-control" />
           <ErrorMessage class="error" name="situacionEconomica" />
         </div>
 
-        <div class="form-group" >
+        <div class="form-group contacto" >
           <label>Contacto de emergencia:</label>
-          <div class="form-group-multiple">
+          <div class="form-group-multiple-contact" >
             <div v-for="(contact, index) in patient.emergencyContacts" :key="index" class="contact-card col-12">
               <div>
                 <Field v-model="contact.name" :name="`emergencyContacts[${index}].nombre`" placeholder="Nombre" class="form-control" />
@@ -245,8 +245,8 @@
           </div>
         </div><br>
 
-        <button type="submit" class="btn btn-primary">Guardar</button>
-        <button type="button" class="btn btn-danger" @click="handleCancel">Cancelar</button>
+        <button type="submit" class="btn btn-primary save">Guardar</button>
+        <button type="button" class="btn btn-danger cancel" @click="handleCancel">Cancelar</button>
       </fieldset>
     </Form>
   </div>
@@ -259,9 +259,6 @@ import { Form, Field, ErrorMessage } from 'vee-validate';
 import * as yup from 'yup';
 import MultiSelect from 'primevue/multiselect';
 import axios from 'axios';
-
-
-
 
 const API = import.meta.env.VITE_URL_API;
 
@@ -435,3 +432,102 @@ export default {
   },
 };
 </script>
+
+<style>
+.grid-form {
+  display: grid;
+  gap: 10px;
+  grid-template-columns: 1fr 1fr;
+  grid-template-areas:
+      "title title"
+      "nombre apellido"
+      "fecha fecha"
+      "calle calle"
+      "dni sanitario"
+      "idioma telefono"
+      "correo zona"
+      "situacionPersonal situacionSanitaria"
+      "situacionAlojamiento situacionAlojamiento"
+      "autonomia situacionEconomica"
+      "contacto contacto"
+      "save save"
+      "cancel cancel";
+}
+
+
+.title {
+  grid-area: title;
+}
+
+.nombre {
+    grid-area: nombre;
+}
+
+.apellido {
+    grid-area: apellido;
+  }
+
+  .fecha {
+    grid-area: fecha;
+  }
+  
+.calle {
+  grid-area: calle;
+}
+
+.dni {
+    grid-area: dni;
+}
+
+.sanitario {
+    grid-area: sanitario;
+}
+
+.idioma {
+    grid-area: idioma;
+}
+
+.telefono {
+    grid-area: telefono;
+}
+
+.correo {
+    grid-area: correo;
+}
+
+.zona {
+    grid-area: zona;
+  }
+
+  .situacionPersonal {
+    grid-area: situacionPersonal;
+}
+
+.situacionSanitaria {
+  grid-area: situacionSanitaria;
+}
+
+.situacionAlojamiento {
+    grid-area: situacionAlojamiento;
+}
+
+.autonomia {
+    grid-area: autonomia;
+}
+
+.situacionEconomica {
+    grid-area: situacionEconomica;
+}
+
+.contacto {
+    grid-area: contacto;
+  }
+
+  .save {
+    grid-area: save;
+}
+
+.cancel {
+    grid-area: cancel;
+}
+</style>

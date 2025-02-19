@@ -1,203 +1,151 @@
 <template>
-  <div class="register-container">
+  <div class="login-container">
     <h2>Registro</h2>
-    <form @submit.prevent="handleRegister">
-      <div class="input-group">
-        <label for="name">Nombre</label>
-        <input id="name" v-model="name" type="text" placeholder="Nombre" required />
-      </div>
-
-      <div class="input-group">
-        <label for="lastName">Apellido</label>
-        <input id="lastName" v-model="lastName" type="text" placeholder="Apellido" required />
-      </div>
-
-      <div class="input-group">
-        <label for="prefix">Prefijo</label>
-        <input id="prefix" v-model="prefix" type="number" placeholder="Prefijo" required />
-      </div>
-
-      <div class="input-group">
-        <label for="phone">Teléfono</label>
-        <input id="phone" v-model="phone" type="number" placeholder="Teléfono" required />
-      </div>
-
-      <div class="input-group">
-        <label for="email">Email</label>
-        <input id="email" v-model="email" type="email" placeholder="Email" required />
-      </div>
-
-      <div class="input-group">
-        <label for="password">Contraseña</label>
-        <input id="password" v-model="password" type="password" placeholder="Contraseña" required />
-      </div>
-
-      <div class="input-group">
-        <MultiSelect
-          v-model="selectedLanguages"
-          :options="languageOptions"
-          optionLabel="label"
-          display="chip"
-          placeholder="Selecciona los idiomas"
-          class="w-full md:w-20rem multi-select-container"
-        >
-          <template #optiongroup="slotProps">
-            <div class="flex align-items-center">
-              <img :alt="slotProps.option.label" :src="slotProps.option.flag" class="mr-2" style="width: 20px" />
-              <div>{{ slotProps.option.label }}</div>
-            </div>
-          </template>
+    <Form novalidate :validation-schema="mySchema" @submit="handleRegister">
+      <fieldset>
+        <input type="text" v-model="name" placeholder="Nombre" required class="input-login" />
+        <input type="text" v-model="lastName" placeholder="Apellido" required class="input-login" />
+        <div class="phone-group">
+          <div>
+            <Field as="select" v-model="prefix" name="prefijo">
+              <option v-for="prefix in prefixes" :key="prefix.id" :value="prefix.prefix">
+                {{ prefix.country }} ({{ prefix.prefix }})
+              </option>
+            </Field>
+            <ErrorMessage class="error" name="prefijo" />
+          </div>
+          <div>
+            <input type="number" v-model="phone" placeholder="Teléfono" required class="input-login" />
+            <ErrorMessage class="error" name="telefono" />
+          </div>
+        </div>
+        <input type="email" v-model="email" placeholder="Email" required class="input-login" />
+        <input type="password" v-model="password" placeholder="Contraseña" required class="input-login" />
+        
+        <MultiSelect 
+          v-model="selectedLanguages" 
+          :options="languages" 
+          optionLabel="spanishName" 
+          optionValue="name" 
+          display="chip" 
+          placeholder="Selecciona los idiomas" 
+          class="w-full md:w-20rem multi-select-container">
         </MultiSelect>
-      </div>
-
-      <button type="submit" :disabled="loading">
-        {{ loading ? "Registrando..." : "Registrarse" }}
-      </button>
-    </form>
-
+        
+        <button class="btn btn-primary button-login" type="submit" :disabled="loading">
+          {{ loading ? "Registrando..." : "Registrarse" }}
+        </button>
+        <button type="button" class="btn btn-danger button-login" @click="$router.push('/')">Cancelar</button>
+      </fieldset>
+    </Form>
+    
     <p v-if="error" class="error">{{ error }}</p>
-    <p>¿Ya tienes una cuenta? <router-link to="/">Inicia sesión</router-link></p>
+    <p>¿Ya tienes una cuenta?</p>
+    <button type="button" class="btn btn-primary button-login" @click="$router.push('/')">Iniciar sesión</button>
   </div>
 </template>
 
 <script>
-import { ref } from "vue";
-import { useRouter } from "vue-router";
+import { Form, Field, ErrorMessage } from 'vee-validate';
+import { useDataStore } from "../stores/data";
+import { useAuthStore } from "../stores/auth";
 import MultiSelect from "primevue/multiselect";
-import axios from "axios"; // Importamos Axios para manejar la API
+import axios from "axios";
 
 export default {
-  components: {
-    MultiSelect,
+  name: "RegisterView",
+  components: { MultiSelect },
+  data() {
+    return {
+      name: "",
+      lastName: "",
+      prefix: "",
+      prefixes: [],
+      phone: "",
+      email: "",
+      password: "",
+      selectedLanguages: [],
+      loading: false,
+      error: null,
+    };
   },
-  setup() {
-    const name = ref("");
-    const lastName = ref("");
-    const prefix = ref("");
-    const phone = ref("");
-    const email = ref("");
-    const password = ref("");
-    const selectedLanguages = ref([]);
-    const loading = ref(false);
-    const error = ref(null);
-    const router = useRouter();
-
-    // Opciones de idiomas
-    const languageOptions = ref([
-      { label: "Inglés" },
-      { label: "Castellano" },
-      { label: "Valenciano" },
-    ]);
-
-    // Función para manejar el registro
-    const handleRegister = async () => {
-      loading.value = true;
-      error.value = null;
-
+  computed: {
+    languages() {
+      return useDataStore().languages;
+    }
+  },
+  methods: {
+    async handleRegister() {
+      this.loading = true;
+      this.error = null;
+      const authStore = useAuthStore();
+      const dataStore = useDataStore();
+      
       try {
-        const response = await axios.post("https://api", {
-          name: name.value,
-          lastName: lastName.value,
-          prefix: prefix.value,
-          phone: phone.value,
-          email: email.value,
-          password: password.value,
-          languages: selectedLanguages.value.map(lang => lang.label), // Enviar solo los nombres de los idiomas
+        const API = import.meta.env.VITE_URL_API;
+        const response = await axios.post(`${API}/register`, {
+          name: this.name,
+          lastName: this.lastName,
+          prefix: this.prefix,
+          phone: this.phone,
+          email: this.email,
+          password: this.password,
+          languages: this.selectedLanguages,
         });
 
-        if (response.data.success) {
-          alert("Registro exitoso");
-          router.push("/"); // Redirigir a la página de inicio de sesión
+        if (response.status === 201) {
+          const token = response.data.data.token;
+          authStore.setToken(token);
+          axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+          await dataStore.loadUser();
+          localStorage.setItem("user", JSON.stringify(dataStore.user));
+          this.$router.push("/index");
         } else {
-          error.value = response.data.message || "Error en el registro";
+          this.error = response.data.message || "Error en el registro";
         }
       } catch (err) {
-        error.value = err.response?.data?.message || "Error en el servidor";
+        this.error = err.response?.data?.message || "Error en el servidor";
       } finally {
-        loading.value = false;
+        this.loading = false;
       }
-    };
-
-    return {
-      name,
-      lastName,
-      prefix,
-      phone,
-      email,
-      password,
-      selectedLanguages,
-      languageOptions,
-      handleRegister,
-      loading,
-      error,
-    };
+    },
+    async loadPrefixes() {
+      const dataStore = useDataStore();
+      await dataStore.loadPrefixes();
+      this.prefixes = dataStore.prefixes;
+    }
   },
+  created() {
+    // Carga el token almacenado si es necesario
+    const authStore = useAuthStore();
+    authStore.loadTokenFromStorage();
+  },
+  async mounted() {
+    await useDataStore().loadLanguages();
+    await this.loadPrefixes()
+    document.body.classList.add("login-page");
+  },
+  beforeUnmount() {
+    document.body.classList.remove("login-page");
+  }
 };
 </script>
 
-<style scoped>
-.register-container {
-  width: 100%;
-  max-width: 600px;
-  margin: 0 auto;
-  padding: 2rem;
-  background-color: #f7f7f7;
-  border-radius: 10px;
-}
-
-h2 {
-  text-align: center;
-}
-
-form {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  padding-bottom: 2rem;
-}
-
-input {
-  padding: 0.5rem;
-  font-size: 1rem;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-}
-
-button {
-  padding: 0.7rem;
-  font-size: 1rem;
-  background-color: #007bff;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-}
-
-button:disabled {
-  background-color: #cccccc;
-}
-
-.error {
-  color: red;
-  text-align: center;
-}
-
-p {
-  text-align: center;
-}
-
-p a {
-  color: #007bff;
-}
+  
+<style>
+  .login-container {
+    max-width: 300px;
+    margin: auto;
+    text-align: center;
+  }
+  input {
+    display: block;
+    width: 100%;
+    margin: 10px 0;
+    padding: 8px;
+  }
+  .error {
+    color: red;
+    padding: 0 !important;
+  }
 </style>
-
-  
-  
-  
-  
-  
-  
-  
-  
-  
- 

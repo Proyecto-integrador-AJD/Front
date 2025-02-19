@@ -22,6 +22,7 @@ nav {
     text-decoration: none;
     padding-bottom: 5px; /* Espacio para la línea */
     transition: all 0.3s ease-in-out;
+    
 }
 
 .menu-item::after {
@@ -53,9 +54,11 @@ nav {
     text-decoration: none;
     padding: 5px 10px;
     border: 0px;
+    transition: all 0.3s ease-in-out;
 }
 
 .menu-button:hover {
+    color: #0051ff ;
     background-color: #89DCFF;
     border-radius: 5px;
 }

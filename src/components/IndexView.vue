@@ -1,8 +1,6 @@
 <template>
   <div class="container">
-    <div class="welcome-div">
-      <h2 class="welcome-text">¡Bienvenido, {{ username }}!</h2>
-    </div>
+    <h2 class="welcome-text">¡Bienvenido, {{ username }}!</h2>
 
     <!-- Calendario -->
     <div v-if="hayAlertas()" class="calendar-wrapper">
@@ -15,10 +13,12 @@
 
     <div class="patients-wrapper">
       <h2>Pacientes asignados</h2>
-      <div v-for="patient in patientsCurrent" :key="patient.id">
-          <button class="btn btn-info" @click="$router.push('/view-patient/' + patient.id)">
-            {{ patient.name }} {{ patient.lastName }}
-          </button>
+      <div class="list-patient">
+        <div v-for="patient in patientsCurrent" :key="patient.id" >
+            <button class="btn btn-info " @click="$router.push('/view-patient/' + patient.id)">
+              {{ patient.name }} {{ patient.lastName }}
+            </button>
+        </div>
       </div>
     </div>
 
@@ -111,6 +111,9 @@ export default {
         Array.isArray(alertsCurrent.value) &&
         alertsCurrent.value.some(alert => {
           const alertDate = new Date(alert.startDate);
+          if (alert.recurrenceType === 'daily') {
+            return true;
+          }
           return (
             alertDate.getDate() === today.getDate() &&
             alertDate.getMonth() === today.getMonth() &&
@@ -211,29 +214,31 @@ body, html {
 }
 
 .calendar-wrapper {
-  width: 50%;
-  height: 80%;
+  /* width: 50%;
+  height: 80%; */
+  text-align: center;
   background: #fcfcfc;
   padding: 20px;
   border-radius: 10px;
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
   border: 2px solid #66c2ff;
-  position: fixed;
-  top: 100px;
-  right: 0;
+  /* position: relative; */
+  /* top: 100px; */
+  /* right: 0; */
 }
 
 .patients-wrapper {
-  width: 45%;
-  height: 40%;
+  /* width: 45%;
+  height: 80%; */
+  text-align: center;
   background: #fcfcfc;
   padding: 20px;
   border-radius: 10px;
   border: 2px solid #66c2ff;
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
-  position: fixed;
-  top: 496px;
-  left: 0;
+  /* position: relative; */
+  /* top: 496px; */
+  /* left: 0; */
 }
 
 .welcome-text {
@@ -241,13 +246,10 @@ body, html {
   font-weight: bold;
   color: #333;
   padding: 0;
-  margin-top: 50px;
-  margin-left: -300px;
-  display: block; /* Asegura que estén en líneas separadas */
-}
-
-.welcome-div {
-  width: 50%;
+  /* margin-top: 50px;
+  margin-left: -300px; */
+  display: block;
+  text-align: center;
 }
 
 .fc {
@@ -304,5 +306,11 @@ button:hover {
 
 li {
   list-style: none;
+}
+
+.list-patient {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
 }
 </style>
