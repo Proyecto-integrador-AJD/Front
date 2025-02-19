@@ -93,6 +93,15 @@ export const useDataStore = defineStore('data', {
         console.error("Error al cargar los datos:", error);
       }
     },
+    isLoadData() {
+      return this.patients.length > 0 
+        || this.zones.length > 0 
+        || this.calls.length > 0 
+        || this.alerts.length > 0 
+        || this.prefixes.length > 0 
+        || this.languages.length > 0 
+        || this.relationships.length > 0;
+    },
 
 
     async loadUser() {
