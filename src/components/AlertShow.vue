@@ -21,7 +21,7 @@
         </div>
       </div>
   
-      <button class="btn btn-secondary mt-3" @click="$router.push('/alerts')">Volver</button>
+      <BackButton />
     </div>
   </template>
   
@@ -29,10 +29,14 @@
   import axios from 'axios';
   import { mapState } from 'pinia';
   import { useDataStore } from '../stores/data';
+  import BackButton from './BackButton.vue';
   
   const API = import.meta.env.VITE_URL_API;
   
   export default {
+    components: {
+      BackButton,
+    },
     computed: {
       ...mapState(useDataStore, ['getPatientFullNameById', 'getUserFullNameById', 'loadAlert']),
     },
