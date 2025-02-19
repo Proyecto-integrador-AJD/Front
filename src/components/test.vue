@@ -51,7 +51,7 @@ export default {
 	},
 	async mounted() {
 		// Asignamos los valores preseleccionados al cargar el componente
-		this.types = await axios.get('http://localhost/api/alert/types').then(response => response.data.data);
+		this.types = await axios.get('http://localhost/api/call/types').then(response => response.data.data);
 		this.preselectedType = this.types.find(type => type.name === "Follow-up according to protocols");
 		this.preselectedSubtype = this.preselectedType.subtypes.find(subtype => subtype.id === 5);
 		this.selectedType = this.types.find(type => type.name === this.preselectedType.name);
