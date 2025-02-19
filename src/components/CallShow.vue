@@ -14,7 +14,7 @@
         </div>
       </div>
   
-      <button class="btn btn-secondary mt-3" @click="$router.push('/calls')">Volver</button>
+      <BackButton />
     </div>
   </template>
   
@@ -23,8 +23,12 @@
   import { mapState, mapActions } from 'pinia';
   import { useDataStore } from '../stores/data';
   const API = import.meta.env.VITE_URL_API;
+  import BackButton from './BackButton.vue';
   
   export default {
+    components: {
+      BackButton,
+    },
     computed: {
     ...mapState(useDataStore, ['getPatientFullNameById', 'loadCall', 'getUserFullNameById']),
   },

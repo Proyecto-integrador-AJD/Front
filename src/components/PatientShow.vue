@@ -31,7 +31,7 @@
       </div>
     </div>
 
-    <button class="btn btn-secondary mt-3" @click="$router.push('/patients')">Volver</button>
+    <BackButton />
   </div>
 </template>
 
@@ -39,9 +39,13 @@
 import axios from 'axios';
 import { mapState, mapActions } from 'pinia';
 import { useDataStore } from '../stores/data';
+import BackButton from './BackButton.vue';
 const API = import.meta.env.VITE_URL_API;
 
 export default {
+  components: {
+    BackButton,
+  },
   computed: {
     ...mapState(useDataStore, ['getZoneById', 'loadPatient']),
   },
