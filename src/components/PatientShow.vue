@@ -35,6 +35,27 @@
         </ul>
 
       </div>
+
+      <div id="alerts">
+        <h4>Alertas</h4>
+        <ul>
+          <li v-for="(alert, index) in alerts" :key="index">
+            <div class="alert-card">
+              <div class="alert-title">{{ alert.title }}</div>
+              <div class="alert-patient"><button type="button" @click="showAlert(alert.id)">Ver Alerta</button></div>
+              <div class="alert-description">{{ alert.description }}</div>
+              <div class="alert-date">{{ alert.startDate }}</div>
+              <div class="alert-type">{{ alert.type }}</div>
+              <div class="alert-subtype">{{ alert.subType }}</div>
+              <div class="alert-duration">{{ alert.duration }}</div>
+              <div class="alert-isRecurring">{{ alert.isRecurring ? 'Sí' : 'No' }}</div>
+              <div class="alert-recurrenceType">{{ alert.recurrenceType }}</div>
+              <div class="alert-recurrence">{{ alert.recurrence }}</div>
+            </div>
+          </li>
+        </ul>
+      </div>
+
     </div>
 
     <BackButton />
@@ -53,22 +74,27 @@ export default {
     BackButton,
   },
   computed: {
-    ...mapState(useDataStore, ['getZoneById', 'loadPatient']),
+    ...mapState(useDataStore, ['getZoneById', 'loadPatient', 'getPatientById', 'getAlertsByPatientId']),
   },
   props: ['id'],
   data() {
     return {
       patient: {},
+      alerts: [],
     };
   },
   async mounted() {
     this.patient = await this.loadPatient(this.id);
     console.log(this.patient);
+    this.alerts = this.getAlertsByPatientId(this.patient.id);
   },
   methods: {
     getZoneName(zoneId) {
       const zone = this.getZoneById(zoneId);
       return zone.name;
+    },
+    showAlert(alertId) {
+      this.$router.push({ name: 'viewAlert', params: { id: alertId } });
     },
   },
 };
