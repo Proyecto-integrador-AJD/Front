@@ -43,6 +43,9 @@ export const useDataStore = defineStore('data', {
       const patient = state.patients.find(p => String(p.id) === String(id));
       return patient ? patient.phone : 'No disponible';
     },
+    getAlertsByPatientId: (state) => (id) => {
+      return state.alerts.filter(a => String(a.patientId) === String(id));
+    }
   },
 
   actions: {
