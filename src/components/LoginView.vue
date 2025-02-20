@@ -18,6 +18,7 @@
 import { useAuthStore } from "../stores/auth";
 import { useDataStore } from "../stores/data";
 import axios from "axios";
+import api from '../axios.js';
 
 export default {
   name: "LoginView",
@@ -33,7 +34,7 @@ export default {
       const dataStore = useDataStore();
       try {
         const API = import.meta.env.VITE_URL_API;
-        const response = await axios.post(`${API}/login`, {
+        const response = await api.post(`${API}/login`, {
           username: this.username,
           password: this.password,
         });
@@ -42,10 +43,10 @@ export default {
           const token = response.data.data.token;
 
           authStore.setToken(token); // Llama a la función para guardar el token
-          axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+          api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
 
           console.log(authStore.token);
-          axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+          api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
 
           await dataStore.loadUser();
           const user = dataStore.user; 
