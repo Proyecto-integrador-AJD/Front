@@ -35,9 +35,7 @@
 }
 
 .form-group-multiple-contact {
-    display: flex;
-    flex-direction: column !important;
-    gap: 10px;
+    justify-content: flex-start;
 }
 
 .phone-group {

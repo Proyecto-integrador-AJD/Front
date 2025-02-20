@@ -1,27 +1,46 @@
 <template>
   <div class="login-container">
-    <h2>Registro</h2>
+    <h2>Registrarse</h2>
     <Form novalidate :validation-schema="mySchema" @submit="handleRegister">
       <fieldset>
-        <input type="text" v-model="name" placeholder="Nombre" required class="input-login" />
-        <input type="text" v-model="lastName" placeholder="Apellido" required class="input-login" />
-        <div class="phone-group">
-          <div>
-            <Field as="select" v-model="prefix" name="prefijo">
-              <option v-for="prefix in prefixes" :key="prefix.id" :value="prefix.prefix">
-                {{ prefix.country }} ({{ prefix.prefix }})
-              </option>
-            </Field>
-            <ErrorMessage class="error" name="prefijo" />
-          </div>
-          <div>
-            <input type="number" v-model="phone" placeholder="Teléfono" required class="input-login" />
-            <ErrorMessage class="error" name="telefono" />
-          </div>
+        <div>
+          <Field v-model="name" name="name" placeholder="Nombre" class="input-login" />
+          <ErrorMessage class="error" name="name" />
         </div>
-        <input type="email" v-model="email" placeholder="Email" required class="input-login" />
-        <input type="password" v-model="password" placeholder="Contraseña" required class="input-login" />
-        
+        <div>
+          <Field v-model="lastName" name="lastName" placeholder="Apellido" class="input-login" />
+          <ErrorMessage class="error" name="lastName" />
+        </div>
+        <div>
+          <Field v-model="username" name="username" placeholder="Username" class="input-login" />
+          <ErrorMessage class="error" name="username" />
+        </div>
+        <div>
+          <label class="input-prefijo">Prefijo:</label>
+          <Field as="select" v-model="prefix" name="prefix" class="input-login">
+            <option v-for="prefix in prefixes" :key="prefix.id" :value="prefix.prefix">
+              {{ prefix.country }} ({{ prefix.prefix }})
+            </option>
+          </Field>
+          <ErrorMessage class="error" name="prefix" />
+        </div>
+        <div>
+          <Field type="number" v-model="phone" name="phone" placeholder="Teléfono" class="input-login" />
+          <ErrorMessage class="error" name="phone" />
+        </div>
+        <div>
+          <Field type="email" v-model="email" name="email" placeholder="Email" class="input-login" />
+          <ErrorMessage class="error" name="email" />
+        </div>
+        <div>
+          <Field type="password" v-model="password" name="password" placeholder="Contraseña" class="input-login" />
+          <ErrorMessage class="error" name="password" />
+        </div>
+        <div>
+          <Field type="password" v-model="confirmPassword" name="confirmPassword" placeholder="Confirmar Contraseña" class="input-login" />
+          <ErrorMessage class="error" name="confirmPassword" />
+        </div>
+
         <MultiSelect 
           v-model="selectedLanguages" 
           :options="languages" 
@@ -30,7 +49,9 @@
           display="chip" 
           placeholder="Selecciona los idiomas" 
           class="w-full md:w-20rem multi-select-container">
-        </MultiSelect>
+        </MultiSelect><br><br>
+
+        <p v-if="error" class="error">{{ error }}</p>
         
         <button class="btn btn-primary button-login" type="submit" :disabled="loading">
           {{ loading ? "Registrando..." : "Registrarse" }}
@@ -39,7 +60,6 @@
       </fieldset>
     </Form>
     
-    <p v-if="error" class="error">{{ error }}</p>
     <p>¿Ya tienes una cuenta?</p>
     <button type="button" class="btn btn-primary button-login" @click="$router.push('/')">Iniciar sesión</button>
   </div>
@@ -47,6 +67,7 @@
 
 <script>
 import { Form, Field, ErrorMessage } from 'vee-validate';
+import * as yup from 'yup';
 import { useDataStore } from "../stores/data";
 import { useAuthStore } from "../stores/auth";
 import MultiSelect from "primevue/multiselect";
@@ -54,16 +75,38 @@ import axios from "axios";
 
 export default {
   name: "RegisterView",
-  components: { MultiSelect },
+  components: {
+    Form,
+    Field,
+    ErrorMessage,
+    MultiSelect,
+  },
   data() {
     return {
+      mySchema: yup.object().shape({
+        name: yup.string().required('El nombre es obligatorio'),
+        lastName: yup.string().required('El apellido es obligatorio'),
+        username: yup.string().required('El nombre de usuario es obligatorio'),
+        prefix: yup.string().required('El prefijo es obligatorio'),
+        phone: yup
+          .number()
+          .typeError('El teléfono debe ser un número')
+          .required('El teléfono es obligatorio'),
+        email: yup.string().email('Correo inválido').required('El correo es obligatorio'),
+        password: yup.string().required('La contraseña es obligatoria'),
+        confirmPassword: yup.string()
+          .oneOf([yup.ref('password'), null], 'Las contraseñas deben coincidir')
+          .required('Debes confirmar tu contraseña')
+      }),
       name: "",
       lastName: "",
+      username: "",
       prefix: "",
       prefixes: [],
       phone: "",
       email: "",
       password: "",
+      confirmPassword: "",
       selectedLanguages: [],
       loading: false,
       error: null,
@@ -80,20 +123,25 @@ export default {
       this.error = null;
       const authStore = useAuthStore();
       const dataStore = useDataStore();
+      const dateHire = new Date().toISOString().split('T')[0];
       
       try {
         const API = import.meta.env.VITE_URL_API;
         const response = await axios.post(`${API}/register`, {
           name: this.name,
           lastName: this.lastName,
+          username: this.username,
           prefix: this.prefix,
           phone: this.phone,
           email: this.email,
           password: this.password,
-          languages: this.selectedLanguages,
+          confirm_password: this.confirmPassword,
+          language: this.selectedLanguages,
+          dateHire,
+          dateTermination: null
         });
 
-        if (response.status === 201) {
+        if (response.status === 200) {
           const token = response.data.data.token;
           authStore.setToken(token);
           axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
@@ -115,22 +163,16 @@ export default {
       this.prefixes = dataStore.prefixes;
     }
   },
-  created() {
-    // Carga el token almacenado si es necesario
-    const authStore = useAuthStore();
-    authStore.loadTokenFromStorage();
-  },
   async mounted() {
     document.body.classList.add("login-page");
     await useDataStore().loadLanguages();
-    await this.loadPrefixes()
+    await this.loadPrefixes();
   },
   beforeUnmount() {
     document.body.classList.remove("login-page");
   }
 };
 </script>
-
   
 <style>
   .login-container {
@@ -147,5 +189,11 @@ export default {
   .error {
     color: red;
     padding: 0 !important;
+  }
+  .input-prefijo {
+    color: #727272;
+    padding: 5px;
+    margin: 10px 0;
+    font-size: 16px;
   }
 </style>

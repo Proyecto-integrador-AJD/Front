@@ -187,8 +187,8 @@
 
         <div class="form-group contacto" >
           <label>Contacto de emergencia:</label>
-          <div class="form-group-multiple-contact" >
-            <div v-for="(contact, index) in patient.emergencyContacts" :key="index" class="contact-card col-12">
+          <div class="form-group-multiple-contact row" >
+            <div v-for="(contact, index) in patient.emergencyContacts" :key="index" class="contact-card col-sm-6 col-12">
               <div>
                 <Field v-model="contact.name" :name="`emergencyContacts[${index}].nombre`" placeholder="Nombre" class="form-control" />
                 <ErrorMessage class="error" :name="`emergencyContacts[${index}].nombre`" />
@@ -231,7 +231,8 @@
                 <ErrorMessage class="error" :name="`emergencyContacts[${index}].relacion`" />
               </div>
             </div>
-            <div>
+          </div>
+          <div>
               <button type="button" class="btn btn-primary" @click="addContact">
                 <i class="bi bi-plus-circle"></i>
               </button>
@@ -242,7 +243,6 @@
                 <i class="bi bi-dash-circle"></i>
               </button>
             </div>
-          </div>
         </div><br>
 
         <button type="submit" class="btn btn-primary save">Guardar</button>
