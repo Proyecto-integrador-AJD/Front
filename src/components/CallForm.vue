@@ -61,21 +61,36 @@
             </form>
           </div>
         </div>
-
-        <!-- Luego se tiene que poner a un select, cunado se termine la api en el back -->
-        <div class="form-group">
+        <!-- <Field as="select" v-model="call.incoming" name="incoming" class="form-control" :disabled="!alert.id">
+            <option :value="true">Entrante</option>
+            <option :value="false">Saliente</option>
+          </Field> -->
+          <div class="form-group">
           <label>Tipo:</label>
-          <Field v-model="call.type" name="tipo" type="text" class="form-control" />
-          <ErrorMessage class="error" name="tipo" />
+          <Field name="selectedType" v-slot="{ field, errors }" rules="required">
+            <select v-bind="field" v-model="call.type" @change="onTypeChange">
+              <option value="" disabled>Selecciona un tipo</option>
+              <option v-for="type in callTypes" :key="type.name" :value="type">
+                {{ type.spanishName }}
+              </option>
+            </select>
+            <span class="error-message" v-if="errors.length">{{ errors[0] }}</span>
+          </Field>
         </div>
-        
 
-        <!-- Luego se tiene que poner a un select, cunado se termine la api en el back -->
         <div class="form-group">
           <label>SubTipo:</label>
-          <Field v-model="call.subType" name="subtipo" type="text" class="form-control" />
-          <ErrorMessage class="error" name="subtipo" />
+          <Field name="selectedSubtype" v-slot="{ field, errors }" rules="required">
+            <select v-bind="field" v-model="selectedSubtype">
+              <option value="" disabled>Selecciona un subtipo</option>
+              <option v-for="subtype in filteredSubtypes" :key="subtype.id" :value="subtype">
+                {{ subtype.spanishName }}
+              </option>
+            </select>
+            <span class="error-message" v-if="errors.length">{{ errors[0] }}</span>
+          </Field>
         </div>
+          
 
         <div class="form-group">
           <label>Duración:</label>
@@ -123,6 +138,7 @@ export default {
     await this.loadAlerts();
     await this.loadUsers();
     await this.loadUser();
+    await this.loadCallTypes(); 
     const user = JSON.parse(localStorage.getItem("user"));
     this.loggedUser = user ? user.name : "Usuario";
     if (this.id) {
@@ -143,18 +159,21 @@ export default {
     }
   },
   computed: {
-    ...mapState(useDataStore, ['patients', 'users', 'alerts', 'user']),
+    ...mapState(useDataStore, ['patients', 'users', 'alerts', 'user', 'callTypes']),
     title() {
       return this.id ? 'Editar llamada' : 'Añadir llamada';
     },
+    filteredSubtypes() {
+      return this.call.type ? this.call.type.subtypes : [];
+    }
   },
   data() {
     return {
       mySchema: yup.object({
         patientId: yup.string().required('Paciente es obligatorio'),
         incoming: yup.boolean().required('Tipo de llamada es obligatorio'),
-        tipo: yup.string().required('Tipo de llamada es obligatorio'),
-        subtipo: yup.string().required('SubTipo de llamada es obligatorio'),
+        selectedType: yup.string().required('Tipo de llamada es obligatorio'),
+        selectedSubtype: yup.string().required('SubTipo de llamada es obligatorio'),
         duration: yup.number().positive('Duración debe ser positiva').required('Duración es obligatoria'),
         description: yup.string().required('Descripción es obligatoria'),
       }),
@@ -177,10 +196,13 @@ export default {
         startDate: '',
       },
       loggedUser: "Usuario",
+      callSubtypes: [],
+      selectedType: null,
+      selectedSubtype: null,
     };
   },
   methods: {
-    ...mapActions(useDataStore, ['loadPatients', 'loadUsers', 'loadUser', 'loadAlerts']),
+    ...mapActions(useDataStore, ['loadPatients', 'loadUsers', 'loadUser', 'loadAlerts', 'loadCallTypes']),
     async handleSubmit() {
       console.log('Formulario enviado:', this.call);
       const call = { 
@@ -204,6 +226,18 @@ export default {
       } catch (error) {
         console.error('Error en la solicitud:', error);
         alert('Error en la solicitud');
+      }
+    },
+    async onTypeChange() {
+      if (this.call.type) {
+        try {
+          const response = await axios.get(`${API}/call/subtypes?type=${this.call.type.name}`);
+          if (response.status === 200) {
+            this.call.subType = response.data.data.subtypes;
+          }
+        } catch (error) {
+          console.error("Error al cargar los subtipos:", error);
+        }
       }
     },
     handleCancel() {
@@ -242,7 +276,11 @@ Form {
 }
 
 .form-group {
+  display: flex;
+  flex-direction: column;
+  align-items: start;
   margin-bottom: 15px;
+  width: 100%;
 }
 
 .form-group label {
@@ -253,13 +291,17 @@ Form {
 }
 
 
-.form-control {
+.form-control,
+.form-control-plaintext,
+ select,
+ textarea{
   width: 100%;
   max-width: 250px;
   padding: 6px 10px;
   font-size: 0.9rem;
   border: 1px solid #ccc;
   border-radius: 5px;
+  background-color: white;
 }
 
 

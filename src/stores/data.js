@@ -15,6 +15,7 @@ export const useDataStore = defineStore('data', {
     alerts: [],
     alertTypes: [],
     alertsCurrent: [],
+    callTypes:[],
     prefixes: [],
     languages: [],
     users: [],
@@ -89,6 +90,7 @@ export const useDataStore = defineStore('data', {
         await this.loadRelationships();
         await this.loadUser();
         await this.loadAlertTypes();
+        await this.loadCallTypes();
       } catch (error) {
         console.error("Error al cargar los datos:", error);
       }
@@ -250,8 +252,17 @@ export const useDataStore = defineStore('data', {
         console.error('Error al cargar los tipos de alerta:', error);
       }
     },
+    async loadCallTypes() {
+      this.auth.loadTokenFromStorage();
+      try {
+        let response = await axios.get(API + '/call/types');
+        this.callTypes = response.data.data;
+      } catch (error) {
+        console.error('Error al cargar los tipos de llamada:', error);
+      }
+    },
 
-
+  
     
     async loadAlertById(id) {
       this.auth.loadTokenFromStorage();
