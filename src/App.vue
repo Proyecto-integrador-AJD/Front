@@ -87,6 +87,20 @@ export default {
  margin-bottom: 40px;
 }
 
+@media (max-width: 671px) {
+  .margin-container {
+    margin-top: 115px;
+    margin-bottom: 40px;
+  }
+}
+
+@media (max-width: 576px) {
+  .margin-container {
+    margin-top: 0;
+    margin-bottom: 20px;
+  }
+}
+
 nav {
   display: flex;
   justify-content: center;

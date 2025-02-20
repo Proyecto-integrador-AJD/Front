@@ -25,35 +25,35 @@
         <div class="form-group calle">
           <label>Dirección:</label>
           <div class="form-group-multiple little-margin row">
-            <div class="form-group col-md-3 col-6">
+            <div class="form-group col-md-3 col-sm-6 col-12">
               <Field v-model="patient.addressStreet" name="calle" type="text" class="form-control" placeholder="Calle" />
               <ErrorMessage class="error" name="calle" />
             </div>
-            <div class="form-group col-md-3 col-6">
+            <div class="form-group col-md-3 col-sm-6 col-12">
               <Field v-model="patient.addressNumber" name="numero" type="text" class="form-control" placeholder="Número" />
               <ErrorMessage class="error" name="numero" />
             </div>
-            <div class="form-group col-md-3 col-6">
+            <div class="form-group col-md-3 col-sm-6 col-12">
               <Field v-model="patient.addressFloor" name="piso" type="text" class="form-control" placeholder="Piso" />
               <ErrorMessage class="error" name="piso" />
             </div>
-            <div class="form-group col-md-3 col-6">
+            <div class="form-group col-md-3 col-sm-6 col-12">
               <Field v-model="patient.addressDoor" name="puerta" type="text" class="form-control" placeholder="Puerta" />
               <ErrorMessage class="error" name="puerta" />
             </div>
-            <div class="form-group col-md-3 col-6">
+            <div class="form-group col-md-3 col-sm-6 col-12">
               <Field v-model="patient.addressPostalCode" name="codigoPostal" type="text" class="form-control" placeholder="Código Postal" />
               <ErrorMessage class="error" name="codigoPostal" />
             </div>
-            <div class="form-group col-md-3 col-6">
+            <div class="form-group col-md-3 col-sm-6 col-12">
               <Field v-model="patient.addressCity" name="ciudad" type="text" class="form-control" placeholder="Ciudad" />
               <ErrorMessage class="error" name="ciudad" />
             </div>
-            <div class="form-group col-md-3 col-6">
+            <div class="form-group col-md-3 col-sm-6 col-12">
               <Field v-model="patient.addressProvince" name="provincia" type="text" class="form-control" placeholder="Provincia" />
               <ErrorMessage class="error" name="provincia" />
             </div>
-            <div class="form-group col-md-3 col-6">
+            <div class="form-group col-md-3 col-sm-6 col-12">
               <Field v-model="patient.addressCountry" name="pais" type="text" class="form-control" placeholder="País" />
               <ErrorMessage class="error" name="pais" />
             </div>
@@ -154,19 +154,19 @@
         <div class="form-group situacionAlojamiento">
           <label>Situacion de Alojamiento:</label>
           <div class="form-group-multiple little-margin row"> 
-            <div class="col-md-3 col-6">
+            <div class="col-md-3 col-sm-6 col-12">
               <Field v-model="patient.housingSituationType" name="tipo" type="text" class="form-control" placeholder="Tipo" />
               <ErrorMessage class="error" name="tipo" />
             </div>
-            <div class="col-md-3 col-6">
+            <div class="col-md-3 col-sm-6 col-12">
               <Field v-model="patient.housingSituationStatus" name="estado" type="text" class="form-control" placeholder="Estado" />
               <ErrorMessage class="error" name="estado" />
             </div>
-            <div class="col-md-3 col-6">
+            <div class="col-md-3 col-sm-6 col-12">
               <Field v-model="patient.housingSituationNumberOfRooms" name="habitacion" type="number" class="form-control" placeholder="Habitación" />
               <ErrorMessage class="error" name="habitacion" />
             </div>
-            <div class="col-md-3 col-6">
+            <div class="col-md-3 col-sm-6 col-12">
               <Field v-model="patient.housingSituationLocation" name="localizacion" type="text" class="form-control" placeholder="Localización" />
               <ErrorMessage class="error" name="localizacion" />
             </div>
@@ -439,21 +439,46 @@ export default {
   gap: 10px;
   grid-template-columns: 1fr 1fr;
   grid-template-areas:
-      "title title"
-      "nombre apellido"
-      "fecha fecha"
-      "calle calle"
-      "dni sanitario"
-      "idioma telefono"
-      "correo zona"
-      "situacionPersonal situacionSanitaria"
-      "situacionAlojamiento situacionAlojamiento"
-      "autonomia situacionEconomica"
-      "contacto contacto"
-      "save save"
-      "cancel cancel";
+    "title title"
+    "nombre apellido"
+    "fecha fecha"
+    "calle calle"
+    "dni sanitario"
+    "idioma telefono"
+    "correo zona"
+    "situacionPersonal situacionSanitaria"
+    "situacionAlojamiento situacionAlojamiento"
+    "autonomia situacionEconomica"
+    "contacto contacto"
+    "save save"
+    "cancel cancel";
 }
 
+@media (max-width: 576px) {
+  .grid-form {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "title"
+      "nombre"
+      "apellido"
+      "fecha"
+      "calle"
+      "dni"
+      "sanitario"
+      "idioma"
+      "telefono"
+      "correo"
+      "zona"
+      "situacionPersonal"
+      "situacionSanitaria"
+      "situacionAlojamiento"
+      "autonomia"
+      "situacionEconomica"
+      "contacto"
+      "save"
+      "cancel";
+}
+}
 
 .title {
   grid-area: title;

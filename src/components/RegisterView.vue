@@ -121,9 +121,9 @@ export default {
     authStore.loadTokenFromStorage();
   },
   async mounted() {
+    document.body.classList.add("login-page");
     await useDataStore().loadLanguages();
     await this.loadPrefixes()
-    document.body.classList.add("login-page");
   },
   beforeUnmount() {
     document.body.classList.remove("login-page");

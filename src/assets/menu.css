@@ -70,3 +70,13 @@ nav {
 .router-link-exact-active::after {
     transform: scaleX(1);
 }
+
+@media (max-width: 576px) {
+    header {
+        position: relative;
+        top: -30px;
+        left: -12px;
+        width: 115%;
+        padding-right: 20px;
+    }
+}

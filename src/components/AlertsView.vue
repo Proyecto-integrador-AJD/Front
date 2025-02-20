@@ -1,10 +1,6 @@
 <template>
   <div class="row">
-    <div class="mb-3">
-     
-    </div>
-
-    <table class="table table-striped table-hover">
+    <table v-if="hasAlertsCurrent()" class="table table-striped table-hover">
       <thead class="thead-dark">
         <tr>
           <th>Paciente</th>
@@ -32,6 +28,9 @@
         </tr>
       </tbody>
     </table>
+    <div v-else class="div-wrapper">
+      <h2>No hay alertas para hoy</h2>
+    </div>
   </div>
 </template>
 
@@ -74,6 +73,10 @@ export default {
       );
     },
 
+    hasAlertsCurrent() {
+      return this.alertsCurrent && this.alertsCurrent.length > 0;
+    },
+
     handleCallClick(alertId) {
       // Redirige a la pantalla de llamada con los parámetros alertId y patientId
       this.$router.push({
@@ -91,7 +94,16 @@ export default {
 };
 </script>
 
-
+<style>
+  .div-wrapper {
+  text-align: center;
+  background: #fcfcfc;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+  border: 2px solid #66c2ff;
+}
+</style>
 
   
   
