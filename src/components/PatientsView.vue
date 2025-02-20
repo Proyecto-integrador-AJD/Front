@@ -105,6 +105,32 @@ export default {
   background-color: #66c2ff;
 }
 
+@media (max-width: 600px) {
+  table {
+    display: block;
+  }
+  tr {
+    display: flex;
+    flex-direction: column;
+    background: #f8f8f8;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 8px;
+  }
+  td {
+    border: none;
+    padding: 5px;
+  }
+
+  thead {
+    display: table-header-group;
+  }
+
+  tbody {
+    display: table-row-group;
+  }
+}
+
 </style>
 
 

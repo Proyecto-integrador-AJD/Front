@@ -48,7 +48,7 @@
           optionValue="name" 
           display="chip" 
           placeholder="Selecciona los idiomas" 
-          class="w-full md:w-20rem multi-select-container">
+          class="multi-select-container input-languages">
         </MultiSelect><br><br>
 
         <p v-if="error" class="error">{{ error }}</p>
@@ -195,5 +195,22 @@ export default {
     padding: 5px;
     margin: 10px 0;
     font-size: 16px;
+  }
+  .input-languages {
+    margin-top: 15px;
+    padding: 9px;
+    border: 2px solid #66c2ff !important;
+    border-radius: 10px !important;
+  }
+  .p-multiselect-label {
+    flex-direction: row !important;
+    /* flex-wrap: wrap; */
+    /* padding-right: 30px !important; */
+    align-items: flex-end !important;
+  }
+  .p-multiselect-list-container {
+    background-color: #ffffff;
+    border-radius: 10px;
+    padding: 5px;
   }
 </style>

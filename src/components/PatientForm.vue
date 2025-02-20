@@ -74,7 +74,7 @@
         </div>
 
 
-        <div class="form-group idioma">
+        <div class="form-group idioma label-language">
           <label>Idioma:</label>
           <MultiSelect
             v-model="patient.language"
@@ -83,7 +83,7 @@
             optionValue="name"
             display="chip"
             placeholder="Selecciona los idiomas"
-            class="w-full md:w-20rem multi-select-container"
+            class="w-full md:w-20rem multi-select-container input-languages"
           >
             <template #optiongroup="slotProps">
               <div class="flex align-items-center">
@@ -105,7 +105,7 @@
                     v-for="prefix in prefixes" 
                     :key="prefix.id" 
                     :value="prefix.prefix">
-                    {{ prefix.country }}
+                    {{ prefix.country }}  ({{ prefix.prefix }})
                   </option>
                 </Field>
                 <ErrorMessage class="error" name="prefijo" />
@@ -209,7 +209,7 @@
                 <label>Prefijo:</label>
                 <Field as="select" v-model="contact.prefix" :name="`emergencyContacts[${index}].prefix`" class="form-control">
                 <option 
-                v-for="prefix in prefixes" :key="prefix.prefix" :value="prefix.prefix">{{ prefix.country }}</option>
+                v-for="prefix in prefixes" :key="prefix.prefix" :value="prefix.prefix">{{ prefix.country }} ({{ prefix.prefix  }})</option>
                 </Field>
                 <ErrorMessage class="error" :name="`emergencyContacts[${index}].prefix`" />
               </div>
@@ -434,6 +434,38 @@ export default {
 </script>
 
 <style>
+.input-languages {
+  margin-top: 15px;
+  padding: 9px;
+  border-radius: 10px !important;
+  border: 2px solid #66c2ff !important;
+}
+.p-multiselect-label {
+  flex-direction: row !important;
+  flex-wrap: wrap;
+  align-items: flex-end !important;
+}
+.p-multiselect-list-container {
+  background-color: #ffffff;
+  border-radius: 10px;
+  padding: 5px;
+}
+
+.p-multiselect {
+  margin-top: 0 !important;
+}
+
+.p-chip {
+  margin-right: 10px;
+}
+
+.label-language {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+
+}
+
 .grid-form {
   display: grid;
   gap: 10px;
@@ -477,7 +509,7 @@ export default {
       "contacto"
       "save"
       "cancel";
-}
+  }
 }
 
 .title {

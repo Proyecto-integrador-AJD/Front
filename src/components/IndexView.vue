@@ -252,6 +252,12 @@ body, html {
   text-align: center;
 }
 
+@media (max-width: 576px) {
+  .welcome-text {
+    font-size: 40px;
+  }
+}
+
 .fc {
   height: 80vh;
   max-height: 75vh;
