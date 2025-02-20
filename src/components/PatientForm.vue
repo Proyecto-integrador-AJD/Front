@@ -187,44 +187,44 @@
 
         <div class="form-group contacto" >
           <label>Contacto de emergencia:</label>
-          <div class="form-group-multiple-contact row" >
-            <div v-for="(contact, index) in patient.emergencyContacts" :key="index" class="contact-card col-sm-6 col-12">
+          <div class="form-group-multiple-contact row">
+            <div v-for="(contact, index) in patient.contacts" :key="index" class="contact-card col-sm-6 col-12">
               <div>
-                <Field v-model="contact.name" :name="`emergencyContacts[${index}].nombre`" placeholder="Nombre" class="form-control" />
-                <ErrorMessage class="error" :name="`emergencyContacts[${index}].nombre`" />
+                <Field v-model="contact.name" :name="`contacts[${index}].nombre`" placeholder="Nombre" class="form-control" />
+                <ErrorMessage class="error" :name="`contacts[${index}].nombre`" />
               </div>
               <div>
-                <Field v-model="contact.lastName" :name="`emergencyContacts[${index}].apellido`" placeholder="Apellido" class="form-control" />
-                <ErrorMessage class="error" :name="`emergencyContacts[${index}].apellido`" />
+                <Field v-model="contact.lastName" :name="`contacts[${index}].apellido`" placeholder="Apellido" class="form-control" />
+                <ErrorMessage class="error" :name="`contacts[${index}].apellido`" />
               </div>
               <div>
-                <Field v-model="contact.email" :name="`emergencyContacts[${index}].email`" placeholder="Email" class="form-control" />
-                <ErrorMessage class="error" :name="`emergencyContacts[${index}].email`" />
+                <Field v-model="contact.email" :name="`contacts[${index}].email`" placeholder="Email" class="form-control" />
+                <ErrorMessage class="error" :name="`contacts[${index}].email`" />
               </div>
               <!-- <div>
-                <Field v-model="contact.prefix" :name="`emergencyContacts[${index}].prefix`" placeholder="Prefijo" class="form-control" />
-                <ErrorMessage class="error" :name="`emergencyContacts[${index}].prefix`" />
+                <Field v-model="contact.prefix" :name="`contacts[${index}].prefix`" placeholder="Prefijo" class="form-control" />
+                <ErrorMessage class="error" :name="`contacts[${index}].prefix`" />
               </div> -->
               <div class="form-group">
                 <label>Prefijo:</label>
-                <Field as="select" v-model="contact.prefix" :name="`emergencyContacts[${index}].prefix`" class="form-control">
+                <Field as="select" v-model="contact.prefix" :name="`contacts[${index}].prefix`" class="form-control">
                 <option 
                 v-for="prefix in prefixes" :key="prefix.prefix" :value="prefix.prefix">{{ prefix.country }} ({{ prefix.prefix  }})</option>
                 </Field>
                 <ErrorMessage class="error" :name="`emergencyContacts[${index}].prefix`" />
               </div>
               <div>
-                <Field v-model="contact.phone" :name="`emergencyContacts[${index}].telefono`" placeholder="Teléfono" class="form-control" />
-                <ErrorMessage class="error" :name="`emergencyContacts[${index}].telefono`" />
+                <Field v-model="contact.phone" :name="`contacts[${index}].telefono`" placeholder="Teléfono" class="form-control" />
+                <ErrorMessage class="error" :name="`contacts[${index}].telefono`" />
               </div>
               <!-- <div>
-                <Field v-model="contact.relationship" :name="`emergencyContacts[${index}].relacion`" placeholder="Relación" class="form-control" />
-                <ErrorMessage class="error" :name="`emergencyContacts[${index}].relacion`" />
+                <Field v-model="contact.relationship" :name="`contacts[${index}].relacion`" placeholder="Relación" class="form-control" />
+                <ErrorMessage class="error" :name="`contacts[${index}].relacion`" />
               </div> -->
 
               <div class="form-group">
                 <label>Relacion:</label>
-                <Field as="select" v-model="contact.relationship" :name="`emergencyContacts[${index}].relacion`" class="form-control">
+                <Field as="select" v-model="contact.relationship" :name="`contacts[${index}].relacion`" class="form-control">
                 <option 
                 v-for="relationship in relationships" :key="relationship.name" :value="relationship.name">{{ relationship.spanishName }}</option>
                 </Field>
@@ -236,7 +236,7 @@
               <button type="button" class="btn btn-primary" @click="addContact">
                 <i class="bi bi-plus-circle"></i>
               </button>
-              <button v-if="patient.emergencyContacts && patient.emergencyContacts.length > 1" 
+              <button v-if="patient.contacts && patient.contacts.length > 1" 
                       type="button" 
                       class="btn btn-primary" 
                       @click="delContact(index)">
@@ -326,7 +326,7 @@ export default {
         localizacion: yup.string().required('La localización es obligatoria'),
         autonomia: yup.string().required('La autonomía es obligatoria'),
         situacionEconomica: yup.string().required('La situación económica es obligatoria'),
-        emergencyContacts: yup.array()
+        contacts: yup.array()
           .of(
             yup.object({
               nombre: yup.string().required('El nombre es obligatorio'),
@@ -369,7 +369,7 @@ export default {
         housingSituationLocation: '',
         personalAutonomy: '',
         economicSituation: '',
-        emergencyContacts: [{ name: '', lastName: '', email:'', prefix: '', phone: '', relationship: '' }], 
+        contacts: [{ name: '', lastName: '', email:'', prefix: '', phone: '', relationship: '' }], 
       },
     };
   },
@@ -381,11 +381,11 @@ export default {
           await axios.put(`${API}/patients/${this.id}`, this.patient).then(response=>{
             console.log(response);
             const idPatient=response.data.data.id;
-            const contacts= this.patient.emergencyContacts;
+            const contacts= this.patient.contacts;
             contacts.forEach(element => {
 
               element.patientId = idPatient;
-              axios.put(`${API}/contacts/`, element)
+              axios.put(`${API}/contacts/${element.id}`, element)
             });
 
             this.$router.push('/patients');
@@ -399,7 +399,7 @@ export default {
           await axios.post(`${API}/patients/`, this.patient).then(response=>{
             console.log(response);
             const idPatient=response.data.data.id;
-            const contacts= this.patient.emergencyContacts;
+            const contacts= this.patient.contacts;
             contacts.forEach(element => {
 
               element.patientId = idPatient;
@@ -422,11 +422,11 @@ export default {
       this.$router.push('/patients');
     },
     addContact() {
-      this.patient.emergencyContacts.push({ name: '', lastName: '', prefix: '', phone: '', relationship: '' });
+      this.patient.contacts.push({ name: '', lastName: '', prefix: '', phone: '', relationship: '' });
     },
     delContact() {
-      if (this.patient.emergencyContacts.length > 1) {
-        this.patient.emergencyContacts.pop();
+      if (this.patient.contacts.length > 1) {
+        this.patient.contacts.pop();
       }
     }
   },

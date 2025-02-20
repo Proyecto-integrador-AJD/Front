@@ -13,6 +13,7 @@ export const useDataStore = defineStore('data', {
     alerts: [],
     alertTypes: [],
     alertsCurrent: [],
+    callTypes:[],
     prefixes: [],
     languages: [],
     users: [],
@@ -41,6 +42,9 @@ export const useDataStore = defineStore('data', {
       const patient = state.patients.find(p => String(p.id) === String(id));
       return patient ? patient.phone : 'No disponible';
     },
+    getAlertsByPatientId: (state) => (id) => {
+      return state.alerts.filter(a => String(a.patientId) === String(id));
+    }
   },
 
   actions: {
@@ -87,9 +91,19 @@ export const useDataStore = defineStore('data', {
         await this.loadRelationships();
         await this.loadUser();
         await this.loadAlertTypes();
+        await this.loadCallTypes();
       } catch (error) {
         console.error("Error al cargar los datos:", error);
       }
+    },
+    isLoadData() {
+      return this.patients.length > 0 
+        || this.zones.length > 0 
+        || this.calls.length > 0 
+        || this.alerts.length > 0 
+        || this.prefixes.length > 0 
+        || this.languages.length > 0 
+        || this.relationships.length > 0;
     },
 
 
@@ -239,8 +253,17 @@ export const useDataStore = defineStore('data', {
         console.error('Error al cargar los tipos de alerta:', error);
       }
     },
+    async loadCallTypes() {
+      this.auth.loadTokenFromStorage();
+      try {
+        let response = await axios.get(API + '/call/types');
+        this.callTypes = response.data.data;
+      } catch (error) {
+        console.error('Error al cargar los tipos de llamada:', error);
+      }
+    },
 
-
+  
     
     async loadAlertById(id) {
       this.auth.loadTokenFromStorage();

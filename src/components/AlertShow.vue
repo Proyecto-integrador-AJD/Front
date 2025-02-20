@@ -4,7 +4,7 @@
       <div class="card">
         <div class="card-body">
           <p><strong>Fecha de inicio:</strong> {{ formatDate(alert.startDate) }}</p> 
-          <p><strong>Paciente:</strong> {{ getPatientFullNameById(alert.patientId) }}</p>
+          <p><strong>Paciente:</strong> <button type="button" @click="showPatient(alert.patientId)">{{ getPatientFullNameById(alert.patientId) }}</button></p>
           <p><strong>Tipo de Llamada:</strong> {{ alert.type }}</p>
           <p><strong>Subtipo:</strong> {{ alert.subType }}</p>
           <p><strong>Duración:</strong> {{ alert.duration }} minutos</p>
@@ -50,6 +50,9 @@
       formatDate(dateString) {
         const date = new Date(dateString);
         return date.toLocaleString(); 
+      },
+      showPatient(patientId) {
+        this.$router.push({ name: 'viewPatient', params: { id: patientId } });
       },
     },
     async mounted() {
