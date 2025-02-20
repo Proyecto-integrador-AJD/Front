@@ -24,11 +24,38 @@
 
         <h4>Contactos de Emergencia</h4>
         <ul>
-          <li v-for="(contact, index) in patient.emergencyContacts" :key="index">
-            {{ contact.name }} {{ contact.lastName }} - {{ contact.phone }} ({{ contact.relationship }})
+          <li id="listaContactos" v-for="(contact, index) in patient.contacts" :key="index">
+            <div class="contact-info">
+              <div><span class="label">Nombre:</span> {{ contact.name }} {{ contact.lastName }}</div>
+              <div><span class="label">Relación:</span> {{ contact.relationship }}</div>
+              <div><span class="label">Teléfono:</span> {{ contact.prefix }} {{ contact.phone }}</div>
+              <div><span class="label">Email:</span> <a href="#">{{ contact.email }}</a></div>
+            </div>
+          </li>
+        </ul>
+
+      </div>
+
+      <div id="alerts">
+        <h4>Alertas</h4>
+        <ul>
+          <li v-for="(alert, index) in alerts" :key="index">
+            <div class="alert-card">
+              <div class="alert-title">{{ alert.title }}</div>
+              <div class="alert-patient"><button type="button" @click="showAlert(alert.id)">Ver Alerta</button></div>
+              <div class="alert-description">{{ alert.description }}</div>
+              <div class="alert-date">{{ alert.startDate }}</div>
+              <div class="alert-type">{{ alert.type }}</div>
+              <div class="alert-subtype">{{ alert.subType }}</div>
+              <div class="alert-duration">{{ alert.duration }}</div>
+              <div class="alert-isRecurring">{{ alert.isRecurring ? 'Sí' : 'No' }}</div>
+              <div class="alert-recurrenceType">{{ alert.recurrenceType }}</div>
+              <div class="alert-recurrence">{{ alert.recurrence }}</div>
+            </div>
           </li>
         </ul>
       </div>
+
     </div>
 
     <BackButton />
@@ -47,22 +74,27 @@ export default {
     BackButton,
   },
   computed: {
-    ...mapState(useDataStore, ['getZoneById', 'loadPatient']),
+    ...mapState(useDataStore, ['getZoneById', 'loadPatient', 'getPatientById', 'getAlertsByPatientId']),
   },
   props: ['id'],
   data() {
     return {
       patient: {},
+      alerts: [],
     };
   },
   async mounted() {
     this.patient = await this.loadPatient(this.id);
     console.log(this.patient);
+    this.alerts = this.getAlertsByPatientId(this.patient.id);
   },
   methods: {
     getZoneName(zoneId) {
       const zone = this.getZoneById(zoneId);
       return zone.name;
+    },
+    showAlert(alertId) {
+      this.$router.push({ name: 'viewAlert', params: { id: alertId } });
     },
   },
 };
@@ -79,4 +111,51 @@ export default {
   padding: 20px;
   border-radius: 10px;
 }
+
+
+
+
+
+
+/* test estilo contacto */
+#listaContactos {
+  list-style-type: none;
+  padding: 0;
+}
+
+.emergency-contact-card {
+    background: #f8f9fa;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    padding: 15px;
+    max-width: 350px;
+    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+  }
+
+  .contact-title {
+    font-size: 18px;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 10px;
+    border-bottom: 2px solid #007bff;
+    padding-bottom: 5px;
+  }
+
+  .contact-info div {
+    margin-bottom: 8px;
+  }
+
+  .label {
+    font-weight: bold;
+    color: #555;
+  }
+
+  a {
+    color: #007bff;
+    text-decoration: none;
+  }
+
+  a:hover {
+    text-decoration: underline;
+  }
 </style>
