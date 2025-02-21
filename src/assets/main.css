@@ -1,10 +1,11 @@
 @import './base.css';
 @import './login.css';
 @import './menu.css';
+@import './forms.css';
 
 #app {
   /* max-width: 1280px; */
-  margin: 0 auto;
+  /* margin: 0 auto; */
   /* padding: 2rem; */
   font-weight: normal;
 }
@@ -21,6 +22,14 @@ a,
   padding-top: 30px !important;
 }
 
+button {
+  margin: 5px !important;
+}
+
+.elemento-show {
+  padding-top: 100px !important;
+}
+
 @media (hover: hover) {
   a:hover {
     background-color: hsla(160, 100%, 37%, 0.2);
@@ -28,10 +37,10 @@ a,
 }
 
 @media (min-width: 1024px) {
-  body {
+  /* body {
     display: flex;
     place-items: center;
-  }
+  } */
 
   #app {
     display: grid;

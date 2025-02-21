@@ -1,5 +1,5 @@
 <template>
-    <div class="container" v-if="alert">
+    <div class="container elemento-show" v-if="alert">
       <h2>Detalles de la Alerta</h2>
       <div class="card">
         <div class="card-body">

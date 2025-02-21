@@ -7,6 +7,9 @@
         <button class="btn btn-primary button-login" type="submit" :disabled="loading">
           {{ loading ? "Cargando..." : "Iniciar Sesión" }}
         </button>
+        <button class="btn btn-primary button-login" @click="$router.push('/register')" :disabled="loading">
+          {{ loading ? "Cargando..." : "Resgistrarse" }}
+        </button>
       </form>
   </div>
 </template>
@@ -15,7 +18,6 @@
 import { useAuthStore } from "../stores/auth";
 import { useDataStore } from "../stores/data";
 import axios from "axios";
-import { onMounted, onBeforeUnmount } from "vue";
 
 export default {
   name: "LoginView",
@@ -80,7 +82,7 @@ export default {
 </script>
 
   
-  <style>
+<style>
   .login-container {
     max-width: 300px;
     margin: auto;
@@ -96,7 +98,7 @@ export default {
     color: red;
     margin-top: 10px;
   }
-  </style>
+</style>
   
   
     

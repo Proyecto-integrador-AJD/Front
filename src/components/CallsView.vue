@@ -9,7 +9,7 @@
       </button>
     </div>
 
-    <table class="table table-striped table-hover">
+    <table id="callTable" class="table table-striped table-hover">
       <thead class="thead-dark">
         <tr>
           <th>Paciente</th>
@@ -22,11 +22,11 @@
       </thead>
       <tbody>
         <tr v-for="call in filteredCalls" :key="call.id">
-          <td>{{ getPatientFullNameById(call.patientId) }}</td>
-          <td>{{ getUserFullNameById(call.userId) }}</td>
-          <td>{{ call.incoming == 1 ? 'Entrante' : 'Saliente' }}</td>
-          <td>{{ call.subType }}</td>
-          <td>{{ formatDate(call.date) }}</td>
+          <td><span class="display-text">Paciente:</span>{{ getPatientFullNameById(call.patientId) }}</td>
+          <td><span class="display-text">Teleoperador:</span>{{ getUserFullNameById(call.userId) }}</td>
+          <td><span class="display-text">Saliente/Entrante:</span>{{ call.incoming == 1 ? 'Entrante' : 'Saliente' }}</td>
+          <td><span class="display-text">Subtipo:</span>{{ call.subType }}</td>
+          <td><span class="display-text">Acciones:</span>{{ formatDate(call.date) }}</td>
           <td>
             <button class="btn btn-info" @click="$router.push('/view-call/' + call.id)">
               Ver
@@ -183,7 +183,6 @@
 import { mapState, mapActions } from 'pinia';
 import Modal from './Modal.vue';
 import { useDataStore } from '../stores/data';
-
 export default {
   components: {
     Modal,
@@ -317,4 +316,52 @@ export default {
 };
 </script>
 
+<style scoped>
+.table th, .table td {
+  padding: 15px;
 
+}
+
+.table th {
+  background-color: #66c2ff;
+}
+
+.display-text {
+  display: none;
+}
+
+  @media (max-width: 768px) {
+    .display-text {
+      display: block;
+      margin-right: 10px;
+      padding: 2px 5px;
+      background-color: #66c2ff;
+      font-weight: bold;
+      border-radius: 6px;
+    }
+
+  .table thead {
+    display: none; /* Oculta el encabezado en móviles */
+  }
+
+  .table tbody tr {
+    display: block;
+    margin-bottom: 10px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 10px;
+  }
+
+  .table tbody td {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    padding: 10px;
+    border-bottom: 1px solid #eee;
+  }
+
+  .table tbody td:last-child {
+    border-bottom: none;
+  }
+}
+</style>

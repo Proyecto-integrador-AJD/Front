@@ -56,7 +56,7 @@ export default {
         <RouterLink class="menu-item" to="/calls">Llamadas</RouterLink>
         <RouterLink class="menu-item" to="/alerts">Alertas</RouterLink>
         <RouterLink class="menu-item" to="/calendar">Calendario</RouterLink>
-        <button @click="logout" class="menu-item menu-button">Cerrar Sesión</button>
+        <button @click="logout" class="menu-button">Cerrar Sesión</button>
       </nav>
     </header>
 
@@ -81,13 +81,30 @@ export default {
   left: 0;
   z-index: 1000;
 } */
+ 
 .margin-container {
- margin: 60px;
+ margin-top: 60px;
+ margin-bottom: 40px;
+}
+
+@media (max-width: 671px) {
+  .margin-container {
+    margin-top: 115px;
+    margin-bottom: 40px;
+  }
+}
+
+@media (max-width: 576px) {
+  .margin-container {
+    margin-top: 0;
+    margin-bottom: 20px;
+  }
 }
 
 nav {
   display: flex;
   justify-content: center;
+  text-align: center;
   gap: 15px;
 }
 
@@ -97,6 +114,8 @@ nav a {
   text-decoration: none;
   padding: 5px 10px;
   transition: all 0.3s ease-in-out;
+  display: flex;
+  align-items: center;
 }
 
 nav a:hover {

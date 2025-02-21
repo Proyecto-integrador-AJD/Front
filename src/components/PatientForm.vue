@@ -1,59 +1,59 @@
 <template>
   <div class="row">
-    <Form novalidate :validation-schema="mySchema" @submit="handleSubmit">
-      <fieldset>
-        <legend>{{ title }}</legend>
+    <Form novalidate :validation-schema="mySchema" @submit="handleSubmit" class="form-datos">
+      <fieldset class="grid-form">
+        <legend class="title">{{ title }}</legend>
 
-        <div class="form-group">
+        <div class="form-group nombre">
           <label>Nombre:</label>
           <Field v-model="patient.name" name="nombrePacient" class="form-control" />
           <ErrorMessage class="error" name="nombrePacient" />
         </div>
 
-        <div class="form-group">
+        <div class="form-group apellido">
           <label>Apellido:</label>
           <Field v-model="patient.lastName" name="apellido" class="form-control" />
           <ErrorMessage class="error" name="apellido" />
         </div>
 
-        <div class="form-group">
+        <div class="form-group fecha">
           <label>Fecha de nacimiento:</label>
           <Field v-model="patient.birthDate" name="fecha" type="date" class="form-control" />
           <ErrorMessage class="error" name="fecha" />
         </div>
 
-        <div class="form-group">
+        <div class="form-group calle">
           <label>Dirección:</label>
-          <div class="form-group-multiple">
-            <div class="form-group">
+          <div class="form-group-multiple little-margin row">
+            <div class="form-group col-md-3 col-sm-6 col-12">
               <Field v-model="patient.addressStreet" name="calle" type="text" class="form-control" placeholder="Calle" />
               <ErrorMessage class="error" name="calle" />
             </div>
-            <div class="form-group">
+            <div class="form-group col-md-3 col-sm-6 col-12">
               <Field v-model="patient.addressNumber" name="numero" type="text" class="form-control" placeholder="Número" />
               <ErrorMessage class="error" name="numero" />
             </div>
-            <div class="form-group">
+            <div class="form-group col-md-3 col-sm-6 col-12">
               <Field v-model="patient.addressFloor" name="piso" type="text" class="form-control" placeholder="Piso" />
               <ErrorMessage class="error" name="piso" />
             </div>
-            <div class="form-group">
+            <div class="form-group col-md-3 col-sm-6 col-12">
               <Field v-model="patient.addressDoor" name="puerta" type="text" class="form-control" placeholder="Puerta" />
               <ErrorMessage class="error" name="puerta" />
             </div>
-            <div class="form-group">
+            <div class="form-group col-md-3 col-sm-6 col-12">
               <Field v-model="patient.addressPostalCode" name="codigoPostal" type="text" class="form-control" placeholder="Código Postal" />
               <ErrorMessage class="error" name="codigoPostal" />
             </div>
-            <div class="form-group">
+            <div class="form-group col-md-3 col-sm-6 col-12">
               <Field v-model="patient.addressCity" name="ciudad" type="text" class="form-control" placeholder="Ciudad" />
               <ErrorMessage class="error" name="ciudad" />
             </div>
-            <div class="form-group">
+            <div class="form-group col-md-3 col-sm-6 col-12">
               <Field v-model="patient.addressProvince" name="provincia" type="text" class="form-control" placeholder="Provincia" />
               <ErrorMessage class="error" name="provincia" />
             </div>
-            <div class="form-group">
+            <div class="form-group col-md-3 col-sm-6 col-12">
               <Field v-model="patient.addressCountry" name="pais" type="text" class="form-control" placeholder="País" />
               <ErrorMessage class="error" name="pais" />
             </div>
@@ -61,20 +61,20 @@
           <ErrorMessage class="error" name="direccion" />
         </div>
 
-        <div class="form-group">
+        <div class="form-group dni">
           <label>DNI:</label>
           <Field v-model="patient.dni" name="dni" class="form-control" />
           <ErrorMessage class="error" name="dni" />
         </div>
 
-        <div class="form-group">
+        <div class="form-group sanitario">
           <label>Número Sanitario:</label>
           <Field v-model="patient.healthCardNumber" name="sanitario" class="form-control" />
           <ErrorMessage class="error" name="sanitario" />
         </div>
 
 
-        <div class="form-group">
+        <div class="form-group idioma label-language">
           <label>Idioma:</label>
           <MultiSelect
             v-model="patient.language"
@@ -83,7 +83,7 @@
             optionValue="name"
             display="chip"
             placeholder="Selecciona los idiomas"
-            class="w-full md:w-20rem multi-select-container"
+            class="w-full md:w-20rem multi-select-container input-languages"
           >
             <template #optiongroup="slotProps">
               <div class="flex align-items-center">
@@ -95,7 +95,7 @@
           <ErrorMessage class="error" name="idioma" />
         </div>
 
-          <div class="form-group">
+          <div class="form-group telefono">
             <label>Teléfono:</label>
             <div class="phone-group form-group-multiple">
               <div>
@@ -105,7 +105,7 @@
                     v-for="prefix in prefixes" 
                     :key="prefix.id" 
                     :value="prefix.prefix">
-                    {{ prefix.country }}
+                    {{ prefix.country }}  ({{ prefix.prefix }})
                   </option>
                 </Field>
                 <ErrorMessage class="error" name="prefijo" />
@@ -124,13 +124,13 @@
           </div>
 
 
-        <div class="form-group">
+        <div class="form-group correo">
           <label>Correo:</label>
           <Field v-model="patient.email" name="correo" class="form-control" />
           <ErrorMessage class="error" name="correo" />
         </div>
 
-        <div class="form-group">
+        <div class="form-group zona">
             <label>Zona:</label>
             <Field as="select" v-model="patient.zoneId" name="zona" class="form-control">
             <option 
@@ -139,56 +139,56 @@
             <ErrorMessage class="error" name="zona" />
           </div>
 
-        <div class="form-group">
+        <div class="form-group situacionPersonal">
           <label>Situación personal familiar:</label>
           <Field v-model="patient.situationPersonalFamily" name="situacionPersonal" class="form-control" />
           <ErrorMessage class="error" name="situacionPersonal" />
         </div>
 
-        <div class="form-group">
+        <div class="form-group situacionSanitaria">
           <label>Situación sanitaria:</label>
           <Field v-model="patient.healthSituation" name="situacionSanitaria" class="form-control" />
           <ErrorMessage class="error" name="situacionSanitaria" />
         </div>
 
-        <div class="form-group">
+        <div class="form-group situacionAlojamiento">
           <label>Situacion de Alojamiento:</label>
-          <div class="form-group-multiple"> 
-            <div>
+          <div class="form-group-multiple little-margin row"> 
+            <div class="col-md-3 col-sm-6 col-12">
               <Field v-model="patient.housingSituationType" name="tipo" type="text" class="form-control" placeholder="Tipo" />
               <ErrorMessage class="error" name="tipo" />
             </div>
-            <div>
+            <div class="col-md-3 col-sm-6 col-12">
               <Field v-model="patient.housingSituationStatus" name="estado" type="text" class="form-control" placeholder="Estado" />
               <ErrorMessage class="error" name="estado" />
             </div>
-            <div>
+            <div class="col-md-3 col-sm-6 col-12">
               <Field v-model="patient.housingSituationNumberOfRooms" name="habitacion" type="number" class="form-control" placeholder="Habitación" />
               <ErrorMessage class="error" name="habitacion" />
             </div>
-            <div>
+            <div class="col-md-3 col-sm-6 col-12">
               <Field v-model="patient.housingSituationLocation" name="localizacion" type="text" class="form-control" placeholder="Localización" />
               <ErrorMessage class="error" name="localizacion" />
             </div>
           </div> 
         </div>
 
-        <div class="form-group">
+        <div class="form-group autonomia">
           <label>Autonomía:</label>
           <Field v-model="patient.personalAutonomy" name="autonomia" class="form-control" />
           <ErrorMessage class="error" name="autonomia" />
         </div>
 
-        <div class="form-group">
+        <div class="form-group situacionEconomica">
           <label>Situación económica:</label>
           <Field v-model="patient.economicSituation" name="situacionEconomica" class="form-control" />
           <ErrorMessage class="error" name="situacionEconomica" />
         </div>
 
-        <div class="form-group" >
+        <div class="form-group contacto" >
           <label>Contacto de emergencia:</label>
-          <div class="form-group-multiple">
-            <div v-for="(contact, index) in patient.contacts" :key="index" class="contact-card">
+          <div class="form-group-multiple-contact row">
+            <div v-for="(contact, index) in patient.contacts" :key="index" class="contact-card col-sm-6 col-12">
               <div>
                 <Field v-model="contact.name" :name="`contacts[${index}].nombre`" placeholder="Nombre" class="form-control" />
                 <ErrorMessage class="error" :name="`contacts[${index}].nombre`" />
@@ -209,9 +209,9 @@
                 <label>Prefijo:</label>
                 <Field as="select" v-model="contact.prefix" :name="`contacts[${index}].prefix`" class="form-control">
                 <option 
-                v-for="prefix in prefixes" :key="prefix.prefix" :value="prefix.prefix">{{ prefix.country }}</option>
+                v-for="prefix in prefixes" :key="prefix.prefix" :value="prefix.prefix">{{ prefix.country }} ({{ prefix.prefix  }})</option>
                 </Field>
-                <ErrorMessage class="error" name="prefijo" />
+                <ErrorMessage class="error" :name="`emergencyContacts[${index}].prefix`" />
               </div>
               <div>
                 <Field v-model="contact.phone" :name="`contacts[${index}].telefono`" placeholder="Teléfono" class="form-control" />
@@ -228,10 +228,11 @@
                 <option 
                 v-for="relationship in relationships" :key="relationship.name" :value="relationship.name">{{ relationship.spanishName }}</option>
                 </Field>
-                <ErrorMessage class="error" name="relacion" />
+                <ErrorMessage class="error" :name="`emergencyContacts[${index}].relacion`" />
               </div>
             </div>
-            <div>
+          </div>
+          <div>
               <button type="button" class="btn btn-primary" @click="addContact">
                 <i class="bi bi-plus-circle"></i>
               </button>
@@ -242,11 +243,10 @@
                 <i class="bi bi-dash-circle"></i>
               </button>
             </div>
-          </div>
         </div><br>
 
-        <button type="submit" class="btn btn-primary">Guardar</button>
-        <button type="button" class="btn btn-danger" @click="handleCancel">Cancelar</button>
+        <button type="submit" class="btn btn-primary save">Guardar</button>
+        <button type="button" class="btn btn-danger cancel" @click="handleCancel">Cancelar</button>
       </fieldset>
     </Form>
   </div>
@@ -259,9 +259,6 @@ import { Form, Field, ErrorMessage } from 'vee-validate';
 import * as yup from 'yup';
 import MultiSelect from 'primevue/multiselect';
 import axios from 'axios';
-
-
-
 
 const API = import.meta.env.VITE_URL_API;
 
@@ -323,9 +320,9 @@ export default {
         zona: yup.string().required('La zona es obligatoria'),
         situacionPersonal: yup.string().required('La situación personal familiar es obligatoria'),
         situacionSanitaria: yup.string().required('La situación sanitaria es obligatoria'),
-        tipo: yup.string().required('El tipo de alojamiento es obligatorio'),
-        estado: yup.string().required('El estado del alojamiento es obligatorio'),
-        habitacion: yup.string().required('El número de habitaciones es obligatorio'),
+        tipo: yup.string().required('El tipo es obligatorio'),
+        estado: yup.string().required('El estado es obligatorio'),
+        habitacion: yup.string().required('las habitaciones son obligatorias'),
         localizacion: yup.string().required('La localización es obligatoria'),
         autonomia: yup.string().required('La autonomía es obligatoria'),
         situacionEconomica: yup.string().required('La situación económica es obligatoria'),
@@ -334,10 +331,11 @@ export default {
             yup.object({
               nombre: yup.string().required('El nombre es obligatorio'),
               apellido: yup.string().required('El apellido es obligatorio'),
+              email: yup.string().required('El email es obligatorio').email('debe ser un email valido'),
               prefix: yup.string().required('El prefijo es obligatorio'),
               telefono: yup
                 .string()
-                .matches(/^\d+$/, 'El teléfono debe contener solo números')
+                .matches(/^\d+$/, 'teléfono debe ser un número')
                 .required('El teléfono es obligatorio'),
               relacion: yup.string().required('La relación es obligatoria')
             })
@@ -408,13 +406,6 @@ export default {
               axios.post(`${API}/contacts/`, element)
             });
 
-
-
-
-
-
-
-
             this.$router.push('/patients');
             console.log(response);
              this.loadPatients();
@@ -442,87 +433,158 @@ export default {
 };
 </script>
 
-<style scoped>
-.row {
-  /* height: 100vh; */
-  display: flex;
-  justify-content: center;
-  align-items: center;
+<style>
+.input-languages {
+  margin-top: 15px;
+  padding: 9px;
+  border-radius: 10px !important;
+  border: 2px solid #66c2ff !important;
 }
-
-Form {
-  width: 90%;
-  max-width: 1200px;
-  background: white;
-  padding: 30px;
-  border-radius: 10px;
-  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-}
-
-
-.form-group {
-  margin-top: 20px;
-}
-
-.form-group label {
-  font-weight: bold;
-  text-align: right; 
-  white-space: nowrap;
-  margin-bottom: 5px; 
-}
-
-.form-group-multiple {
-  display: flex;
+.p-multiselect-label {
+  flex-direction: row !important;
   flex-wrap: wrap;
-  gap: 10px;
+  align-items: flex-end !important;
+}
+.p-multiselect-list-container {
+  background-color: #ffffff;
+  border-radius: 10px;
+  padding: 5px;
 }
 
-.phone-group {
+.p-multiselect {
+  margin-top: 0 !important;
+}
+
+.p-chip {
+  margin-right: 10px;
+}
+
+.label-language {
   display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+
+}
+
+.grid-form {
+  display: grid;
   gap: 10px;
+  grid-template-columns: 1fr 1fr;
+  grid-template-areas:
+    "title title"
+    "nombre apellido"
+    "fecha fecha"
+    "calle calle"
+    "dni sanitario"
+    "idioma telefono"
+    "correo zona"
+    "situacionPersonal situacionSanitaria"
+    "situacionAlojamiento situacionAlojamiento"
+    "autonomia situacionEconomica"
+    "contacto contacto"
+    "save save"
+    "cancel cancel";
 }
 
-.form-control {
-  width: 100%;
-  /* max-width: 220px;  */
-  padding: 6px;
-  font-size: 0.9rem;
-  border: 1px solid #ccc;
-  border-radius: 5px;
+@media (max-width: 576px) {
+  .grid-form {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "title"
+      "nombre"
+      "apellido"
+      "fecha"
+      "calle"
+      "dni"
+      "sanitario"
+      "idioma"
+      "telefono"
+      "correo"
+      "zona"
+      "situacionPersonal"
+      "situacionSanitaria"
+      "situacionAlojamiento"
+      "autonomia"
+      "situacionEconomica"
+      "contacto"
+      "save"
+      "cancel";
+  }
 }
 
-button {
-  padding: 10px 15px;
-  font-size: 1rem;
-  border-radius: 5px;
-  border: none;
-  cursor: pointer;
+.title {
+  grid-area: title;
 }
 
-.btn-primary {
-  background-color: #007bff;
-  color: white;
+.nombre {
+    grid-area: nombre;
 }
 
-.btn-danger {
-  background-color: #dc3545;
-  color: white;
-}
+.apellido {
+    grid-area: apellido;
+  }
 
-.error {
-  color: #d32f2f;
-  background-color: #ffebee;
-  border-left: 4px solid #d32f2f;
-  padding: 8px 12px;
-  font-size: 0.875rem;
-  font-weight: bold;
-  border-radius: 4px;
-  margin-top: 4px;
-  display: inline-block;
-  width: 100%;
-}
-
-</style>
-
-
+  .fecha {
+    grid-area: fecha;
+  }
   
+.calle {
+  grid-area: calle;
+}
+
+.dni {
+    grid-area: dni;
+}
+
+.sanitario {
+    grid-area: sanitario;
+}
+
+.idioma {
+    grid-area: idioma;
+}
+
+.telefono {
+    grid-area: telefono;
+}
+
+.correo {
+    grid-area: correo;
+}
+
+.zona {
+    grid-area: zona;
+  }
+
+  .situacionPersonal {
+    grid-area: situacionPersonal;
+}
+
+.situacionSanitaria {
+  grid-area: situacionSanitaria;
+}
+
+.situacionAlojamiento {
+    grid-area: situacionAlojamiento;
+}
+
+.autonomia {
+    grid-area: autonomia;
+}
+
+.situacionEconomica {
+    grid-area: situacionEconomica;
+}
+
+.contacto {
+    grid-area: contacto;
+  }
+
+  .save {
+    grid-area: save;
+}
+
+.cancel {
+    grid-area: cancel;
+}
+</style>
