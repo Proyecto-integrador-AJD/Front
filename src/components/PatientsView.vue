@@ -6,43 +6,51 @@
       </button>
     </div>
 
-    <table class="table table-striped table-hover">
-      <thead class="thead-dark">
-        <tr>
-          <th>Nombre</th>
-          <th>DNI</th>
-          <th>Teléfono</th>
-          <th>Zona</th>
-          <th>Acciones</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="patient in patients" :key="patient.id">
-          <td>{{ patient.name }} {{ patient.lastName }}</td>
-          <td>{{ patient.dni }}</td>
-          <td>{{ patient.phone }}</td>
-          <td>{{ getZoneById(patient.zoneId).name}}</td>
-          <td>
-            <button class="btn btn-info" @click="$router.push('/view-patient/' + patient.id)">
-              Ver
-            </button>
-            <button class="btn btn-secondary" @click="$router.push('/edit-patient/' + patient.id)">
-              Editar
-            </button>
-            <button class="btn btn-danger" @click="delPatient(patient)">
-              Baja
-            </button>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+    <div class="table-responsive">
+      <table id="patientTable" class="table table-striped table-hover">
+        <thead class="thead-dark">
+          <tr>
+            <th>Nombre</th>
+            <th>DNI</th>
+            <th>Teléfono</th>
+            <th>Zona</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="patient in patients" :key="patient.id">
+            <td>{{ patient.name }} {{ patient.lastName }}</td>
+            <td>{{ patient.dni }}</td>
+            <td>{{ patient.phone }}</td>
+            <td>{{ getZoneById(patient.zoneId).name}}</td>
+            <td>
+              <button class="btn btn-info" @click="$router.push('/view-patient/' + patient.id)">
+                Ver
+              </button>
+              <button class="btn btn-secondary" @click="$router.push('/edit-patient/' + patient.id)">
+                Editar
+              </button>
+              <button class="btn btn-danger" @click="delPatient(patient)">
+                Baja
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
   </div>
 </template>
 
 <script>
-import axios from 'axios';
 import { useDataStore } from '../stores/data';
 import { mapState, mapActions } from 'pinia';
+import axios from 'axios';
+import $ from 'jquery';
+import 'datatables.net-dt';
+import 'datatables.net-bs5';
+import 'datatables.net-responsive-dt/css/responsive.dataTables.css';
+import 'datatables.net-responsive-dt';
+
 
 const API = import.meta.env.VITE_URL_API;
 
@@ -52,8 +60,15 @@ export default {
   },
   mounted() {
     this.loadPatients();
+    this.initDataTable();
+    window.addEventListener('resize', this.adjustTable);
   },
-
+  beforeUnmount() {
+    window.removeEventListener('resize', this.adjustTable);
+  },
+  updated() {
+    this.initDataTable();
+  },
   methods: {
     ...mapActions(useDataStore, ['loadZones', 'loadPatients']),
 
@@ -69,9 +84,33 @@ export default {
         }
       }
     },
+
+    initDataTable() {
+      setTimeout(() => {
+        if ($.fn.DataTable.isDataTable('#patientTable')) {
+          $('#patientTable').DataTable().destroy();
+        }
+
+        $('#patientTable').DataTable({
+          responsive: true, // Asegura que se active el modo responsive
+          autoWidth: false,
+          language: {
+            url: '//cdn.datatables.net/plug-ins/1.13.4/i18n/es-ES.json'
+          }
+        });
+      }, 500);
+    },
+
+    adjustTable() {
+      const table = $('#patientTable').DataTable();
+      if (table) {
+        table.columns.adjust().responsive.recalc();
+      }
+    }
   }
 };
 </script>
+
 <style scoped>
 .full-screen {
   height: 100vh;
@@ -88,14 +127,6 @@ export default {
   width: 100%;
 }
 
-/* .table {
-  width: 100%;
-  height: 8vh;
-  width: 900vh;
-  border-collapse: collapse;
-  table-layout: fixed;
-} */
-
 .table th, .table td {
   padding: 15px;
 
@@ -104,32 +135,13 @@ export default {
 .table th {
   background-color: #66c2ff;
 }
-
-@media (max-width: 600px) {
-  table {
-    display: block;
-  }
-  tr {
-    display: flex;
-    flex-direction: column;
-    background: #f8f8f8;
-    padding: 10px;
-    margin-bottom: 10px;
-    border-radius: 8px;
-  }
-  td {
-    border: none;
-    padding: 5px;
-  }
-
-  thead {
-    display: table-header-group;
-  }
-
-  tbody {
-    display: table-row-group;
-  }
-}
+/* .table {
+  width: 100%;
+  height: 8vh;
+  width: 900vh;
+  border-collapse: collapse;
+  table-layout: fixed;
+} */
 
 </style>
 
